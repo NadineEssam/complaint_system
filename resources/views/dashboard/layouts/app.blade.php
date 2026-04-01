@@ -17,22 +17,28 @@
   <link href="{{ asset('assets/vendor/simple-datatables/style.css') }}" rel="stylesheet">
 
   <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
+
+  @stack('headScripts')
 </head>
 
 <body>
 
   {{-- Header --}}
-  @include('partials.header')
+  @include('dashboard.partials.header')
 
   {{-- Sidebar --}}
-  @include('partials.sidebar')
+  @include('dashboard.partials.sidebar')
 
   <main id="main" class="main">
       @yield('content')
   </main>
 
   {{-- Footer --}}
-  @include('partials.footer')
+  @include('dashboard.partials.footer')
+
+    <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
+    <script src="{{ asset('assets/js/popper.min.js') }}"></script>
+    <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
 
   <!-- JS -->
   <script src="{{ asset('assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
@@ -45,6 +51,8 @@
   <script src="{{ asset('assets/vendor/php-email-form/validate.js') }}"></script>
 
   <script src="{{ asset('assets/js/main.js') }}"></script>
+
+  @stack('footerScripts')
 
 </body>
 </html>
