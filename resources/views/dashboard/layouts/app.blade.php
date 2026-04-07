@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="rtl">
 
 <head>
   <meta charset="utf-8">
@@ -17,6 +17,8 @@
   <link href="{{ asset('assets/vendor/simple-datatables/style.css') }}" rel="stylesheet">
 
   <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
+  <!-- RTL Support -->
+  <link href="{{ asset('assets/css/rtl.css') }}" rel="stylesheet">
 
   @stack('headScripts')
 </head>

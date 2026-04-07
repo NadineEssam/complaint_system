@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Dashboard\ReportController;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/', function () {
@@ -15,8 +16,10 @@ Route::get('/test', function () {
 
 
 
+    Route::get('/reports',                    [ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/{key}/filters',       [ReportController::class, 'filters'])->name('reports.filters');
+    Route::post('/reports/{key}/generate',     [ReportController::class, 'generate'])->name('reports.generate');
 
-   
             /*start roles routes*/
             Route::group(['prefix' => 'roles'], function () {
                 Route::get('/roles.rolePermissions', [\App\Http\Controllers\Dashboard\RolesController::class, 'rolePermissions'])->name('roles.rolePermissions');

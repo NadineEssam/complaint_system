@@ -1,0 +1,284 @@
+/**
+ * RTL (Right-to-Left) Support for NiceAdmin Dashboard
+ * Add this stylesheet after style.css for proper RTL layout
+ */
+
+html[dir="rtl"],
+html[lang="ar"],
+html[lang="he"],
+html[lang="ur"],
+html[lang="fa"],
+html[lang="ps"] {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+/* Back to Top Button */
+html[dir="rtl"] .back-to-top {
+  left: 15px !important;
+  right: auto !important;
+}
+
+/* Header */
+html[dir="rtl"] .header {
+  padding-right: 20px !important;
+  padding-left: 0 !important;
+}
+
+html[dir="rtl"] .logo img {
+  margin-left: 6px !important;
+  margin-right: 0 !important;
+}
+
+html[dir="rtl"] .header .toggle-sidebar-btn {
+  padding-right: 10px !important;
+  padding-left: 0 !important;
+}
+
+html[dir="rtl"] .header .search-bar {
+  padding: 0 20px 0 0 !important;
+}
+
+html[dir="rtl"] .header .search-form input {
+  padding: 7px 8px 7px 38px !important;
+  text-align: right;
+}
+
+html[dir="rtl"] .header .search-form button {
+  margin-right: -30px !important;
+  margin-left: 0 !important;
+}
+
+/* Header Navigation */
+html[dir="rtl"] .header-nav .nav-icon {
+  margin-left: 25px !important;
+  margin-right: 0 !important;
+}
+
+html[dir="rtl"] .header-nav .badge-number {
+  inset: -2px auto auto -5px !important;
+}
+
+html[dir="rtl"] .header-nav .notifications,
+html[dir="rtl"] .header-nav .messages {
+  inset: 8px auto auto -15px !important;
+  left: auto !important;
+  right: auto !important;
+}
+
+html[dir="rtl"] .header-nav .notifications .notification-item i,
+html[dir="rtl"] .header-nav .messages .message-item img {
+  margin: 0 10px 0 20px !important;
+}
+
+html[dir="rtl"] .header-nav .profile {
+  min-width: 240px;
+  top: 8px !important;
+}
+
+html[dir="rtl"] .header-nav .profile .dropdown-item i {
+  margin-left: 10px !important;
+  margin-right: 0 !important;
+}
+
+html[dir="rtl"] .header-nav .nav-profile {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+}
+
+html[dir="rtl"] .header-nav .nav-profile img {
+  margin-left: 10px !important;
+  margin-right: 0 !important;
+}
+
+/* Dropdown Menus */
+html[dir="rtl"] .dropdown-menu .dropdown-item i {
+  margin-left: 10px !important;
+  margin-right: 0 !important;
+}
+
+html[dir="rtl"] .dropdown-menu-arrow::before {
+  left: 20px !important;
+  right: auto !important;
+}
+
+/* Sidebar */
+html[dir="rtl"] .sidebar {
+  left: auto !important;
+  right: 0 !important;
+}
+
+@media (max-width: 1199px) {
+  html[dir="rtl"] .sidebar {
+    right: -300px !important;
+    left: auto !important;
+  }
+}
+
+@media (min-width: 1200px) {
+  html[dir="rtl"] #main,
+  html[dir="rtl"] #footer {
+    margin-left: 0 !important;
+    margin-right: 300px !important;
+  }
+}
+
+@media (max-width: 1199px) {
+  html[dir="rtl"] .toggle-sidebar .sidebar {
+    right: 0 !important;
+    left: auto !important;
+  }
+}
+
+@media (min-width: 1200px) {
+  html[dir="rtl"] .toggle-sidebar #main,
+  html[dir="rtl"] .toggle-sidebar #footer {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  html[dir="rtl"] .toggle-sidebar .sidebar {
+    right: -300px !important;
+    left: auto !important;
+  }
+}
+
+/* Sidebar Navigation */
+html[dir="rtl"] .sidebar-nav .nav-link i,
+html[dir="rtl"] .sidebar-nav .nav-content a i {
+  margin-left: 10px !important;
+  margin-right: 0 !important;
+}
+
+html[dir="rtl"] .sidebar-nav .nav-content a {
+  padding: 10px 40px 10px 0 !important;
+}
+
+html[dir="rtl"] .sidebar-nav .nav-heading {
+  margin: 10px 0 5px 15px !important;
+  text-align: right;
+}
+
+/* Dashboard */
+html[dir="rtl"] .dashboard .filter {
+  left: 0 !important;
+  right: auto !important;
+}
+
+html[dir="rtl"] .dashboard .filter .icon {
+  padding-left: 20px !important;
+  padding-right: 0 !important;
+}
+
+html[dir="rtl"] .dashboard .activity .activity-item .activite-label::before {
+  left: -11px !important;
+  right: auto !important;
+}
+
+html[dir="rtl"] .dashboard .activity .activity-item .activity-content {
+  padding-left: 0 !important;
+  padding-right: 10px !important;
+}
+
+html[dir="rtl"] .dashboard .news img {
+  float: right !important;
+  margin-right: 0 !important;
+  margin-left: 15px !important;
+}
+
+html[dir="rtl"] .dashboard .news h4,
+html[dir="rtl"] .dashboard .news p {
+  margin-right: 95px !important;
+  margin-left: 0 !important;
+}
+
+/* Breadcrumb */
+html[dir="rtl"] .breadcrumb {
+  text-align: right;
+  direction: rtl;
+  display: flex;
+  flex-direction: row-reverse;
+  padding: 0;
+}
+
+html[dir="rtl"] .breadcrumb-item {
+  padding: 0 !important;
+}
+
+html[dir="rtl"] .breadcrumb-item::before {
+  display: inline-block !important;
+  padding: 0 0.5rem;
+}
+
+html[dir="rtl"] .breadcrumb-item:first-child::before {
+  display: none !important;
+}
+
+html[dir="rtl"] .breadcrumb-item a {
+  padding: 0;
+}
+
+/* Page Title */
+html[dir="rtl"] .pagetitle {
+  text-align: right;
+}
+
+/* Main Container */
+html[dir="rtl"] #main {
+  padding: 20px 30px 20px 20px !important;
+}
+
+@media (max-width: 1199px) {
+  html[dir="rtl"] #main {
+    padding: 20px !important;
+  }
+}
+
+/* Cards and Tables */
+html[dir="rtl"] .card-body {
+  text-align: right;
+}
+
+html[dir="rtl"] table {
+  text-align: right;
+}
+
+/* Forms */
+html[dir="rtl"] .form-label {
+  text-align: right;
+}
+
+html[dir="rtl"] .form-control {
+  text-align: right;
+}
+
+/* Text Alignment */
+html[dir="rtl"] .text-start {
+  text-align: right !important;
+}
+
+html[dir="rtl"] .text-end {
+  text-align: left !important;
+}
+
+/* Margins and Padding */
+html[dir="rtl"] .ms-auto {
+  margin-right: auto !important;
+  margin-left: 0 !important;
+}
+
+html[dir="rtl"] .me-auto {
+  margin-left: auto !important;
+  margin-right: 0 !important;
+}
+
+html[dir="rtl"] .ps-3 {
+  padding-right: 1rem !important;
+  padding-left: 0 !important;
+}
+
+html[dir="rtl"] .pe-3 {
+  padding-left: 1rem !important;
+  padding-right: 0 !important;
+}
