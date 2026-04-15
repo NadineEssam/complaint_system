@@ -219,8 +219,8 @@
             <div class="pl-3">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0 p-0">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"><i class="bx bx-home-alt"></i> {{ __('Home') }}</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('reports.index') }}"><i class="bx bx-chart-bar"></i> {{ __('Reports') }}</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"><i class="bx bx-home-alt"></i> {{ __('الرئيسية') }}</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('reports.index') }}"><i class="bx bx-chart-bar"></i> {{ __('التقارير') }}</a></li>
                     </ol>
                 </nav>
             </div>
@@ -232,8 +232,8 @@
                     <i class='bx bx-file-chart'></i>
                 </div>
                 <div>
-                    <h3>{{ __('Export Reports') }}</h3>
-                    <p>{{ __('Generate & export reports in multiple formats with custom filters') }}</p>
+                    <h3>{{ __('تصدير التقارير') }}</h3>
+                    <p>{{ __('إنشاء وتصدير التقارير بصيغ متعددة مع فلاتر مخصصة') }}</p>
                 </div>
             </div>
         </div>
@@ -244,14 +244,14 @@
     <div class="filter-card animate-in">
         <h5>
             <div class="icon-wrapper icon-primary"><i class='bx bx-file'></i></div>
-            {{ __('Select Report Type') }}
+            {{ __('اختر نوع التقرير') }}
         </h5>
         <div class="row">
             <div class="col-6">
                 <div class="">
-                    <label for="report-select">{{ __('Report') }}</label>
+                    <label for="report-select">{{ __('التقرير') }}</label>
                     <select class="form-select" id="report-select" name="report_key" onchange="loadFilters(this.value)">
-                        <option value="">— {{ __('Select a report') }} —</option>
+                        <option value="">— {{ __('اختر تقريراً') }} —</option>
                         @foreach ($reports as $report)
                             <option value="{{ $report->key() }}">{{ $report->label() }}</option>
                         @endforeach
@@ -268,20 +268,20 @@
     <div id="export-buttons" class="filter-card animate-in" style="display:none;">
         <h5>
             <div class="icon-wrapper icon-success"><i class='bx bx-download'></i></div>
-            {{ __('Export Options') }}
+            {{ __('خيارات التصدير') }}
         </h5>
         <div class="d-flex flex-wrap gap-3 mt-2">
             {{-- <button class="btn-action btn-preview" type="button" onclick="submitForm('view')">
                 <i class='bx bx-show'></i> {{ __('Preview') }}
             </button> --}}
             <button class="btn-action btn-excel" type="button" onclick="submitForm('xlsx')">
-                <i class='bx bx-file-doc'></i> {{ __('Export Excel') }}
+                <i class='bx bx-file-doc'></i> {{ __('تصدير Excel') }}
             </button>
             <button class="btn-action btn-csv" type="button" onclick="submitForm('csv')">
-                <i class='bx bx-spreadsheet'></i> {{ __('Export CSV') }}
+                <i class='bx bx-spreadsheet'></i> {{ __('تصدير CSV') }}
             </button>
             <button class="btn-action btn-pdf" type="button" onclick="submitForm('pdf')">
-                <i class='bx bx-file-pdf'></i> {{ __('Export PDF') }}
+                <i class='bx bx-file-pdf'></i> {{ __('تصدير PDF') }}
             </button>
         </div>
     </div>
@@ -307,7 +307,7 @@ async function loadFilters(key) {
         <div class="filter-card">
             <div class="text-center py-4">
                 <div class="spinner mx-auto" style="border-color: rgba(102,126,234,0.3); border-top-color: #667eea; margin-bottom: 12px;"></div>
-                <p class="text-muted mb-0">{{ __('Loading filters...') }}</p>
+                <p class="text-muted mb-0">{{ __('جاري التحميل...') }}</p>
             </div>
         </div>
     `;
@@ -320,7 +320,7 @@ async function loadFilters(key) {
             <div class="filter-card animate-in">
                 <h5>
                     <div class="icon-wrapper icon-warning"><i class='bx bx-filter-alt'></i></div>
-                    {{ __('Report Filters') }}
+                    {{ __('خيارات تصفية التقرير') }}
                 </h5>
         `;
 

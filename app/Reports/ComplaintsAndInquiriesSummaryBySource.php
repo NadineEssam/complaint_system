@@ -28,13 +28,13 @@ class ComplaintsAndInquiriesSummaryBySource implements ReportInterface
         return [
             [
                 'name'        => 'date_from',
-                'label'       => 'Date From',
+                'label'       => 'من تاريخ',
                 'type'        => 'date',
                 'required'    => false,
             ],
             [
                 'name'        => 'date_to',
-                'label'       => 'Date To',
+                'label'       => 'إلى تاريخ',
                 'type'        => 'date',
                 'required'    => false,
             ],
