@@ -46,21 +46,28 @@
 <body>
     <table style="width: 100%; margin-bottom: 10px;">
         <tr>
-            <td style="vertical-align: middle;">
-                <h2 style="margin: 0;">{{ $report->label() }}</h2>
-                <small>Generated: {{ now()->format('d M Y H:i') }} &mdash; Filters:
-                    {{ collect($filters)->join(', ') }}</small>
-            </td>
-            <td style="text-align: right; vertical-align: middle;">
+            <td style="">
                 <img src="{{ public_path('logo.png') }}" alt="Logo" style="max-height: 60px;">
             </td>
+
+            <td style="text-align: right;">
+                <h2 style="margin: 0; margin-bottom: 3px;">{{ $report->label() }}</h2>
+                <small>Generated: {{ now()->format('d M Y H:i') }}  <br> 
+                    
+                    @if( !empty($filters)  )
+                        Filters:
+                        {{ collect($filters)->join(', ') }}
+                    @endif
+                </small>
+            </td>
+          
         </tr>
     </table>
     <table>
         <thead>
             <tr>
                 @foreach ($report->headings() as $heading)
-                    <th>{{ $heading }}</th>
+                    <th  style="text-align: right;" >{{ $heading }}</th>
                 @endforeach
             </tr>
         </thead>

@@ -11,6 +11,7 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
 
 class ReportExport implements
     FromCollection,
@@ -18,7 +19,8 @@ class ReportExport implements
     WithMapping,
     WithStyles,
     ShouldAutoSize,
-    WithTitle
+    WithTitle,
+    WithCustomCsvSettings
 {
 
     protected Collection $data;
@@ -28,6 +30,13 @@ class ReportExport implements
         array $filters
     ) {
         $this->data = collect($report->generate($filters));
+    }
+
+    public function getCsvSettings(): array
+    {
+        return [
+            'use_bom' => true,
+        ];
     }
 
     public function collection(): Collection

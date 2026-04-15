@@ -54,8 +54,9 @@ class ReportController extends Controller
 
     private function export($report, array $filters, string $format)
     {
-        $filename = str($report->label())->slug() . '-' . now()->format('Y-m-d');
-
+       $filename = preg_replace('/[\/:*?"<>|]/u', '', $report->label())
+        . ' - ' . now()->format('Y-m-d');
+        
         return match ($format) {
 
             'xlsx' => Excel::download(
@@ -67,17 +68,10 @@ class ReportController extends Controller
                 new ReportExport($report, $filters),
                 "{$filename}.csv",
                 \Maatwebsite\Excel\Excel::CSV,
-                ['Content-Type' => 'text/csv']
+                ['Content-Type' => 'text/csv; charset=UTF-8',]
             ),
-
-            // 'pdf' => Pdf::loadView('dashboard.exports.report-pdf', [
-            //         'report'  => $report,
-            //         'results' => collect($report->generate($filters)),
-            //         'filters' => $filters,
-            //     ])
-            //     ->setPaper('a4', 'landscape')
-            //     ->download("{$filename}.pdf"),
             
+            'pdf' => $this->exportPdf($report, $filters, $filename),
 
             default => abort(422, 'Unsupported format'),
         };

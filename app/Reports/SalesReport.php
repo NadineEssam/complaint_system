@@ -3,7 +3,6 @@
 namespace App\Reports;
 
 use App\Reports\Contracts\ReportInterface;
-use App\Models\Order;
 use App\Models\User;
 
 class SalesReport implements ReportInterface
