@@ -93,7 +93,14 @@ class ReportController extends Controller
             'filters' => $filters,
         ])->render();
 
-        $mpdf->WriteHTML($html);
+
+       ini_set('pcre.backtrack_limit', '5000000');
+
+$htmlParts = str_split($html, 50000);
+
+foreach ($htmlParts as $part) {
+    $mpdf->WriteHTML($part);
+}
 
         return response()->streamDownload(
             fn () => print($mpdf->Output('', 'S')),
