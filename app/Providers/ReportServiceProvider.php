@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Reports\AnnualSourcesComparisonReport;
 use App\Reports\CompareByRequestTypeBetweenYearsReport;
 use App\Reports\ComplaintsAndInquiriesSummaryBySource;
 use App\Reports\ReportRegistry;
@@ -19,7 +20,8 @@ class ReportServiceProvider extends ServiceProvider
             $registry->register(
                 new SalesReport(),
                 new CompareByRequestTypeBetweenYearsReport(),
-                new ComplaintsAndInquiriesSummaryBySource()
+                new ComplaintsAndInquiriesSummaryBySource(),
+                new AnnualSourcesComparisonReport()
             );
 
             return $registry;

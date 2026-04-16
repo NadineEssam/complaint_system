@@ -232,8 +232,8 @@
                     <i class='bx bx-file-chart'></i>
                 </div>
                 <div>
-                    <h3>{{ __('تصدير التقارير') }}</h3>
-                    <p>{{ __('إنشاء وتصدير التقارير بصيغ متعددة مع فلاتر مخصصة') }}</p>
+                    <h3>{{ __('استخراج التقارير') }}</h3>
+                    <p>{{ __('إنشاء واستخراج التقارير بصيغ متعددة مع فلاتر مخصصة') }}</p>
                 </div>
             </div>
         </div>
@@ -268,20 +268,20 @@
     <div id="export-buttons" class="filter-card animate-in" style="display:none;">
         <h5>
             <div class="icon-wrapper icon-success"><i class='bx bx-download'></i></div>
-            {{ __('خيارات التصدير') }}
+            {{ __('خيارات الاستخراج') }}
         </h5>
         <div class="d-flex flex-wrap gap-3 mt-2">
             {{-- <button class="btn-action btn-preview" type="button" onclick="submitForm('view')">
                 <i class='bx bx-show'></i> {{ __('Preview') }}
             </button> --}}
             <button class="btn-action btn-excel" type="button" onclick="submitForm('xlsx')">
-                <i class='bx bx-file-doc'></i> {{ __('تصدير Excel') }}
+                <i class='bx bx-file-doc'></i> {{ __('استخراج Excel') }}
             </button>
             <button class="btn-action btn-csv" type="button" onclick="submitForm('csv')">
-                <i class='bx bx-spreadsheet'></i> {{ __('تصدير CSV') }}
+                <i class='bx bx-spreadsheet'></i> {{ __('استخراج CSV') }}
             </button>
             <button class="btn-action btn-pdf" type="button" onclick="submitForm('pdf')">
-                <i class='bx bx-file-pdf'></i> {{ __('تصدير PDF') }}
+                <i class='bx bx-file-pdf'></i> {{ __('استخراج PDF') }}
             </button>
         </div>
     </div>
