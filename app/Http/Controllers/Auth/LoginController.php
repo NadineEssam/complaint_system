@@ -52,7 +52,7 @@ class LoginController extends Controller
 
         foreach ($ldapHosts as $host) {
 
-            $ldapConn = @ldap_connect("ldap://{$host}:{$ldapPort}");
+            $ldapConn = ldap_connect("ldap://{$host}:{$ldapPort}");
 
             if (!$ldapConn) {
                 continue;
@@ -61,9 +61,9 @@ class LoginController extends Controller
             ldap_set_option($ldapConn, LDAP_OPT_PROTOCOL_VERSION, 3);
             ldap_set_option($ldapConn, LDAP_OPT_REFERRALS, 0);
 
-            $ldapUser = $domain . chr(92) . $userID; // sfd\userID
+            $ldapUser = $domain . chr(92) . $userID; 
 
-            if (@ldap_bind($ldapConn, $ldapUser, $password)) {
+            if (ldap_bind($ldapConn, $ldapUser, $password)) {
                 $authenticated = true;
                 ldap_unbind($ldapConn);
                 break;
@@ -80,10 +80,10 @@ class LoginController extends Controller
 
         
         $user = User::firstOrCreate(
-            ['email' => $userID . '@local.com'],
+            ['userID' => $userID ],
             [
-                'name' => $userID,
-                'password' => bcrypt('temporary-password')
+                ' userEmail ' =>  $userID . '@sfdegypt.org',
+                
             ]
         );
 
