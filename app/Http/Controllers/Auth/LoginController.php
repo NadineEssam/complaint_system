@@ -4,70 +4,99 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
 class LoginController extends Controller
 {
+    
     public function showLoginForm()
     {
-        return view('auth.login'); 
+        return view('auth.login');
     }
 
+   
     public function login(Request $request)
     {
         $request->validate([
-            'username' => 'required|string',
+            'userID'   => 'required|string',
             'password' => 'required|string',
         ]);
 
-        $username = $request->username;
+        $userID   = trim($request->userID);
         $password = $request->password;
 
-        
-        $ldapHosts = explode(',', env('LDAP_HOSTS', '127.0.0.1'));
-        $ldapPort = env('LDAP_PORT', 389);
-        $ldapDomain = env('LDAP_DOMAIN', 'sfd');
+    
+        $dbUser = DB::table('users_groups')
+            ->where('userID', $userID)
+            ->first();
+
+        if (!$dbUser) {
+            return back()->withErrors([
+                'userID' => 'User does not exist.'
+            ])->withInput();
+        }
+
+       
+        $ldapHosts = [
+            '192.168.161.100',
+            '192.168.161.131',
+            '192.168.161.201',
+        ];
+
+        $ldapPort = 389;
+        $domain   = 'sfd';
 
         $authenticated = false;
 
         foreach ($ldapHosts as $host) {
+
             $ldapConn = @ldap_connect("ldap://{$host}:{$ldapPort}");
-            if (!$ldapConn) continue;
+
+            if (!$ldapConn) {
+                continue;
+            }
 
             ldap_set_option($ldapConn, LDAP_OPT_PROTOCOL_VERSION, 3);
             ldap_set_option($ldapConn, LDAP_OPT_REFERRALS, 0);
 
-            $ldapRdn = $ldapDomain . '\\' . $username;
+            $ldapUser = $domain . chr(92) . $userID; // sfd\userID
 
-            if (@ldap_bind($ldapConn, $ldapRdn, $password)) {
+            if (@ldap_bind($ldapConn, $ldapUser, $password)) {
                 $authenticated = true;
+                ldap_unbind($ldapConn);
                 break;
             }
+
+            ldap_unbind($ldapConn);
         }
 
-        if ($authenticated) {
-            $user = User::firstOrCreate(
-                ['username' => $username],
-                [
-                    'name' => $username,
-                    'email' => $username ,
-                ]
-            );
-
-            Auth::login($user);
-
-            return redirect()->intended('/home'); 
+        if (!$authenticated) {
+            return back()->withErrors([
+                'password' => 'Password is incorrect.'
+            ])->withInput();
         }
 
-        return back()->withErrors([
-            'username' => 'Invalid credentials',
-        ])->withInput();
+        
+        $user = User::firstOrCreate(
+            ['email' => $userID . '@local.com'],
+            [
+                'name' => $userID,
+                'password' => bcrypt('temporary-password')
+            ]
+        );
+
+        Auth::login($user);
+
+        return redirect()->route('complaints.index');
     }
 
+  
     public function logout(Request $request)
     {
         Auth::logout();
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 

@@ -6,13 +6,10 @@ use App\Http\Controllers\Complaints\ComplaintController;
 
 
 
-// Show login form
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 
-// Handle login post
 Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
 
-// Logout route
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/complaints', [ComplaintController::class, 'index'])->name('complaints.index');

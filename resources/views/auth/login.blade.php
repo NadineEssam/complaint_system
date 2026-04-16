@@ -22,34 +22,35 @@
               <p class="text-center small">Enter your username & password to login</p>
             </div>
 
-            <!-- <form method="POST" action="{{ route('login') }}" class="row g-3 needs-validation" novalidate>
+            <form method="POST" action="{{ route('login.submit') }}" class="row g-3">
               @csrf
+
+              @if(session('error'))
+              <div class="alert alert-danger">
+                {{ session('error') }}
+              </div>
+              @endif
+
               <div class="col-12">
-                <label for="yourUsername" class="form-label">Username</label>
-                <input type="text" name="username" class="form-control" id="yourUsername" required>
+                <label class="form-label">User ID</label>
+                <input type="text" name="userID" class="form-control" required>
               </div>
 
               <div class="col-12">
-                <label for="yourPassword" class="form-label">Password</label>
-                <input type="password" name="password" class="form-control" id="yourPassword" required>
+                <label class="form-label">Password</label>
+                <input type="password" name="password" class="form-control" required>
               </div>
 
               <div class="col-12">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" name="remember" id="rememberMe">
-                  <label class="form-check-label" for="rememberMe">Remember me</label>
-                </div>
+                <button class="btn btn-primary w-100" type="submit">
+                  Login
+                </button>
               </div>
-
-              <div class="col-12">
-                <button class="btn btn-primary w-100" type="submit">Login</button>
-              </div>
-
-            </form> -->
+            </form>
           </div>
         </div>
 
-     
+
 
       </div>
     </div>
