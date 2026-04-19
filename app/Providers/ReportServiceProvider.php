@@ -6,6 +6,9 @@ use App\Reports\AnnualSourcesComparisonReport;
 use App\Reports\CentralReport;
 use App\Reports\CompareByRequestTypeBetweenYearsReport;
 use App\Reports\ComplaintsAndInquiriesSummaryBySource;
+use App\Reports\ComplaintSavedReasonsReport;
+use App\Reports\OfficesComplaintsAndInquiriesSummaryReport;
+use App\Reports\OfficesSavedComplaintsCountReport;
 use App\Reports\ReportRegistry;
 use App\Reports\SalesReport;
 
@@ -23,7 +26,10 @@ class ReportServiceProvider extends ServiceProvider
                 new CompareByRequestTypeBetweenYearsReport(),
                 new ComplaintsAndInquiriesSummaryBySource(),
                 new AnnualSourcesComparisonReport(),
-                new CentralReport()
+                new CentralReport(),
+                new OfficesComplaintsAndInquiriesSummaryReport(),
+                new OfficesSavedComplaintsCountReport(),
+                new ComplaintSavedReasonsReport(),
             );
 
             return $registry;

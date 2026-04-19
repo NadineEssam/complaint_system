@@ -119,8 +119,10 @@ class CentralReport implements ReportInterface
             ->leftJoin('comsources', 'comsources.comsourcesid', '=', 'sfdcomplaints.ComplaintSources')
             ->leftJoin('requesttype', 'requesttype.requesttypeid', '=', 'sfdcomplaints.RequestType')
             ->leftJoin('compstatus', 'compstatus.statusID', '=', 'sfdcomplaints.ComplaintStatus')
+            ->leftJoin('comp_close_reason', 'comp_close_reason.close_reason_ID', '=', 'sfdcomplaints.fk_close_reason_id')
             ->select(
                 'sfdcomplaints.ComplainerName',
+                'sfdcomplaints.ComplainerPhone',
                 'sfdcomplaints.ComplaintDate',
                 'office.REG_OFFIC_NAMA',
                 'comsources.comsourcesname',
@@ -128,14 +130,15 @@ class CentralReport implements ReportInterface
                 'sfdcomplaints.ComplaintText',
                 'sfdcomplaints.Comment',
                 'sfdcomplaints.statusdetails',
-                'compstatus.statusText'
+                'compstatus.statusText',
+                'comp_close_reason.close_reason_Name'
             )
 
             ->when($filters['date_from'] ?? null, function ($query, $date_from) {
                 $query->whereDate('sfdcomplaints.ComplaintDate', '>=', $date_from);
             })
             ->when($filters['date_to'] ?? null, function ($query, $date_to) {
-                $query->whereDate('sfdcomplaints.ComplaintDate', '<=', $date_to);
+                $query->whereDate('sfdcomplaints.ComplaintDate', '<=', $date_to );
             })
             ->when($filters['request_type'] ?? null, function ($query, $request_type) {
                 if ($request_type != '0') {
@@ -172,10 +175,12 @@ class CentralReport implements ReportInterface
             'نص الشكوى',
             'التعليق',
             'تفاصيل الحالة',
+            'سبب الحفظ',
             'حالة الطلب',
             'نوع الطلب',
             'المصدر ',
             ' المكتب ',
+            'هاتف المشتكي',
             'اسم المشتكي',
         ];
     }
@@ -188,10 +193,12 @@ class CentralReport implements ReportInterface
             $row->ComplaintText,
             $row->Comment,
             $row->statusdetails,
+            $row->close_reason_Name ?? '',
             $row->statusText,
             $row->requesttypename,
             $row->comsourcesname,
             $row->REG_OFFIC_NAMA,
+            $row->ComplainerPhone,
             $row->ComplainerName,
 
         ];
