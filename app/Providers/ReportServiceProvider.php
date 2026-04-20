@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Reports\AnnualSourcesComparisonReport;
 use App\Reports\CentralReport;
 use App\Reports\CompareByRequestTypeBetweenYearsReport;
+use App\Reports\ComplaintPercentageReport;
 use App\Reports\ComplaintsAndInquiriesSummaryBySource;
 use App\Reports\ComplaintSavedReasonsReport;
 use App\Reports\OfficesComplaintsAndInquiriesSummaryReport;
@@ -30,6 +31,7 @@ class ReportServiceProvider extends ServiceProvider
                 new OfficesComplaintsAndInquiriesSummaryReport(),
                 new OfficesSavedComplaintsCountReport(),
                 new ComplaintSavedReasonsReport(),
+                new ComplaintPercentageReport(),
             );
 
             return $registry;

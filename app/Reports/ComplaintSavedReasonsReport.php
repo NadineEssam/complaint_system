@@ -78,18 +78,18 @@ class ComplaintSavedReasonsReport implements ReportInterface
                 $join->on('s.fk_close_reason_classify_id', '=', 'c.close_reason_classify_id')
                     ->where('s.ComplaintStatus', 4);
 
-                    
-        if (!empty($filters['date_from'])) {
-            $join->whereDate('s.ComplaintDate', '>=', $filters['date_from']);
-        }
 
-        if (!empty($filters['date_to'])) {
-            $join->whereDate('s.ComplaintDate', '<=', $filters['date_to']);
-        }
+                if (!empty($filters['date_from'])) {
+                    $join->whereDate('s.ComplaintDate', '>=', $filters['date_from']);
+                }
 
-        if (!empty($filters['request_type']) && $filters['request_type'] != '0') {
-            $join->where('s.RequestType', $filters['request_type']);
-        }
+                if (!empty($filters['date_to'])) {
+                    $join->whereDate('s.ComplaintDate', '<=', $filters['date_to']);
+                }
+
+                if (!empty($filters['request_type']) && $filters['request_type'] != '0') {
+                    $join->where('s.RequestType', $filters['request_type']);
+                }
             })
             ->select(
                 'c.close_reason_classify_id',
@@ -98,7 +98,7 @@ class ComplaintSavedReasonsReport implements ReportInterface
                 'r.close_reason_Name',
                 DB::raw('COUNT(s.ComplaintID) as complaints_count')
             )
-           
+
 
             ->groupBy(
                 'c.close_reason_classify_id',
