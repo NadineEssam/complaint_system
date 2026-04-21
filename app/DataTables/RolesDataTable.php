@@ -22,23 +22,45 @@ class RolesDataTable extends DataTable
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
-        return (new EloquentDataTable($query->where('guard_name' , 'web')))
-            ->addColumn('action', function($model){
-                $html='<div class="btn-group pull-right">';
-                if(PerUser('roles.edit')){
-                    $html.='<a href="'.route('roles.edit',['role'=>$model]).'" class="btn btn-sm btn-success"><span class="fadeIn animated bx bx-edit-alt"> </span></a>';
+        return (new EloquentDataTable($query->where('guard_name', 'web')))
+
+            ->addColumn('action', function ($model) {
+
+                $html = '<div class="d-flex align-items-center gap-2 justify-content-end">';
+
+                // Edit Button
+                if (PerUser('roles.edit')) {
+                    $html .= '
+                        <a href="' . route('roles.edit', ['role' => $model]) . '" 
+                        class="btn btn-sm btn-outline-primary action-btn"
+                        data-bs-toggle="tooltip" 
+                        title="Edit Role">
+                            <i class="bx bx-edit-alt"></i>
+                        </a>';
                 }
-                if(PerUser('roles.destroy')){
-                    $html.='<a href="#" class="btn btn-sm btn-danger delete-this" data-id="'.$model->id.'" data-url="'.route('roles.destroy',['role'=>$model]).'"><span class="fadeIn animated bx bx-trash"> </span></a>';
+
+                // Delete Button
+                if (PerUser('roles.destroy')) {
+                    $html .= '
+                        <button 
+                            class="btn btn-sm btn-outline-danger action-btn delete-this"
+                            data-id="' . $model->id . '"
+                            data-url="' . route('roles.destroy', ['role' => $model]) . '"
+                            data-bs-toggle="tooltip" 
+                            title="Delete Role">
+                            <i class="bx bx-trash"></i>
+                        </button>';
                 }
-                $html.='</div>';
-                return$html;
+
+                $html .= '</div>';
+
+                return $html;
             })
-            ->editColumn('created_at',function ($model){
-                return $model->created_at->format('Y-m-d H:i:s');
+            ->editColumn('created_at', function ($model) {
+                return $model->created_at->format('H:i:s Y-m-d');
             })
             ->setRowId('id')
-            ;
+        ;
     }
 
     /**
@@ -60,23 +82,23 @@ class RolesDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-                    ->setTableId('roles')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-//                    ->dom('Bfrtip')
-                    ->orderBy(1)
-                    ->pageLength(100)
-                    ->parameters([
-                        'scrollX' => true,
-                    ])
-                    ->lengthMenu([100, 300, 500])
-//                    ->buttons(
-//                        Button::make('export'),
-//                        Button::make('print'),
-//                        Button::make('reset'),
-//                        Button::make('reload')
-//                    )
-            ;
+            ->setTableId('roles')
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+            //                    ->dom('Bfrtip')
+            ->orderBy(1)
+            ->pageLength(100)
+            ->parameters([
+                'scrollX' => true,
+            ])
+            ->lengthMenu([100, 300, 500])
+            //                    ->buttons(
+            //                        Button::make('export'),
+            //                        Button::make('print'),
+            //                        Button::make('reset'),
+            //                        Button::make('reload')
+            //                    )
+        ;
     }
 
     /**

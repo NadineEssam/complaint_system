@@ -14,7 +14,7 @@ class AnnualSourcesComparisonReport implements ReportInterface
 
     public function permission(): string
     {
-        return 'view-report-annual-sources-comparison';
+        return 'reports.view-report-annual-sources-comparison';
     }
 
     public function label(): string

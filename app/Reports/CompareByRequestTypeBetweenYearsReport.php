@@ -14,7 +14,7 @@ class CompareByRequestTypeBetweenYearsReport implements ReportInterface
 
     public function permission(): string
     {
-        return 'view-report-compare-request-type-between-years';
+        return 'reports.view-report-compare-request-type-between-years';
     }
 
     public function label(): string

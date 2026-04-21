@@ -9,7 +9,7 @@ class SalesReport implements ReportInterface
 {
     public function permission(): string
     {
-        return 'view-report-sales';
+        return 'reports.view-report-sales';
     }
 
     public function label(): string

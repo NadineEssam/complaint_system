@@ -47,16 +47,16 @@ class UsersController extends Controller
     public function store(Request $request)
     {
         
-        $this->validateUsers($request);
-        $imageAttr=[];
-        if($request->file('image')){
-            $imageAttr=uploadImage($request->file('image'));
-        }
-        $user=User::create(array_merge($request->only(['name','email']),['password'=>Hash::make($request->password)],$imageAttr));
-        $user->syncRoles($request->input('role_id'));
-        $user->syncPermissions($request->input('permissions'));
-        alert()->success(__('Success'),__('Create Successfully'));
-        return redirect()->back();
+        // $this->validateUsers($request);
+        // $imageAttr=[];
+        // if($request->file('image')){
+        //     $imageAttr=uploadImage($request->file('image'));
+        // }
+        // $user=User::create(array_merge($request->only(['userid']),['password'=>Hash::make($request->password)],$imageAttr));
+        // $user->syncRoles($request->input('role_id'));
+        // $user->syncPermissions($request->input('permissions'));
+        // alert()->success(__('Success'),__('Create Successfully'));
+        // return redirect()->back();
     }
 
     /**
@@ -93,17 +93,10 @@ class UsersController extends Controller
     public function update(Request $request, User $user)
     {
         //
+        //dd($request->all());
         $this->validateUsers($request);
         $array=[];
-        if($request->password){
-            $array['password']=Hash::make($request->password);
-        }
-        $imageAttr=[];
-        if($request->file('image')){
-            $imageAttr=uploadImage($request->file('image'));
-        }
-        $updateData=array_merge($request->only('name','email'),$array,$imageAttr);
-        $user->update($updateData);
+        
         $user->syncRoles($request->input('role_id'));
         $user->syncPermissions($request->input('permissions'));
         alert()->success(__('Success'),__('Update Successfully'));
@@ -118,24 +111,18 @@ class UsersController extends Controller
      */
     public function destroy(User $user)
     {
-        //
-        $user->deleted_by=auth()->id();
-        $user->save();
         $user->delete();
         return response()->json(['success'=>true,'message'=>__('Delete Successful')]);
     }
 
     public function validateUsers($request){
         $valid=[
-            'name'=>'required',
+            'userid'=>'required',
         ];
         if($request->user){
-
-//            $valid['email']='required|email|unique:users,email,'.$request->user->id.',NULL,deleted_at,NULL';
-            $valid['email']=['required','email',Rule::unique('users','email')->whereNull('deleted_at')->ignore($request->user->id,'id')];
+          //  $valid['userid']=['required','userID',Rule::unique('users_groups','userID')->ignore($request->user->ID,'ID')];
         }else{
-            $valid['password']='required|min:5';
-            $valid['email']=['required','email',Rule::unique('users','email')->whereNull('deleted_at')];
+           
         }
         return $request->validate($valid);
     }
@@ -146,7 +133,7 @@ class UsersController extends Controller
     public function profileUpdate(Request $request){
         $user=auth()->user();
         $request->validate([
-            'name'=>'required',
+            'nameid'=>'required',
             'email'=>['required','email',Rule::unique('users','email')->whereNull('deleted_at')->ignore($user->id,'id')],
             'old_password'=>'required',
             'new_password'=>'same:confirm_password'
@@ -166,31 +153,7 @@ class UsersController extends Controller
         alert()->success(__('Success'),__('Update Successfully'));
         return redirect()->back();
     }
-    public function deleteMulti(Request $request){
-        //dd(  $request->IDS  );
-        $count=User::whereIn('id',$request->IDS)->update(['deleted_by'=>auth()->id(),'deleted_at'=>now()]);
-       
-        return response()->json(['success'=>true,'message'=>__('Delete :count Successful',['count'=>$count])]);
-    }
-    public function export(Request $request){
-        switch ($request->export_type){
-            case'csv':
-                return Excel::download(new UsersExport,'users_'.time().'.csv',\Maatwebsite\Excel\Excel::CSV);
-                break;
-            case'excel':
-                return Excel::download(new UsersExport,'users_'.time().'.xlsx',\Maatwebsite\Excel\Excel::XLSX);
-                break;
-            case'pdf':
-                $users=User::query();
-                if(request('IDS')){
-                    $users=$users->whereIn('id',explode(',',request('IDS')));
-                }
-                $users=$users->get();
-                return Pdf::loadView('dashboard.users.export_pdf',['users'=>$users])->download('users_'.time().'.pdf');
-                break;
-        }
-
-    }
+ 
     public function rolesPermissions( Request $request)
     {
         $data = DB::table('role_has_permissions')

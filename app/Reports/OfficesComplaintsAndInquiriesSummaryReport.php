@@ -10,7 +10,7 @@ class OfficesComplaintsAndInquiriesSummaryReport implements ReportInterface
 {
     public function permission(): string
     {
-        return 'view-report-offices-complaints-and-inquiries-summary-report';
+        return 'reports.view-report-offices-complaints-and-inquiries-summary-report';
     }
 
     public function label(): string

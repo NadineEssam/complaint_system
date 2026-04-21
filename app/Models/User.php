@@ -22,6 +22,7 @@ class User extends Authenticatable
 
     protected $table = 'users_groups';
     protected $guarded=['id'];
+    protected $primaryKey = 'ID';
 
     /**
      * The attributes that should be hidden for serialization.

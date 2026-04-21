@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\User;
+
 if (!function_exists('format_date')) {
     function format_date($date, $format = 'd-m-Y') {
         return \Carbon\Carbon::parse($date)->format($format);
@@ -10,7 +12,10 @@ if (!function_exists('format_date')) {
 if (!function_exists('PerUser')) {
     function PerUser($permission) {
         return true;
-        //return (auth()->check())?auth()->user()->can($permission):false;
+        // $user = User::where('id', 4)->first();
+        // dd($user->can("rolesss.index"));
+        //dd(auth()->user()->can($permission));
+        return (auth()->check())?auth()->user()->can($permission):false;
     }
 }
 

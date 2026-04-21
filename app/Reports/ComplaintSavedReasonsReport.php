@@ -10,7 +10,7 @@ class ComplaintSavedReasonsReport implements ReportInterface
 {
     public function permission(): string
     {
-        return 'view-report-complaint-saved-reasons-report';
+        return 'reports.view-report-complaint-saved-reasons-report';
     }
 
     public function label(): string

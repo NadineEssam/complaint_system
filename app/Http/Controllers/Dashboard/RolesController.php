@@ -119,7 +119,7 @@ class RolesController extends Controller
     public function destroy(Role $role)
     {
         //
-        $role->deleted_by=auth()->id();
+       
         $role->save();
         $role->delete();
         try {

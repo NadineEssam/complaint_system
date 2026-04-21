@@ -10,7 +10,7 @@ class CentralReport implements ReportInterface
 {
     public function permission(): string
     {
-        return 'view-report-central-report';
+        return 'reports.view-report-central-report';
     }
 
     public function label(): string

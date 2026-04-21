@@ -10,7 +10,7 @@ class ComplaintsAndInquiriesSummaryBySource implements ReportInterface
 {
     public function permission(): string
     {
-        return 'view-report-complaints-inquiries-summary-by-source';
+        return 'reports.view-report-complaints-inquiries-summary-by-source';
     }
 
     public function label(): string

@@ -12,6 +12,7 @@
         "laravel/tinker": "^2.10.1",
         "maatwebsite/excel": "^3.1",
         "mpdf/mpdf": "^8.3",
+        "realrashid/sweet-alert": "^7.3",
         "spatie/laravel-permission": "^6.25",
         "yajra/laravel-datatables": "^12.0"
     },

@@ -56,5 +56,28 @@
 
   @stack('footerScripts')
 
+
+
+  @include('sweetalert::alert')
+  <style>
+.swal2-popup {
+    border-radius: 20px !important;
+    padding: 25px !important;
+}
+
+.swal2-title {
+    font-size: 22px !important;
+    font-weight: bold;
+}
+
+.swal2-confirm {
+    background: linear-gradient(45deg, #4CAF50, #2ecc71) !important;
+    border-radius: 8px !important;
+}
+
+.swal2-cancel {
+    background: #e74c3c !important;
+}
+  </style>
 </body>
 </html>

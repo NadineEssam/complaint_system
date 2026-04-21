@@ -10,7 +10,7 @@ class OfficesSavedComplaintsCountReport implements ReportInterface
 {
     public function permission(): string
     {
-        return 'view-report-offices-saved-complaints-count-report';
+        return 'reports.view-report-offices-saved-complaints-count-report';
     }
 
     public function label(): string

@@ -27,16 +27,37 @@ class UsersDataTable extends DataTable
             ->editColumn('checkbox',function($user){
                 return '<div class="custom-control custom-checkbox"><input type="checkbox"  class="custom-control-input user-checkbox" value="'.$user->id.'" id="selectCheckbox-'.$user->id.'"><label class="custom-control-label" for="selectCheckbox-'.$user->id.'"></label></div>';
             })
-            ->addColumn('action', function($model){
-                $html='<div class="btn-group pull-right">';
-                if(PerUser('users.edit')){
-                    // $html.='<a href="'.route('users.edit',['user'=>$model]).'" class="btn btn-sm btn-success"><span class="fadeIn animated bx bx-edit-alt"> </span></a>';
+                ->addColumn('action', function ($model) {
+
+                $html = '<div class="d-flex align-items-center gap-2 justify-content-end">';
+
+                // Edit Button
+                if (PerUser('users.edit')) {
+                    $html .= '
+                        <a href="' . route('users.edit', ['user' => $model]) . '" 
+                        class="btn btn-sm btn-outline-primary action-btn"
+                        data-bs-toggle="tooltip" 
+                        title="Edit user">
+                            <i class="bx bx-edit-alt"></i>
+                        </a>';
                 }
-                if(PerUser('users.destroy')){
-                    // $html.='<a href="#" class="btn btn-sm btn-danger delete-this" data-id="'.$model->id.'" data-url="'.route('users.destroy',['user'=>$model]).'"><span class="fadeIn animated bx bx-trash"> </span></a>';
+
+                // Delete Button
+                if (PerUser('users.destroy')) {
+                    $html .= '
+                        <button 
+                            class="btn btn-sm btn-outline-danger action-btn delete-this"
+                            data-id="' . $model->id . '"
+                            data-url="' . route('users.destroy', ['user' => $model]) . '"
+                            data-bs-toggle="tooltip" 
+                            title="Delete user">
+                            <i class="bx bx-trash"></i>
+                        </button>';
                 }
-                $html.='</div>';
-                return$html;
+
+                $html .= '</div>';
+
+                return $html;
             })
       
       
@@ -91,14 +112,14 @@ class UsersDataTable extends DataTable
     protected function getColumns(): array
     {
         return [
-            Column::make('checkbox')
-                ->title('<div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input" id="selectAllCheckbox"><label class="custom-control-label" for="selectAllCheckbox"></label></div>')
-                ->searchable(false)
-                ->exportable(false)
-                ->printable(false)
-                ->width('10px')
-                ->orderable(false),
-          //  Column::make('id'),
+            // Column::make('checkbox')
+            //     ->title('<div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input" id="selectAllCheckbox"><label class="custom-control-label" for="selectAllCheckbox"></label></div>')
+            //     ->searchable(false)
+            //     ->exportable(false)
+            //     ->printable(false)
+            //     ->width('10px')
+            //     ->orderable(false),
+            Column::make('ID'),
            // Column::make('roles'),
             // Column::make('permissions'),
             Column::make('userID'),

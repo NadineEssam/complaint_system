@@ -10,7 +10,7 @@ class ComplaintPercentageReport implements ReportInterface
 {
     public function permission(): string
     {
-        return 'view-report-complaint-percentage-report';
+        return 'reports.view-report-complaint-percentage-report';
     }
 
     public function label(): string
