@@ -12,7 +12,20 @@
       </li>
 
 
-        <li class="nav-heading">تقارير النظام</li>
+       <li class="nav-heading"> ادارة الشكاوى </li>
+
+      @if (PerUser('complaints.index') )
+      <li class="nav-item  @if (request()->segment(1) == 'complaints') mm-active @endif  ">
+        <a class="nav-link collapsed" href="{{ route('complaints.index') }}">
+          <i class="bi bi-card-list"></i>
+          <span> الشكاوى </span>
+        </a>
+      </li>
+      @endif
+
+
+
+      <li class="nav-heading">تقارير النظام</li>
 
       @if (PerUser('reports.index') )
       <li class="nav-item  @if (request()->segment(1) == 'reports') mm-active @endif  ">
@@ -107,7 +120,7 @@
       @if (PerUser('roles.index') )
       <li class="nav-item  @if (request()->segment(1) == 'roles') mm-active @endif  ">
         <a class="nav-link collapsed" href="{{ route('roles.index') }}">
-          <i class="bi bi-card-list"></i>
+          <i class="bx bx-shield-quarter"></i>
           <span>الأدوار والصلاحيات </span>
         </a>
       </li>

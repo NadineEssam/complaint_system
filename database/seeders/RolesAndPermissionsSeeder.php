@@ -51,9 +51,16 @@ class RolesAndPermissionsSeeder extends Seeder
                 // "reports.view-report-complaints-inquiries-summary-by-source",
                 // "reports.view-report-offices-complaints-and-inquiries-summary-report",
                 // "reports.view-report-offices-saved-complaints-count-report",
-                // "reports.view-report-sales",
                 // "reports.view-report-annual-sources-comparison",
 
+                //   "complaints",
+                "complaints.index",
+                "complaints.create",
+                "complaints.store",
+                "complaints.update",
+                "complaints.edit",
+                "complaints.destroy",
+                "complaints.show",
 
           
             ],

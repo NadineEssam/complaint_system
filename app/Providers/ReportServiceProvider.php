@@ -23,7 +23,6 @@ class ReportServiceProvider extends ServiceProvider
             $registry = new ReportRegistry();
 
             $registry->register(
-                new SalesReport(),
                 new CompareByRequestTypeBetweenYearsReport(),
                 new ComplaintsAndInquiriesSummaryBySource(),
                 new AnnualSourcesComparisonReport(),

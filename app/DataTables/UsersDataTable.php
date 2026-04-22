@@ -60,12 +60,17 @@ class UsersDataTable extends DataTable
                 return $html;
             })
       
-      
+        ->addColumn('roles', function ($model) {
+            $roles = $model->getRoleNames()->map(function ($role) {
+                return '<span class="badge bg-info text-light p-2">' . $role . '</span>';
+            })->implode(' ');
+            return $roles ?: '<span class="text-muted"> - </span>';
+        })
                 // ->editColumn('created_at',function ($model){
                 //     return $model->created_at?->format('Y-m-d H:i:s');
                 // })
 
-            ->rawColumns(['checkbox','action'])
+            ->rawColumns(['checkbox','action','roles'])
             ->setRowId('userID');
     }
 
@@ -94,7 +99,7 @@ class UsersDataTable extends DataTable
 //                    ->dom('Bfrtip')
             ->orderBy(1)
             ->pageLength(10)
-            ->lengthMenu([10, 20, 50, 100, 150])
+            ->lengthMenu([10, 25 ,50])
 //                    ->buttons(
 //                        Button::make('export'),
 //                        Button::make('print'),
@@ -119,13 +124,11 @@ class UsersDataTable extends DataTable
             //     ->printable(false)
             //     ->width('10px')
             //     ->orderable(false),
-            Column::make('ID'),
-           // Column::make('roles'),
-            // Column::make('permissions'),
-            Column::make('userID'),
-            // Column::make('email'),
-            // Column::make('created_at'),
-            Column::computed('action')
+            Column::make('ID')->title('رقم المستخدم'),
+            Column::make('userID')->title('اسم المستخدم'),
+            Column::make('roles')->title('الأدوار و الصلاحيات')->orderable(false)->searchable(false),
+          
+            Column::computed('action')->title('الإجراءات')
                 ->exportable(false)
                 ->printable(false)
                 ->width(60)

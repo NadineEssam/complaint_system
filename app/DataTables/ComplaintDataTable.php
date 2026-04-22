@@ -2,6 +2,7 @@
 
 namespace App\DataTables;
 
+use App\Models\Complaint;
 use \Spatie\Permission\Models\Role;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
@@ -12,7 +13,7 @@ use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
-class RolesDataTable extends DataTable
+class ComplaintDataTable extends DataTable
 {
     /**
      * Build DataTable class.
@@ -22,32 +23,32 @@ class RolesDataTable extends DataTable
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
-        return (new EloquentDataTable($query->where('guard_name', 'web')))
+        return (new EloquentDataTable($query ))
 
             ->addColumn('action', function ($model) {
 
                 $html = '<div class="d-flex align-items-center gap-2 justify-content-end">';
 
                 // Edit Button
-                if (PerUser('roles.edit')) {
+                if (PerUser('complaints.edit')) {
                     $html .= '
-                        <a href="' . route('roles.edit', ['role' => $model]) . '" 
+                        <a href="' . route('complaints.edit', ['complaint' => $model]) . '" 
                         class="btn btn-sm btn-outline-primary action-btn"
                         data-bs-toggle="tooltip" 
-                        title="Edit Role">
+                        title="Edit complaint">
                             <i class="bx bx-edit-alt"></i>
                         </a>';
                 }
 
                 // Delete Button
-                if (PerUser('roles.destroy')) {
+                if (PerUser('complaints.destroy')) {
                     $html .= '
                         <button 
                             class="btn btn-sm btn-outline-danger action-btn delete-this"
                             data-id="' . $model->id . '"
-                            data-url="' . route('roles.destroy', ['role' => $model]) . '"
+                            data-url="' . route('complaints.destroy', ['complaint' => $model]) . '"
                             data-bs-toggle="tooltip" 
-                            title="Delete Role">
+                            title="Delete complaint">
                             <i class="bx bx-trash"></i>
                         </button>';
                 }
@@ -56,10 +57,8 @@ class RolesDataTable extends DataTable
 
                 return $html;
             })
-            ->editColumn('created_at', function ($model) {
-                return $model->created_at->format('H:i:s Y-m-d');
-            })
-            ->setRowId('id')
+      
+            ->setRowId('ComplaintID')
         ;
     }
 
@@ -69,7 +68,7 @@ class RolesDataTable extends DataTable
      * @param \Spatie\Permission\Models\Role $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function query(Role $model): QueryBuilder
+    public function query(Complaint $model): QueryBuilder
     {
         return $model->newQuery();
     }
@@ -110,10 +109,12 @@ class RolesDataTable extends DataTable
     {
         return [
 
-            Column::make('id')->title('الرقم '),
-            Column::make('name')->title('الاسم'),
-            Column::make('created_at')->title('تاريخ الإنشاء'),
-            Column::computed('action')->title('الإجراءات')
+            Column::make('ComplaintID')->title('رقم الشكوي'),
+            Column::make('ComplainerName')->title('اسم الشاكي'),
+          
+            Column::make('ComplaintNationalID')->title('الرقم القومي '),
+            Column::make('ComplaintDate')->title('تاريخ الشكوي'),
+            Column::computed('action')
                 ->exportable(false)
                 ->printable(false)
                 ->width(60)

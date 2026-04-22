@@ -125,7 +125,7 @@
 @endsection
 
 @push('footerScripts')
-    <script src="{{ asset('js/permissions_table.js') }}"></script>
+     
 
 
     <script></script>

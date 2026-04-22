@@ -9,12 +9,14 @@ Route::get('/optimize-clear', function () {
     $exitCode = Artisan::call('optimize:clear');
     return '<h1>Reoptimized class loader</h1>';
 });
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+
+Route::middleware(['guest'])->group(function () {
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+});
 
 
-Route::middleware(['auth', 'role:admin'])->group(function () {
-
+Route::middleware(['auth'])->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -25,11 +27,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         return view('home');
     })->name('dashboard');
 
+    /*start reports routes*/
+    Route::group(['prefix' => 'reports'], function () {
+        Route::get('/',                    [ReportController::class, 'index'])->name('reports.index');
+        Route::get('/{key}/filters',       [ReportController::class, 'filters'])->name('reports.filters');
+        Route::post('/{key}/generate',     [ReportController::class, 'generate'])->name('reports.generate');
+    });
+    /*end reports routes*/
 
-
-    Route::get('/reports',                    [ReportController::class, 'index'])->name('reports.index');
-    Route::get('/reports/{key}/filters',       [ReportController::class, 'filters'])->name('reports.filters');
-    Route::post('/reports/{key}/generate',     [ReportController::class, 'generate'])->name('reports.generate');
 
     /*start roles routes*/
     Route::group(['prefix' => 'roles'], function () {
@@ -47,11 +52,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     /*end roles routes*/
     /*start users routes*/
     Route::group(['prefix' => 'users'], function () {
-        //  Route::post('/roles/rolesPermissions', [\App\Http\Controllers\Dashboard\UsersController::class, 'rolesPermissions'])->name('roles.rolesPermissions');
-        Route::get('/profile', [\App\Http\Controllers\Dashboard\UsersController::class, 'profile'])->name('users.profile');
-        Route::put('/profile', [\App\Http\Controllers\Dashboard\UsersController::class, 'profileUpdate'])->name('users.profile_update');
-        Route::delete('/delete-multi', [\App\Http\Controllers\Dashboard\UsersController::class, 'deleteMulti'])->name('users.multi_destroy');
-        Route::post('/export', [\App\Http\Controllers\Dashboard\UsersController::class, 'export'])->name('users.export');
         Route::resource('/', \App\Http\Controllers\Dashboard\UsersController::class)->names([
             'index' => 'users.index',
             'create' => 'users.create',
@@ -63,6 +63,21 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         ])->parameter('', 'user');
     });
     /*end users routes*/
+
+     /*start complaints routes*/
+    Route::group(['prefix' => 'complaints'], function () {
+        Route::resource('/', \App\Http\Controllers\Dashboard\ComplaintController::class)->names([
+            'index' => 'complaints.index',
+            'create' => 'complaints.create',
+            'store' => 'complaints.store',
+            'update' => 'complaints.update',
+            'edit' => 'complaints.edit',
+            'destroy' => 'complaints.destroy',
+            'show' => 'complaints.show'
+        ])->parameter('', 'complaint');
+    });
+    /*end complaints routes*/
+
 });
 
 
@@ -72,71 +87,5 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 
 Route::get('/test', function () {
-
-    $ldapHosts = [
-
-        '192.168.161.100',
-
-        '192.168.161.131',
-
-        '192.168.161.201',
-
-    ];
-
-    $ldapPort = 389;
-
-
-
-    $username = 'amjad.anwarxx';
-    $password = 'Mego@01277112438';
-
-    $ldapConn = null;
-
-    $authenticated = false;
-
-
-
-
-    // Try each LDAP host until successful bind
-
-
-
-
-    //$ds = ldap_connect("ldap://{$ldaphost}:{$ldapport} ldap://{$ldaphost2}:{$ldapport} ldap://{$ldaphost3}:{$ldapport}") or die("Could not connect to {$ldaphost}");
-
-
-
-
-    foreach ($ldapHosts as $host) {
-
-
-
-        $ldapConn = ldap_connect("ldap://{$host}:{$ldapPort}");
-
-        ldap_set_option($ldapConn, LDAP_OPT_PROTOCOL_VERSION, 3);
-
-        ldap_set_option($ldapConn, LDAP_OPT_REFERRALS, 0);
-
-        $ldapRdn = "sfd" . chr(92) . $username;
-        //chr(92)=\
-
-        if (@ldap_bind(
-            $ldapConn,
-            $ldapRdn,
-            $password
-        )) {
-
-            $authenticated = true;
-
-            break;
-        }
-    }
-
-    if ($authenticated) {
-        echo "Authentication successful!";
-    } else {
-        echo "Authentication failed.";
-    }
-
-    // return view('home');
-})->name('dashboard');
+    // 
+})->name('test');

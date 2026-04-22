@@ -58,7 +58,7 @@
                 <form method="POST" action="{{ route('login') }}" class="row g-3">
                   @csrf
 
-                  {{-- Username / Email --}}
+                  {{-- Username  --}}
                   <div class="col-12">
                     <label class="form-label">Username</label>
                     <input type="text"
