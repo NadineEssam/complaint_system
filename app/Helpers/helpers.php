@@ -11,10 +11,6 @@ if (!function_exists('format_date')) {
 
 if (!function_exists('PerUser')) {
     function PerUser($permission) {
-        return true;
-        // $user = User::where('id', 4)->first();
-        // dd($user->can("rolesss.index"));
-        //dd(auth()->user()->can($permission));
         return (auth()->check())?auth()->user()->can($permission):false;
     }
 }

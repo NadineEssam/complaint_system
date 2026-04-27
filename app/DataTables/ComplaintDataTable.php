@@ -114,7 +114,7 @@ class ComplaintDataTable extends DataTable
           
             Column::make('ComplaintNationalID')->title('الرقم القومي '),
             Column::make('ComplaintDate')->title('تاريخ الشكوي'),
-            Column::computed('action')
+            Column::computed('action')->title('الاجراءات')
                 ->exportable(false)
                 ->printable(false)
                 ->width(60)
