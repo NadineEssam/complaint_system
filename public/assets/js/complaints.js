@@ -78,5 +78,31 @@ $("#closeReason").on("change", function () {
     $("#closeReasonClassify").val("");
 });
 
- 
+
+$(document).on('click', '.delete-btn', function () {
+    let id = $(this).data('id');
+
+    if (confirm('هل أنت متأكد من الحذف؟')) {
+        $.ajax({
+            url: '/complaints/' + id,
+            type: 'DELETE',
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (response) {
+                alert(response.message);
+                $('#complaintsTable').DataTable().ajax.reload();
+            },
+            error: function () {
+                alert('حدث خطأ أثناء الحذف');
+            }
+        });
+    }
 });
+
+
+
+
+
+
+ });

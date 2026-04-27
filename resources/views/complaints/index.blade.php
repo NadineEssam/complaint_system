@@ -14,7 +14,15 @@
 
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title">قائمة الشكاوى</h5>
+          <div class="d-flex justify-content-between align-items-center mb-3">
+
+              <h5 class="card-title mb-0">قائمة الشكاوى</h5>
+
+              <a href="{{ route('complaints.details') }}" class="btn btn-primary">
+                   إضافة شكوى جديدة
+              </a>
+
+          </div>
 
 
           <!-- جدول -->
@@ -40,9 +48,6 @@
 </section>
 
 @endsection
-
-
-{{-- 🔥 JS goes HERE (outside section content) --}}
 @push('scripts')
 <script>
 $(document).ready(function() {
@@ -66,7 +71,7 @@ $(document).ready(function() {
             { data: 'ComplainerPhone' },
             { data: 'ComplaintDate' },
             { data: 'ComplaintStatus' },
-            { data: 'action', orderable: false, searchable: false }
+            { data: 'action', orderable: true, searchable: true }
         ],
 
         language: {

@@ -54,4 +54,13 @@ class Complaint extends Model
     {
         return $this->hasMany(ComplaintResponse::class, 'complaint_id', 'ComplaintID');
     }
+
+    public function status()
+{
+    return $this->belongsTo(
+        CompStatus::class,
+        'ComplaintStatus',
+        'statusID'
+    );
+}
 }

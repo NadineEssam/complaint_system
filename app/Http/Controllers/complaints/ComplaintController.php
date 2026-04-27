@@ -29,6 +29,13 @@ class ComplaintController extends Controller
         return view('complaints.index');
     }
 
+    public function show($id)
+    {
+        $complaint = Complaint::with('status')->findOrFail($id);
+
+        return view('complaints.show', compact('complaint'));
+    }
+
     /**
      * Return complaints data for DataTables.
      */
@@ -38,122 +45,33 @@ class ComplaintController extends Controller
 
         return DataTables::of($complaints)
             ->addColumn('action', function ($row) {
+
+                $viewUrl = route('complaints.show', $row->ComplaintID);
+                $editUrl = route('complaints.edit', $row->ComplaintID);
+                $responseUrl = route('complaints.responses', $row->ComplaintID);
+
+
                 return '
-                        <a href="' . route('complaints.responses', $row->ComplaintID) . '" 
-                        class="btn btn-sm btn-success">
-                        الرد
-                        </a>
+                        <a href="' . $viewUrl . '" class="btn btn-sm btn-info">عرض</a>
+
+                        <a href="' . $editUrl . '" class="btn btn-sm btn-warning">تعديل</a>
+
+                        <a href="' . $responseUrl . '" class="btn btn-sm btn-success">الرد</a>
+                        <button class="btn btn-sm btn-danger delete-btn"
+                            data-id="' . $row->ComplaintID . '">
+                            حذف
+                        </button>
+
+                    
                         ';
             })
             ->editColumn('ComplaintStatus', function ($row) {
-                return match ($row->ComplaintStatus) {
-                    1 => 'Pending',
-                    2 => 'In Progress',
-                    3 => 'Closed',
-                    default => 'Unknown',
-                };
+                return $row->status->statusText ?? '-';
             })
             ->rawColumns(['action'])
             ->make(true);
     }
-    public function responses($id)
-    {
-        $complaint = Complaint::findOrFail($id);
-        $statuses = CompStatus::all();
-        $serviceTypes = ServiceType::all();
-        $closeReasons = CompCloseReason::all();
-        $classifications = CompCloseReasonClassify::all();
 
-        $responses = $complaint->responses;
-        return view('complaints.responses', compact(
-            'complaint',
-            'statuses',
-            'serviceTypes',
-            'closeReasons',
-            'classifications',
-            'responses'
-        ));
-    }
-    public function storeResponse(Request $request)
-    {
-        $data = $request->validate([
-            'complaint_id' => 'required|exists:sfdcomplaints,ComplaintID',
-            'ComplaintStatus' => 'required|integer',
-            'ComplaintText' => 'nullable|string',
-            'ComplaintService' => 'nullable|integer',
-            'fk_close_reason_id' => 'nullable|integer',
-            'fk_close_reason_classify_id' => 'nullable|integer',
-        ]);
-
-        // save response
-        ComplaintResponse::create($data);
-
-        // update main complaint status
-        Complaint::where('ComplaintID', $data['complaint_id'])
-            ->update(['ComplaintStatus' => $data['ComplaintStatus']]);
-
-        return back()->with('success', 'تم إضافة الرد بنجاح');
-    }
-
-    public function showResponse($id)
-{
-    $response = ComplaintResponse::with(['closeReason', 'classification', 'serviceType'])
-        ->findOrFail($id);
-
-    return response()->json([
-        'complaint_id' => $response->complaint_id,
-        'ComplaintText' => $response->ComplaintText,
-        'status_text' => match($response->ComplaintStatus) {
-            1 => 'Pending',
-            2 => 'In Progress',
-            3 => 'Closed',
-            default => 'Unknown'
-        },
-        'service_name' => $response->serviceType->srevicetyptname ?? '-',
-        'reason_name' => $response->closeReason->close_reason_Name ?? '-',
-        'classify_name' => $response->classification->close_reason_classify_Name ?? '-',
-    ]);
-}
-
-    public function responsesData($id)
-    {
-        $responses = ComplaintResponse::with('serviceType')
-            ->where('complaint_id', $id)
-            ->latest();
-
-        return DataTables::of($responses)
-            ->addIndexColumn() // for the serial number column
-
-            // 👇 إضافة عمود id علشان نستخدمه في JS
-            ->addColumn('id', function ($row) {
-                return $row->id; // أو $row->ComplaintResponseID لو ده primary key عندك
-            })
-
-            ->addColumn('action', function ($row) {
-                return '<button class="btn btn-sm btn-primary view-btn" data-id="' . $row->id . '">عرض</button>';
-            })
-            ->editColumn('ComplaintStatus', function ($row) {
-                return match ($row->ComplaintStatus) {
-                    1 => 'Pending',
-                    2 => 'In Progress',
-                    3 => 'Closed',
-                    default => 'Unknown',
-                };
-            })
-            ->editColumn('ComplaintService', function ($row) {
-                return $row->ComplaintServiceName;
-            })
-            ->editColumn('created_at', function ($row) {
-                return $row->created_at
-                    ? $row->created_at->format('Y-m-d H:i')
-                    : '-';
-            })
-            ->rawColumns(['action']) // مهم للـ HTML في action
-            ->make(true);
-    }
-    /**
-     * Show the complaint details form with dropdowns.
-     */
     public function details()
     {
         $requestTypes = RequestType::select('requesttypeid', 'requesttypename')->get();
@@ -223,4 +141,78 @@ class ComplaintController extends Controller
         return redirect()->route('complaints.index')
             ->with('success', 'تم حفظ الشكوى بنجاح');
     }
+
+    public function edit($id)
+    {
+        $complaint = Complaint::with('sources')
+            ->findOrFail($id);
+
+        $requestTypes = RequestType::all();
+        $govs = Gov::all();
+        $sectors = Sector::all();
+        $comsources = Comsource::all();
+        $offices = Office::all();
+
+        return view('complaints.edit', compact(
+            'complaint',
+            'requestTypes',
+            'govs',
+            'sectors',
+            'comsources',
+            'offices'
+        ));
+    }
+    public function update(Request $request, $id)
+    {
+        $complaint = Complaint::findOrFail($id);
+
+        $data = $request->validate([
+            'requesttypeid' => 'required|integer',
+            'ComplainerName' => 'required|string',
+            'ComplainerEmail' => 'required|email',
+            'ComplainerPhone' => 'required|string',
+            'ComplaintGovernorate' => 'required|integer',
+            'ComplaintNationalID' => 'nullable|string',
+            'ComplainerGender' => 'nullable|string',
+            'ComplaintDate' => 'required|date',
+            'sector_id' => 'required|integer',
+            'office' => 'required|integer',
+            'comsources' => 'array',
+            'comsources.*' => 'integer',
+            'ComplaintText' => 'nullable|string',
+        ]);
+
+        $complaint->update([
+            'RequestType' => $data['requesttypeid'],
+            'ComplainerName' => $data['ComplainerName'],
+            'ComplainerEmail' => $data['ComplainerEmail'],
+            'ComplainerPhone' => $data['ComplainerPhone'],
+            'ComplaintGovernorate' => $data['ComplaintGovernorate'],
+            'ComplaintNationalID' => $data['ComplaintNationalID'] ?? null,
+            'ComplainerGender' => $data['ComplainerGender'] ?? null,
+            'ComplaintDate' => $data['ComplaintDate'],
+            'department' => $data['sector_id'],
+            'office' => $data['office'],
+            'ComplaintText' => $data['ComplaintText'] ?? null,
+        ]);
+
+        $complaint->sources()->sync($data['comsources'] ?? []);
+
+        return redirect()->route('complaints.index')
+            ->with('success', 'تم تحديث الشكوى بنجاح');
+    }
+
+    public function destroy($id)
+{
+    $complaint = Complaint::findOrFail($id);
+
+    $complaint->sources()->detach();
+    $complaint->responses()->delete();
+    $complaint->delete();
+
+    return response()->json([
+        'status' => true,
+        'message' => 'تم حذف الشكوى بنجاح'
+    ]);
+}
 }

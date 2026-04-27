@@ -35,13 +35,7 @@
                             </button>
                         </li>
 
-                        <!-- Tab 3 -->
-                        <li class="nav-item flex-fill" role="presentation">
-                            <button class="nav-link w-100" id="response-tab" data-bs-toggle="tab"
-                                data-bs-target="#complaintResponse" type="button">
-                                الرد على الطلب من إدارة خدمة العملاء
-                            </button>
-                        </li>
+                     
 
                     </ul>
 

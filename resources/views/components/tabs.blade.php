@@ -26,16 +26,7 @@
           تفاصيل بيانات الطلب
         </button>
       </li>
-      <li class="nav-item flex-fill" role="presentation">
-        <button class="nav-link w-100"
-                id="details-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#details"
-                type="button"
-                role="tab">
-          الرد على الطلب من إدارة خدمه العملاء
-        </button>
-      </li>
+    
 
 
     </ul>
