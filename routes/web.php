@@ -23,9 +23,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/', function () {
         return redirect()->route('dashboard');
     })->name('home');
-    Route::get('/dashboard', function () {
-        return view('home');
-    })->name('dashboard');
+    Route::get('/', function () {
+    return redirect()->route('dashboard');
+})->name('home');
+
+Route::get('/dashboard', [\App\Http\Controllers\Dashboard\DashboardController::class, 'index'])->name('dashboard');
+    // Route::get('/dashboard', function () {
+    //     return view('home');
+    // })->name('dashboard');
 
     /*start reports routes*/
     Route::group(['prefix' => 'reports'], function () {
@@ -77,6 +82,22 @@ Route::middleware(['auth'])->group(function () {
         ])->parameter('', 'complaint');
     });
     /*end complaints routes*/
+
+     Route::group(['prefix' => 'responses'], function () {
+        Route::resource('/', \App\Http\Controllers\Dashboard\ComplaintResponseController::class)->names([
+            'index' => 'responses.index',
+            'create' => 'responses.create',
+            'store' => 'responses.store',
+            'update' => 'responses.update',
+            'edit' => 'responses.edit',
+            'destroy' => 'responses.destroy',
+            'data' => 'responses.data',
+            'show' => 'responses.show'
+        ])->parameter('', 'response');
+    });
+
+
+    
 
 });
 

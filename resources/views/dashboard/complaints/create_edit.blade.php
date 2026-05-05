@@ -1,249 +1,386 @@
 @extends('dashboard.layouts.app')
+
 @push('headScripts')
-    <style>
-        .page-breadcrumb .breadcrumb {
-            background-color: transparent;
-        }
+<style>
+    .page-breadcrumb .breadcrumb {
+        background-color: transparent;
+    }
 
-        .breadcrumb-item+.breadcrumb-item::before {
-            display: inline-block;
-            padding-right: 0.5rem;
-            padding-left: 0.5rem;
-            color: #6c757d;
-            content: "/";
-        }
-    </style>
+    .breadcrumb-item+.breadcrumb-item::before {
+        padding: 0 0.5rem;
+        color: #6c757d;
+        content: "/";
+    }
 
-    <style>
-        body {
-            margin-top: 40px;
-        }
+    body {
+        margin-top: 40px;
+    }
 
-        .stepwizard-step p {
-            margin-top: 10px;
-        }
+    .stepwizard {
+        display: table;
+        width: 100%;
+        position: relative;
+    }
 
-        .stepwizard-row {
-            display: table-row;
-        }
+    .stepwizard-row {
+        display: table-row;
+    }
 
-        .stepwizard {
-            display: table;
-            width: 100%;
-            position: relative;
-        }
+    .stepwizard-step {
+        display: table-cell;
+        text-align: center;
+        position: relative;
+    }
 
-        .stepwizard-step button[disabled] {
-            opacity: 1 !important;
-            filter: alpha(opacity=100) !important;
-        }
+    .stepwizard-step p {
+        margin-top: 10px;
+    }
 
-        .stepwizard-row:before {
-            top: 14px;
-            bottom: 0;
-            position: absolute;
-            content: " ";
-            width: 100%;
-            height: 1px;
-            background-color: #ccc;
-            z-order: 0;
+    .stepwizard-row:before {
+        top: 14px;
+        position: absolute;
+        content: " ";
+        width: 100%;
+        height: 1px;
+        background-color: #ccc;
+        z-index: 0;
+    }
 
-        }
+    .btn-circle {
+        width: 30px;
+        height: 30px;
+        text-align: center;
+        padding: 6px 0;
+        border-radius: 15px;
+        font-size: 12px;
+    }
 
-        .stepwizard-step {
-            display: table-cell;
-            text-align: center;
-            position: relative;
-        }
+    .setup-content {
+        display: none;
+    }
 
-        .btn-circle {
-            width: 30px;
-            height: 30px;
-            text-align: center;
-            padding: 6px 0;
-            font-size: 12px;
-            line-height: 1.428571429;
-            border-radius: 15px;
-        }
-    </style>
+    .is-invalid {
+        border: 1px solid red !important;
+    }
+
+    .error-text {
+        color: red;
+        font-size: 13px;
+        margin-top: 5px;
+    }
+</style>
 @endpush
+
 @section('content')
-    <div class="page-content-wrapper">
-        <div class="page-content">
-            <!--breadcrumb-->
-            <div class="page-breadcrumb d-md-flex align-items-center mb-4 pb-2 border-bottom" dir="rtl">
-                <div class="pr-3">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb mb-0 p-0 shadow-none">
-                            <li class="breadcrumb-item active text-primary font-weight-bold" aria-current="page">
-                                {{ isset($complaint) ? 'تعديل الشكوى: ' . $complaint->ComplainerName : 'إضافة شكوى جديدة' }}
-                            </li>
 
-                            <li class="breadcrumb-item"><a href="{{ route('complaints.index') }}" class="text-secondary"><i
-                                        class="bx bx-shape-polygon"></i> الشكاوى</a></li>
+<div class="page-content-wrapper">
+    <div class="page-content">
 
-                            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}" class="text-secondary"><i
-                                        class="bx bx-home-alt"></i> الرئيسية</a></li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
-            <!--end breadcrumb-->
+        {{-- Breadcrumb --}}
+        <div class="page-breadcrumb d-md-flex align-items-center mb-4 pb-2 border-bottom" dir="rtl">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item active">
+                    {{ isset($complaint) ? 'تعديل الشكوى' : 'إضافة شكوى' }}
+                </li>
+            </ol>
+        </div>
 
-            <div class="card radius-15 shadow-sm border-0" dir="rtl" style="text-align: right;">
-                <div class="card-body">
-                    <div class="card-header bg-white mb-4 d-flex align-items-center">
-                        <h5 class="mb-0 text-primary font-weight-bold"><i class="bx bx-shield-quarter ml-2"></i>
-                            {{ isset($complaint) ? 'تعديل بيانات الشكوى' : 'بيانات  شكوى جديدة' }}</h5>
-                    </div>
+        <div class="card">
+            <div class="card-body">
 
+                {{-- STEP WIZARD HEADER --}}
+                <div class="stepwizard mb-4">
+                    <div class="stepwizard-row setup-panel">
 
-
-                    <div class="container">
-                        <div class="stepwizard">
-                            <div class="stepwizard-row setup-panel">
-                                <div class="stepwizard-step">
-                                    <a href="#step-1" type="button" class="btn btn-primary btn-circle">1</a>
-                                    <p>Step 1</p>
-                                </div>
-                                <div class="stepwizard-step">
-                                    <a href="#step-2" type="button" class="btn btn-default btn-circle"
-                                        disabled="disabled">2</a>
-                                    <p>Step 2</p>
-                                </div>
-                                <div class="stepwizard-step">
-                                    <a href="#step-3" type="button" class="btn btn-default btn-circle"
-                                        disabled="disabled">3</a>
-                                    <p>Step 3</p>
-                                </div>
-                            </div>
+                        <div class="stepwizard-step">
+                            <a href="#step-1" class="btn btn-primary btn-circle">1</a>
+                            <p>البيانات الشخصية</p>
                         </div>
 
-                        <form method="POST" role="form"
-                            action="{{ isset($complaint) ? route('complaints.update', ['complaint' => $complaint]) : route('complaints.store') }}">
-                            @if (isset($complaint))
-                                @method('PUT')
-                            @endif
-                            @csrf
-                            <div class="row setup-content" id="step-1">
-                                <div class="col-xs-12">
-                                    <div class="col-md-12">
-                                        <h3> Step 1</h3>
-                                        <div class="row mb-3">
-                                            <label for="name" class="col-sm-2 col-form-label font-weight-bold">اسم
-                                            </label>
-                                            <div class="col-sm-10">
-                                                <input type="text"
-                                                    class="form-control @error('name') is-invalid @enderror" name="name"
-                                                    id="name"
-                                                    value="{{ isset($complaint) ? $complaint->ComplainerName : old('name') }}"
-                                                    placeholder="أدخل اسم ">
-                                                @error('name')
-                                                    <span class="invalid-feedback" copmlaint="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label">Last Name</label>
-                                            <input maxlength="100" type="text" required="required" class="form-control"
-                                                placeholder="Enter Last Name" />
-                                        </div>
-                                        <button class="btn btn-primary nextBtn btn-lg pull-right"
-                                            type="button">Next</button>
+                        <div class="stepwizard-step">
+                            <a href="#step-2" class="btn btn-default btn-circle" disabled>2</a>
+                            <p>تفاصيل الشكوى</p>
+                        </div>
+
+                        <div class="stepwizard-step">
+                            <a href="#step-3" class="btn btn-default btn-circle" disabled>3</a>
+                            <p>الحفظ</p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <form method="POST"
+                    action="{{ isset($complaint) ? route('complaints.update', $complaint) : route('complaints.store') }}">
+
+                    @csrf
+                    @if(isset($complaint))
+                    @method('PUT')
+                    @endif
+
+                    {{-- ================= STEP 1 ================= --}}
+                    <div class="row setup-content" id="step-1">
+                        <div class="col-md-12">
+
+                            <h4>البيانات الشخصية</h4>
+
+                            {{-- Request Type --}}
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label">نوع الطلب</label>
+                                <div class="col-sm-10">
+
+                                    <select class="form-select" name="requesttypeid" id="requesttypeid" required>
+                                        <option value="">اختر</option>
+                                        @foreach($requestTypes as $type)
+                                        <option value="{{ $type->requesttypeid }}"
+                                            {{ old('requesttypeid', $complaint->RequestType ?? '') == $type->requesttypeid ? 'selected' : '' }}>
+                                            {{ $type->requesttypename }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+
+                                    @error('requesttypeid')
+                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                    @enderror
+
+                                </div>
+                            </div>
+
+                            {{-- National ID --}}
+                            <div id="nationalIdSection">
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">الرقم القومي</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control"
+                                            name="ComplaintNationalID"
+                                            value="{{ old('ComplaintNationalID', $complaint->ComplaintNationalID ?? '') }}">
+
+                                        @error('ComplaintNationalID')
+                                        <div class="text-danger mt-1">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">النوع</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control"
+                                            name="ComplainerGender"
+                                            value="{{ old('ComplainerGender', $complaint->ComplainerGender ?? '') }}" readonly>
+
+                                        @error('ComplainerGender')
+                                        <div class="text-danger mt-1">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
                             </div>
-                            <div class="row setup-content" id="step-2">
-                                <div class="col-xs-12">
-                                    <div class="col-md-12">
-                                        <h3> Step 2</h3>
-                                        <div class="form-group">
-                                            <label class="control-label">Company Name</label>
-                                            <input maxlength="200" type="text" required="required" class="form-control"
-                                                placeholder="Enter Company Name" />
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="control-label">Company Address</label>
-                                            <input maxlength="200" type="text" required="required" class="form-control"
-                                                placeholder="Enter Company Address" />
-                                        </div>
-                                        <button class="btn btn-primary nextBtn btn-lg pull-right"
-                                            type="button">Next</button>
-                                    </div>
+
+                            {{-- Name --}}
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label">اسم العميل</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control"
+                                        name="ComplainerName"
+                                        value="{{ old('ComplainerName', $complaint->ComplainerName ?? '') }}">
+
+                                    @error('ComplainerName')
+                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
-                            <div class="row setup-content" id="step-3">
-                                <div class="col-xs-12">
-                                    <div class="col-md-12">
-                                        <h3> Step 3</h3>
-                                        <div class="row mb-3 mt-4">
-                                            <label class="col-sm-2 col-form-label"></label>
-                                            <div class="col-sm-10">
-                                                <button type="submit" class="btn btn-primary px-4 shadow-sm"><i
-                                                        class="bx bx-save ml-1"></i> finish حفظ البيانات</button>
-                                            </div>
-                                        </div>
-                                    </div>
+
+                            {{-- Email --}}
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label">البريد</label>
+                                <div class="col-sm-10">
+                                    <input type="email" class="form-control"
+                                        name="ComplainerEmail"
+                                        value="{{ old('ComplainerEmail', $complaint->ComplainerEmail ?? '') }}">
+
+                                    @error('ComplainerEmail')
+                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
-                        </form>
+
+                            {{-- Phone --}}
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label">الهاتف</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control"
+                                        name="ComplainerPhone"
+                                        value="{{ old('ComplainerPhone', $complaint->ComplainerPhone ?? '') }}">
+
+                                    @error('ComplainerPhone')
+                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            {{-- Governorate --}}
+                            <!-- <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label">المحافظة</label>
+                                <div class="col-sm-10">
+                                    <select class="form-select" name="ComplaintGovernorate">
+                                        <option value="">اختر</option>
+                                        @foreach($govs as $gov)
+                                        <option value="{{ $gov->govsid }}"
+                                            {{ isset($complaint) && $complaint->ComplaintGovernorate == $gov->govsid ? 'selected' : '' }}>
+                                            {{ $gov->govname }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div> -->
+
+                            <button type="button" class="btn btn-primary nextBtn">Next</button>
+
+                        </div>
                     </div>
 
+                    {{-- ================= STEP 2 ================= --}}
+                    <div class="row setup-content" id="step-2">
+                        <div class="col-md-12">
 
+                            <h4>تفاصيل الشكوى</h4>
 
-                </div>
+                            {{-- Date --}}
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label">التاريخ</label>
+                                <div class="col-sm-10">
+                                    <input type="date" class="form-control"
+                                        name="ComplaintDate"
+                                        value="{{ old('ComplaintDate', $complaint->ComplaintDate ?? '') }}">
+
+                                    @error('ComplaintDate')
+                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            {{-- Sector --}}
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label">القطاع</label>
+                                <div class="col-sm-10">
+                                    <select class="form-select" name="sector_id">
+
+                                        <option value="">اختر</option>
+
+                                        @foreach($sectors as $sector)
+                                        <option value="{{ $sector->sector_id }}"
+                                            {{ old('sector_id', $complaint->department ?? '') == $sector->sector_id ? 'selected' : '' }}>
+                                            {{ $sector->sector_name }}
+                                        </option>
+                                        @endforeach
+
+                                    </select>
+
+                                    @error('sector_id')
+                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                    @enderror
+
+                                </div>
+                            </div>
+
+                            {{-- Sources --}}
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label">مصادر الشكوى</label>
+
+                                <div class="col-sm-10">
+                                    <select class="form-select" name="comsource_id" required>
+
+                                        <option value="">اختر مصدر الشكوى</option>
+
+                                        @foreach($comsources as $source)
+                                        <option value="{{ $source->comsourcesid }}"
+                                            {{ old('comsource_id', $complaint->comsource_id ?? '') == $source->comsourcesid ? 'selected' : '' }}>
+                                            {{ $source->comsourcesname }}
+                                        </option>
+                                        @endforeach
+
+                                    </select>
+
+                                    @error('comsource_id')
+                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label">المحافظة</label>
+                                <div class="col-sm-10">
+                                    <select class="form-select" id="governorateSelect" name="ComplaintGovernorate">
+
+                                        <option value="">اختر المحافظة</option>
+
+                                        @foreach ($govs as $gov)
+                                        <option value="{{ $gov->govsid }}"
+                                            {{ old('ComplaintGovernorate', $complaint->ComplaintGovernorate ?? '') == $gov->govsid ? 'selected' : '' }}>
+                                            {{ $gov->govname }}
+                                        </option>
+                                        @endforeach
+
+                                    </select>
+
+                                    @error('ComplaintGovernorate')
+                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            {{-- Office --}}
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label">المكتب</label>
+                                <div class="col-sm-10">
+                                    <select class="form-select" id="officeSelect" name="office">
+
+                                        <option value="">اختر المكتب</option>
+
+                                        @foreach ($offices as $office)
+                                        <option value="{{ $office->ID }}"
+                                            data-gov="{{ $office->FK_GOVT_CODE }}"
+                                            {{ old('office', $complaint->office ?? '') == $office->ID ? 'selected' : '' }}>
+                                            {{ $office->REG_OFFIC_NAMA }}
+                                        </option>
+                                        @endforeach
+
+                                    </select>
+
+                                    @error('office')
+                                    <div class="text-danger mt-1">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn btn-primary nextBtn">Next</button>
+
+                        </div>
+                    </div>
+
+                    {{-- ================= STEP 3 ================= --}}
+                    <div class="row setup-content" id="step-3">
+                        <div class="col-md-12">
+
+                            <h4>الحفظ</h4>
+
+                            <button type="submit" class="btn btn-success">
+                                حفظ الشكوى
+                            </button>
+
+                        </div>
+                    </div>
+
+                </form>
+
             </div>
         </div>
+
     </div>
+</div>
+
 @endsection
 
 @push('footerScripts')
-    <script>
-        $(document).ready(function() {
 
-            var navListItems = $('div.setup-panel div a'),
-                allWells = $('.setup-content'),
-                allNextBtn = $('.nextBtn');
-
-            allWells.hide();
-
-            navListItems.click(function(e) {
-                e.preventDefault();
-                var $target = $($(this).attr('href')),
-                    $item = $(this);
-
-                if (!$item.hasClass('disabled')) {
-                    navListItems.removeClass('btn-primary').addClass('btn-default');
-                    $item.addClass('btn-primary');
-                    allWells.hide();
-                    $target.show();
-                    $target.find('input:eq(0)').focus();
-                }
-            });
-
-            allNextBtn.click(function() {
-                var curStep = $(this).closest(".setup-content"),
-                    curStepBtn = curStep.attr("id"),
-                    nextStepWizard = $('div.setup-panel div a[href="#' + curStepBtn + '"]').parent().next()
-                    .children("a"),
-                    curInputs = curStep.find("input[type='text'],input[type='url']"),
-                    isValid = true;
-
-                $(".form-group").removeClass("has-error");
-                for (var i = 0; i < curInputs.length; i++) {
-                    if (!curInputs[i].validity.valid) {
-                        isValid = false;
-                        $(curInputs[i]).closest(".form-group").addClass("has-error");
-                    }
-                }
-
-                if (isValid)
-                    nextStepWizard.removeAttr('disabled').trigger('click');
-            });
-
-            $('div.setup-panel div a.btn-primary').trigger('click');
-        });
-    </script>
+<script src="{{ asset('assets/js/complaints.js') }}"></script>
 @endpush

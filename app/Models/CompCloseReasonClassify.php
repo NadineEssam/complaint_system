@@ -2,23 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-
-class ComplaintCloseReasonClassify extends Model
+class CompCloseReasonClassify extends Model
 {
-    use HasFactory;
     protected $table = 'comp_close_reason_classify';
-
     protected $primaryKey = 'close_reason_classify_id';
-
     public $timestamps = false;
 
-    protected $guarded=['close_reason_classify_id'];
-
-
-
-
-
+    protected $fillable = [
+        'close_reason_classify_Name',
+        'fk_close_reason_id'
+    ];
 }
