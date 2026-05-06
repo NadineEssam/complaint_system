@@ -18,23 +18,39 @@
         </thead>
         <tbody>
         @foreach(\Spatie\Permission\Models\Permission::select('group',\Illuminate\Support\Facades\DB::raw("COUNT('x')"))->where('guard_name' , 'web')->groupBy('group')->pluck('group')->toArray() as $group)
+            
             @php($array = isset($role) ? $role->permissions->pluck('id')->toArray() : (isset($user) ? $user->permissions()->pluck('id')->toArray() : []))
-            @php($permissionsList = \Spatie\Permission\Models\Permission::where('group', $group)->where('guard_name', 'web')->orderBy('id', 'ASC')->pluck('name', 'id')->toArray())
+
+            @php($permissionsList = \Spatie\Permission\Models\Permission::where('group', $group)
+                ->where('guard_name', 'web')
+                ->orderBy('id', 'ASC')
+                 ->get(['id', 'name', 'ar_name', 'group_ar']))
             
             <tr>
                 <td class="text-right bg-light border-left pe-4">
                     <div class="form-check mb-0">
                         <input type="checkbox" class="form-check-input cursor-pointer select-all-group" id="group_{{ md5($group) }}" value="{{ $group }}" />
-                        <label class="form-check-label font-weight-bold text-dark cursor-pointer" for="group_{{ md5($group) }}">{{ $group }}</label>
+                        <label class="form-check-label font-weight-bold text-dark cursor-pointer" for="group_{{ md5($group) }}">
+                            {{ $permissionsList->first()->group_ar ?? $group }}
+                        </label>
                     </div>
                 </td>
                 
                 <td class="text-right p-3">
                     <div class="d-flex flex-wrap" style="gap: 1.5rem;">
-                        @foreach($permissionsList as $id => $name)
+                        @foreach($permissionsList as $permission)
                             <div class="form-check mb-0">
-                                <input type="checkbox" class="form-check-input cursor-pointer permission-item" id="perm_{{ $id }}" value="{{ $name }}" name="permissions[]" @if(in_array($id, $array)) checked="checked" @endif data-group="{{ md5($group) }}" />
-                                <label class="form-check-label text-secondary cursor-pointer" for="perm_{{ $id }}">{{ __($name) }}</label>
+                                <input type="checkbox"
+                                       class="form-check-input cursor-pointer permission-item"
+                                       id="perm_{{ $permission->id }}"
+                                       value="{{ $permission->name }}"
+                                       name="permissions[]"
+                                       @if(in_array($permission->id, $array)) checked @endif
+                                       data-group="{{ md5($group) }}" />
+
+                                <label class="form-check-label text-secondary cursor-pointer" for="perm_{{ $permission->id }}">
+                                    {{ $permission->ar_name ?? $permission->name }}
+                                </label>
                             </div>
                         @endforeach
                     </div>

@@ -33,8 +33,8 @@ class ComplaintDataTable extends DataTable
                          <a href="' . route('responses.index', ['complaint_id' => $model]) . '" 
                         class="btn btn-sm btn-outline-primary action-btn"
                         data-bs-toggle="tooltip" 
-                        title="Edit complaint">
-                            <i class="bx bx-edit-alt"></i>
+                        title="الرد على الشكوى">
+                            <i class="fa-regular fa-comment"></i>
                         </a>';
                 }
                 // Edit Button
@@ -43,7 +43,7 @@ class ComplaintDataTable extends DataTable
                         <a href="' . route('complaints.edit', ['complaint' => $model]) . '" 
                         class="btn btn-sm btn-outline-primary action-btn"
                         data-bs-toggle="tooltip" 
-                        title="Edit complaint">
+                        title="تعديل الشكوى">
                             <i class="bx bx-edit-alt"></i>
                         </a>';
                 }
@@ -56,7 +56,7 @@ class ComplaintDataTable extends DataTable
                             data-id="' . $model->id . '"
                             data-url="' . route('complaints.destroy', ['complaint' => $model]) . '"
                             data-bs-toggle="tooltip" 
-                            title="Delete complaint">
+                            title="إزاله الشكوى">
                             <i class="bx bx-trash"></i>
                         </button>';
                 }
