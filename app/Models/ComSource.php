@@ -14,13 +14,5 @@ class ComSource extends Model
         'comsourcesname'
     ];
 
-    public function complaints()
-{
-    return $this->belongsToMany(
-        Complaint::class,
-        'complaint_sources',
-        'comsource_id',
-        'complaint_id'
-    );
-}
+
 }

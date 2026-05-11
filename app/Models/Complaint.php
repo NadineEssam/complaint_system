@@ -27,6 +27,7 @@ class Complaint extends Model
         'ComplaintStatus',
         'ComplaintNationalID',
         'ComplainerGender',
+        'ComplaintSources',
         'RequestType',
         'office',
         'department',
@@ -41,15 +42,7 @@ class Complaint extends Model
         'fk_close_reason_classify_id' => 0,
     ];
 
-    public function sources()
-    {
-        return $this->belongsToMany(
-            Comsource::class,
-            'complaint_sources',
-            'complaint_id',
-            'comsource_id'
-        );
-    }
+  
     public function responses()
     {
         return $this->hasMany(ComplaintResponse::class, 'complaint_id', 'ComplaintID');

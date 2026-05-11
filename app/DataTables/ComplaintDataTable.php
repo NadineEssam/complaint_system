@@ -34,7 +34,7 @@ class ComplaintDataTable extends DataTable
                         class="btn btn-sm btn-outline-primary action-btn"
                         data-bs-toggle="tooltip" 
                         title="الرد على الشكوى">
-                            <i class="fa-regular fa-comment"></i>
+                            <i class="fas fa-reply-all"></i>
                         </a>';
                 }
                 // Edit Button

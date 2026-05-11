@@ -1,42 +1,145 @@
 @extends('dashboard.layouts.app')
 
-@section('title', 'إضافة / تعديل رد')
+@section('title', isset($response) ? 'تعديل الرد على الشكوى' : 'إضافة رد للشكوى')
 
 @push('headScripts')
 <style>
-    .stepwizard {
-        display: table;
-        width: 100%;
-        position: relative;
+    .page-breadcrumb .breadcrumb {
+        background: transparent;
     }
 
-    .stepwizard-row {
-        display: table-row;
+    .breadcrumb-item+.breadcrumb-item::before {
+        display: inline-block;
+        padding: 0 8px;
+        color: #adb5bd;
+        content: "/";
     }
 
-    .stepwizard-step {
-        display: table-cell;
-        text-align: center;
+    .main-card {
+        border: 0;
+        border-radius: 24px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
     }
 
-    .stepwizard-row:before {
-        top: 14px;
-        position: absolute;
-        content: " ";
-        width: 100%;
-        height: 1px;
-        background-color: #ccc;
+    .custom-card-header {
+        padding: 24px 30px;
+        background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+        color: #fff;
     }
 
-    .btn-circle {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        padding: 6px;
+    .custom-card-header h4 {
+        margin: 0;
+        font-weight: 700;
+        font-size: 22px;
     }
 
-    .setup-content {
-        display: none;
+    .custom-card-header p {
+        margin: 8px 0 0;
+        opacity: .9;
+        font-size: 14px;
+    }
+
+    .section-card {
+        background: #fff;
+        border: 1px solid #eef1f4;
+        border-radius: 18px;
+        padding: 24px;
+        margin-bottom: 24px;
+        transition: .3s;
+    }
+
+    .section-card:hover {
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+    }
+
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 25px;
+        color: #0d6efd;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .section-title i {
+        font-size: 22px;
+    }
+
+    .form-label {
+        font-weight: 700;
+        color: #495057;
+        margin-bottom: 10px;
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 12px;
+        min-height: 50px;
+        border: 1px solid #dce1e7;
+        padding: 12px 15px;
+        transition: .2s;
+        box-shadow: none !important;
+    }
+
+    textarea.form-control {
+        min-height: 130px;
+        resize: vertical;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1) !important;
+    }
+
+    .required-star {
+        color: #dc3545;
+    }
+
+    .btn-save {
+        border-radius: 14px;
+        padding: 12px 40px;
+        font-weight: 700;
+        font-size: 15px;
+    }
+
+    .info-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255, 255, 255, 0.18);
+        padding: 7px 14px;
+        border-radius: 50px;
+        margin-top: 14px;
+        font-size: 13px;
+    }
+
+    .disabled-box {
+        opacity: .6;
+        transition: .3s;
+    }
+
+    .invalid-feedback {
+        font-size: 13px;
+        margin-top: 6px;
+    }
+
+    @media(max-width:768px) {
+
+        .custom-card-header {
+            padding: 20px;
+        }
+
+        .section-card {
+            padding: 18px;
+        }
+
+        .btn-save {
+            width: 100%;
+        }
     }
 </style>
 @endpush
@@ -46,61 +149,69 @@
 <div class="page-content-wrapper">
     <div class="page-content">
 
+        {{-- breadcrumb --}}
         <div class="page-breadcrumb d-md-flex align-items-center mb-4 pb-2 border-bottom" dir="rtl">
+
             <div class="pr-3">
+
                 <nav aria-label="breadcrumb">
+
                     <ol class="breadcrumb mb-0 p-0 shadow-none">
+
+                        <li class="breadcrumb-item">
+                            <a href="{{ route('dashboard') }}" class="text-secondary">
+                                <i class="bx bx-home-alt"></i>
+                                الرئيسية
+                            </a>
+                        </li>
+
+                        <li class="breadcrumb-item">
+                            <a href="{{ route('responses.index', ['complaint_id' => $complaint->ComplaintID]) }}"
+                                class="text-secondary">
+                                <i class="bx bx-message-square-detail"></i>
+                                الردود
+                            </a>
+                        </li>
+
                         <li class="breadcrumb-item active text-primary font-weight-bold">
                             {{ isset($response) ? 'تعديل الرد على الشكوى' : 'إضافة رد للشكوى' }}
                         </li>
-                        <li class="breadcrumb-item">
-                            <a href="{{ route('responses.index') }}">الشكاوى</a>
-                        </li>
-                        <li class="breadcrumb-item">
-                            <a href="{{ route('dashboard') }}">الرئيسية</a>
-                        </li>
+
                     </ol>
+
                 </nav>
+
             </div>
+
         </div>
 
-        <div class="card">
-            <div class="card-body">
-                <div class="card-header bg-white mb-4 d-flex align-items-center">
-                            <h5 class="mb-0 text-primary font-weight-bold">
-                                <i class="bx bx-shield-quarter ml-2"></i>
-                               {{ isset($response) ? 'تعديل رد الشكوى' : 'إضافة رد للشكوى' }}
-                    #{{ $complaint->ComplaintID }}
-                            </h5>
-                        </div>
-                
+        <div class="card main-card" dir="rtl">
 
-                {{-- STEP HEADER --}}
-                <div class="stepwizard mb-4">
-                    <div class="stepwizard-row setup-panel">
+            {{-- Header --}}
+            <div class="custom-card-header">
 
-                        <div class="stepwizard-step">
-                            <a href="#step-1" class="btn btn-primary btn-circle">1</a>
-                            <p>البيانات الأساسية</p>
-                        </div>
+                <h4>
+                    <i class="bx bx-message-rounded-detail"></i>
 
-                        <div class="stepwizard-step">
-                            <a href="#step-2" class="btn btn-default btn-circle">2</a>
-                            <p>تفاصيل إضافية</p>
-                        </div>
+                    {{ isset($response) ? 'تعديل رد الشكوى' : 'إضافة رد جديد' }}
+                </h4>
 
-                        <div class="stepwizard-step">
-                            <a href="#step-3" class="btn btn-default btn-circle">3</a>
-                            <p>الحفظ</p>
-                        </div>
+                <p>
+                    يمكنك تحديث حالة الشكوى وإضافة تفاصيل الرد بسهولة.
+                </p>
 
-                    </div>
+                <div class="info-badge">
+                    <i class="bx bx-hash"></i>
+                    رقم الشكوى:
+                    <strong>#{{ $complaint->ComplaintID }}</strong>
                 </div>
 
+            </div>
+
+            <div class="card-body p-lg-4 p-3">
+
                 <form method="POST"
-                    action="{{ isset($response) 
-        ? route('responses.update', $response->id) 
-        : route('responses.store') }}">
+                    action="{{ isset($response) ? route('responses.update', $response->id) : route('responses.store') }}">
 
                     @csrf
 
@@ -110,84 +221,181 @@
 
                     <input type="hidden" name="complaint_id" value="{{ $complaint->ComplaintID }}">
 
-                    {{-- STEP 1 --}}
-                    <div class="setup-content" id="step-1">
+                    {{-- البيانات الأساسية --}}
+                    <div class="section-card">
 
-                        <div class="mb-3">
-                            <label>حالة الطلب</label>
-                            <select class="form-select" name="ComplaintStatus" required>
-                                <option value="">اختر</option>
-                                @foreach ($statuses as $status)
-                                <option value="{{ $status->statusID }}"
-                                    {{ old('ComplaintStatus', $response->ComplaintStatus ?? '') == $status->statusID ? 'selected' : '' }}>
-                                    {{ $status->statusText }}
-                                </option>
-                                @endforeach
-                            </select>
+                        <div class="section-title">
+                            <i class="bx bx-info-circle"></i>
+                            البيانات الأساسية
                         </div>
 
-                        <div class="mb-3">
-                            <label>تفاصيل الحالة</label>
-                            <textarea class="form-control" name="ComplaintText">{{ old('ComplaintText', $response->ComplaintText ?? '') }}</textarea>
-                        </div>
+                        <div class="row">
 
-                        <button type="button" class="btn btn-primary nextBtn">التالي</button>
+                            {{-- الحالة --}}
+                            <div class="col-md-6 mb-4">
+
+                                <label class="form-label">
+                                    حالة الطلب
+                                    <span class="required-star">*</span>
+                                </label>
+
+                                <select class="form-control @error('ComplaintStatus') is-invalid @enderror"
+                                    name="ComplaintStatus"
+                                    id="statusSelect"
+                                    required>
+
+                                    <option value="">اختر الحالة</option>
+
+                                    @foreach ($statuses as $status)
+
+                                    <option value="{{ $status->statusID }}"
+                                        {{ old('ComplaintStatus', $response->ComplaintStatus ?? '') == $status->statusID ? 'selected' : '' }}>
+
+                                        {{ $status->statusText }}
+
+                                    </option>
+
+                                    @endforeach
+
+                                </select>
+
+                                @error('ComplaintStatus')
+                                <span class="invalid-feedback d-block">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+
+                            </div>
+
+                            {{-- نوع الخدمة --}}
+                            <div class="col-md-6 mb-4">
+
+                                <label class="form-label">
+                                    نوع الخدمة
+                                </label>
+
+                                <select class="form-control" name="ComplaintService">
+
+                                    <option value="">اختر نوع الخدمة</option>
+
+                                    @foreach ($serviceTypes as $service)
+
+                                    <option value="{{ $service->srevicetyptid }}"
+                                        {{ old('ComplaintService', $response->ComplaintService ?? '') == $service->srevicetyptid ? 'selected' : '' }}>
+
+                                        {{ $service->srevicetyptname }}
+
+                                    </option>
+
+                                    @endforeach
+
+                                </select>
+
+                            </div>
+
+                            {{-- تفاصيل الحالة --}}
+                            <div class="col-12 mb-2">
+
+                                <label class="form-label">
+                                    تفاصيل الحالة
+                                </label>
+
+                                <textarea
+                                    class="form-control @error('ComplaintText') is-invalid @enderror"
+                                    name="ComplaintText"
+                                    placeholder="أدخل تفاصيل الحالة أو الرد على الشكوى...">{{ old('ComplaintText', $response->ComplaintText ?? '') }}</textarea>
+
+                                @error('ComplaintText')
+                                <span class="invalid-feedback d-block">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+
+                            </div>
+
+                        </div>
 
                     </div>
 
-                    {{-- STEP 2 --}}
-                    <div class="setup-content" id="step-2">
+                    {{-- أسباب الإغلاق --}}
+                    <div class="section-card" id="closeReasonBox">
 
-                        <div class="mb-3">
-                            <label>نوع الخدمة</label>
-                            <select class="form-select" name="ComplaintService">
-                                <option value="">اختر</option>
-                                @foreach ($serviceTypes as $service)
-                                <option value="{{ $service->srevicetyptid }}"
-                                    {{ old('ComplaintService', $response->ComplaintService ?? '') == $service->srevicetyptid ? 'selected' : '' }}>
-                                    {{ $service->srevicetyptname }}
-                                </option>
-                                @endforeach
-                            </select>
+                        <div class="section-title">
+                            <i class="bx bx-category-alt"></i>
+                            بيانات الإغلاق والتصنيف
                         </div>
 
-                        <div class="mb-3">
-                            <label>سبب الشكوى</label>
-                            <select class="form-select" name="fk_close_reason_id">
-                                <option value="">اختر</option>
-                                @foreach ($closeReasons as $reason)
-                                <option value="{{ $reason->close_reason_ID }}"
-                                    {{ old('fk_close_reason_id', $response->fk_close_reason_id ?? '') == $reason->close_reason_ID ? 'selected' : '' }}>
-                                    {{ $reason->close_reason_Name }}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
+                        <div class="row">
 
-                        <div class="mb-3">
-                            <label>التصنيف</label>
-                            <select class="form-select" name="fk_close_reason_classify_id">
-                                <option value="">اختر</option>
-                                @foreach ($classifications as $classify)
-                                <option value="{{ $classify->close_reason_classify_id }}"
-                                    {{ old('fk_close_reason_classify_id', $response->fk_close_reason_classify_id ?? '') == $classify->close_reason_classify_id ? 'selected' : '' }}>
-                                    {{ $classify->close_reason_classify_Name }}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
+                            {{-- سبب الشكوى --}}
+                            <div class="col-md-6 mb-4">
 
-                        <button type="button" class="btn btn-primary nextBtn">التالي</button>
+                                <label class="form-label">
+                                    سبب الشكوى
+                                </label>
+
+                                <select class="form-control"
+                                    name="fk_close_reason_id"
+                                    id="reasonSelect">
+
+                                    <option value="">اختر السبب</option>
+
+                                    @foreach ($closeReasons as $reason)
+
+                                    <option value="{{ $reason->close_reason_ID }}"
+                                        {{ old('fk_close_reason_id', $response->fk_close_reason_id ?? '') == $reason->close_reason_ID ? 'selected' : '' }}>
+
+                                        {{ $reason->close_reason_Name }}
+
+                                    </option>
+
+                                    @endforeach
+
+                                </select>
+
+                            </div>
+
+                            {{-- التصنيف --}}
+                            <div class="col-md-6 mb-4">
+
+                                <label class="form-label">
+                                    التصنيف
+                                </label>
+
+                                <select class="form-control"
+                                    name="fk_close_reason_classify_id"
+                                    id="classifySelect">
+
+                                    <option value="">اختر التصنيف</option>
+
+                                    @foreach ($classifications as $classify)
+
+                                    <option value="{{ $classify->close_reason_classify_id }}"
+                                        {{ old('fk_close_reason_classify_id', $response->fk_close_reason_classify_id ?? '') == $classify->close_reason_classify_id ? 'selected' : '' }}>
+
+                                        {{ $classify->close_reason_classify_Name }}
+
+                                    </option>
+
+                                    @endforeach
+
+                                </select>
+
+                            </div>
+
+                        </div>
 
                     </div>
 
-                    {{-- STEP 3 --}}
-                    <div class="setup-content" id="step-3">
+                    {{-- submit --}}
+                    <div class="text-center mt-4">
 
-                        <h5>تأكيد وحفظ</h5>
+                        <button type="submit" class="btn btn-primary btn-save shadow-sm">
 
-                        <button type="submit" class="btn btn-success">
+                            <i class="bx bx-save ml-1"></i>
+
                             {{ isset($response) ? 'تحديث الرد' : 'حفظ الرد' }}
+
                         </button>
 
                     </div>
@@ -195,6 +403,7 @@
                 </form>
 
             </div>
+
         </div>
 
     </div>
@@ -204,39 +413,34 @@
 
 @push('footerScripts')
 <script>
-    $(document).ready(function() {
-
-        var allWells = $('.setup-content');
-
-        allWells.hide();
-        $('#step-1').show();
-
-        $('.nextBtn').click(function() {
-            var curStep = $(this).closest(".setup-content");
-            var nextStep = curStep.next(".setup-content");
-
-            curStep.hide();
-            nextStep.show();
-        });
-
-    });
-
     function toggleFields() {
+
         let status = $('#statusSelect').val();
 
         if (status == 2 || status == 4) {
+
             $('#reasonSelect').prop('disabled', false);
             $('#classifySelect').prop('disabled', false);
+
+            $('#closeReasonBox').removeClass('disabled-box');
+
         } else {
-            $('#reasonSelect').prop('disabled', true);
-            $('#classifySelect').prop('disabled', true);
+
+            $('#reasonSelect').prop('disabled', true).val('');
+            $('#classifySelect').prop('disabled', true).val('');
+
+            $('#closeReasonBox').addClass('disabled-box');
         }
     }
 
-    toggleFields();
+    $(document).ready(function() {
 
-    $('#statusSelect').on('change', function() {
         toggleFields();
+
+        $('#statusSelect').on('change', function() {
+            toggleFields();
+        });
+
     });
 </script>
 @endpush

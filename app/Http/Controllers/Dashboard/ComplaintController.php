@@ -65,7 +65,8 @@ class ComplaintController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-  public function store(Request $request)
+
+public function store(Request $request)
 {
     $data = $request->validate([
         'requesttypeid' => 'required|integer',
@@ -77,9 +78,13 @@ class ComplaintController extends Controller
         'sector_id' => 'required|integer',
         'office' => 'required|integer',
         'comsource_id' => 'required|integer',
-        'ComplaintNationalID' => 'nullable',
+
+        // 👇 مهم: شرط حسب نوع الطلب
+        'ComplaintNationalID' => 'nullable|required_if:requesttypeid,2|digits:14',
+
         'ComplainerGender' => 'nullable',
     ]);
+
 
     Complaint::create([
         'RequestType' => $data['requesttypeid'],
@@ -90,15 +95,15 @@ class ComplaintController extends Controller
         'ComplaintDate' => $data['ComplaintDate'],
         'department' => $data['sector_id'],
         'office' => $data['office'],
-        'comsources' => $data['comsource_id'],
+        'ComplaintSources' => $data['comsource_id'],
         'ComplaintNationalID' => $data['ComplaintNationalID'] ?? null,
         'ComplainerGender' => $data['ComplainerGender'] ?? null,
     ]);
 
-    return redirect()->route('complaints.index')
-        ->with('success', 'Saved successfully');
-}
+    alert()->success('تم بنجاح', 'تم إضافة الشكوى بنجاح');
 
+    return redirect()->route('complaints.index');
+}
     /**
      * Display the specified resource.
      *
@@ -142,7 +147,9 @@ class ComplaintController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Complaint $complaint)
+ 
+
+public function update(Request $request, Complaint $complaint)
 {
     $data = $request->validate([
         'requesttypeid' => 'required|integer',
@@ -153,7 +160,12 @@ class ComplaintController extends Controller
         'ComplaintDate' => 'required|date',
         'sector_id' => 'required|integer',
         'office' => 'required|integer',
+        'comsource_id' => 'required|integer',
+
+        'ComplaintNationalID' => 'nullable|required_if:requesttypeid,2|digits:14',
     ]);
+
+  
 
     $complaint->update([
         'RequestType' => $data['requesttypeid'],
@@ -164,7 +176,12 @@ class ComplaintController extends Controller
         'ComplaintDate' => $data['ComplaintDate'],
         'department' => $data['sector_id'],
         'office' => $data['office'],
+        'ComplaintSources' => $data['comsource_id'],
+        'ComplaintNationalID' => $data['ComplaintNationalID'] ?? null,
+        'ComplainerGender' => $data['ComplainerGender'] ?? null,
     ]);
+
+    alert()->success('تم بنجاح', 'تم تعديل الشكوى بنجاح');
 
     return redirect()->route('complaints.index');
 }

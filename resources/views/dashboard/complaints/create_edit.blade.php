@@ -1,76 +1,208 @@
 @extends('dashboard.layouts.app')
 
+@section('title', isset($complaint) ? 'تعديل الشكوى' : 'إضافة شكوى')
+
 @push('headScripts')
 <style>
     .page-breadcrumb .breadcrumb {
-        background-color: transparent;
+        background: transparent;
     }
 
     .breadcrumb-item+.breadcrumb-item::before {
-        padding: 0 0.5rem;
-        color: #6c757d;
+        padding: 0 8px;
+        color: #adb5bd;
         content: "/";
     }
 
-    body {
-        margin-top: 40px;
+    .main-card {
+        border: 0;
+        border-radius: 24px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    }
+
+    .custom-header {
+        background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+        color: #fff;
+        padding: 28px;
+    }
+
+    .custom-header h4 {
+        margin: 0;
+        font-weight: 700;
+        font-size: 24px;
+    }
+
+    .custom-header p {
+        margin: 10px 0 0;
+        opacity: .9;
+        font-size: 14px;
     }
 
     .stepwizard {
-        display: table;
         width: 100%;
         position: relative;
+        margin-bottom: 35px;
     }
 
     .stepwizard-row {
-        display: table-row;
-    }
-
-    .stepwizard-step {
-        display: table-cell;
-        text-align: center;
+        display: flex;
+        justify-content: space-between;
         position: relative;
     }
 
-    .stepwizard-step p {
-        margin-top: 10px;
+    .stepwizard-row::before {
+        content: "";
+        position: absolute;
+        top: 22px;
+        right: 10%;
+        width: 80%;
+        height: 4px;
+        background: #e9ecef;
+        z-index: 0;
+        border-radius: 50px;
     }
 
-    .stepwizard-row:before {
-        top: 14px;
-        position: absolute;
-        content: " ";
+    .stepwizard-step {
+        position: relative;
+        z-index: 1;
+        text-align: center;
         width: 100%;
-        height: 1px;
-        background-color: #ccc;
-        z-index: 0;
+    }
+
+    .stepwizard-step p {
+        margin-top: 12px;
+        font-weight: 600;
+        color: #6c757d;
     }
 
     .btn-circle {
-        width: 30px;
-        height: 30px;
-        text-align: center;
-        padding: 6px 0;
-        border-radius: 15px;
-        font-size: 12px;
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        border: 0;
+        background: #dee2e6;
+        color: #495057;
+        font-weight: bold;
+        font-size: 16px;
+        transition: .3s;
+    }
+
+    .btn-circle.active {
+        background: #0d6efd;
+        color: #fff;
+        box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+    }
+
+    .section-card {
+        border: 1px solid #edf0f3;
+        border-radius: 18px;
+        padding: 25px;
+        background: #fff;
+        margin-bottom: 25px;
+    }
+
+    .section-title {
+        color: #0d6efd;
+        font-weight: 700;
+        font-size: 18px;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-label {
+        font-weight: 700;
+        color: #495057;
+        margin-bottom: 10px;
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 12px;
+        min-height: 50px;
+        border: 1px solid #dce1e7;
+        box-shadow: none !important;
+        transition: .3s;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.08) !important;
+    }
+
+    textarea.form-control {
+        min-height: 120px;
+        resize: vertical;
     }
 
     .is-invalid {
-        border: 1px solid red !important;
+        border-color: #dc3545 !important;
     }
 
     .error-text {
-        color: red;
+        color: #dc3545;
         font-size: 13px;
-        margin-top: 5px;
+        margin-top: 6px;
     }
 
     .setup-content {
         display: none;
+        animation: fadeIn .3s ease;
     }
 
     .setup-content.active {
         display: block;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .btn-custom {
+        min-width: 140px;
+        border-radius: 12px;
+        padding: 11px 20px;
+        font-weight: 700;
+    }
+
+    .required-star {
+        color: red;
+    }
+
+    @media(max-width:768px) {
+
+        .custom-header {
+            padding: 20px;
+        }
+
+        .section-card {
+            padding: 18px;
+        }
+
+        .stepwizard-row::before {
+            display: none;
+        }
+
+        .btn-custom {
+            width: 100%;
+        }
+
+        .d-flex.gap-mobile {
+            flex-direction: column;
+            gap: 10px;
+        }
     }
 </style>
 @endpush
@@ -80,266 +212,511 @@
 <div class="page-content-wrapper">
     <div class="page-content">
 
+        {{-- Breadcrumb --}}
         <div class="page-breadcrumb d-md-flex align-items-center mb-4 pb-2 border-bottom" dir="rtl">
+
             <div class="pr-3">
+
                 <nav aria-label="breadcrumb">
+
                     <ol class="breadcrumb mb-0 p-0 shadow-none">
+
+
+
                         <li class="breadcrumb-item active text-primary font-weight-bold">
                             {{ isset($complaint) ? 'تعديل الشكوى' : 'إضافة شكوى' }}
                         </li>
+
                         <li class="breadcrumb-item">
-                            <a href="{{ route('complaints.index') }}">الشكاوى</a>
+                            <a href="{{ route('complaints.index') }}">
+                                الشكاوى
+                            </a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="{{ route('dashboard') }}">الرئيسية</a>
+                            <a href="{{ route('dashboard') }}">
+                                <i class="bx bx-home-alt"></i>
+                                الرئيسية
+                            </a>
                         </li>
                     </ol>
+
                 </nav>
+
             </div>
+
         </div>
 
-        <div class="card">
-            <div class="card-body">
+        <div class="card main-card" dir="rtl">
 
-                <div class="card radius-15 shadow-sm border-0" dir="rtl" style="text-align: right;">
-                    <div class="card-body">
+            {{-- Header --}}
+            <div class="custom-header">
 
-                        <div class="card-header bg-white mb-4 d-flex align-items-center">
-                            <h5 class="mb-0 text-primary font-weight-bold">
-                                <i class="bx bx-shield-quarter ml-2"></i>
-                                {{ isset($complaint) ? 'تعديل الشكوى' : 'إضافة شكوى' }}
-                            </h5>
+                <h4>
+                    <i class="bx bx-message-square-add"></i>
+
+                    {{ isset($complaint) ? 'تعديل الشكوى' : 'إضافة شكوى جديدة' }}
+                </h4>
+
+                <p>
+                    قم بإدخال بيانات العميل وبيانات الشكوى بشكل صحيح لإتمام الحفظ.
+                </p>
+
+            </div>
+
+            <div class="card-body p-lg-4 p-3">
+
+                {{-- Step Wizard --}}
+                <div class="stepwizard">
+
+                    <div class="stepwizard-row setup-panel">
+
+                        <div class="stepwizard-step">
+
+                            <a href="#step-1" class="btn btn-circle active step-link">
+                                1
+                            </a>
+
+                            <p>البيانات الشخصية</p>
+
                         </div>
 
-                        {{-- STEP WIZARD --}}
-                        <div class="stepwizard mb-4">
-                            <div class="stepwizard-row setup-panel">
+                        <div class="stepwizard-step">
 
-                                <div class="stepwizard-step">
-                                    <a href="#step-1" class="btn btn-primary btn-circle step-link">1</a>
-                                    <p>البيانات الشخصية</p>
-                                </div>
+                            <a href="#step-2" class="btn btn-circle step-link">
+                                2
+                            </a>
 
-                                <div class="stepwizard-step">
-                                    <a href="#step-2" class="btn btn-default btn-circle step-link">2</a>
-                                    <p>تفاصيل الشكوى</p>
-                                </div>
+                            <p>تفاصيل الشكوى</p>
 
-                            </div>
                         </div>
-
-                        <form method="POST"
-                            action="{{ isset($complaint) ? route('complaints.update', $complaint) : route('complaints.store') }}">
-
-                            @csrf
-                            @if(isset($complaint))
-                            @method('PUT')
-                            @endif
-
-                            {{-- ================= STEP 1 ================= --}}
-                            <div class="row setup-content" id="step-1">
-                                <div class="col-md-12">
-
-                                    <h4>البيانات الشخصية</h4>
-
-                                    {{-- Request Type --}}
-                                    <div class="row mb-3">
-                                        <label class="col-sm-2 col-form-label">نوع الطلب</label>
-                                        <div class="col-sm-10">
-                                            <select class="form-select @error('requesttypeid') is-invalid @enderror"
-                                                name="requesttypeid" id="requesttypeid">
-                                                <option value="">اختر</option>
-                                                @foreach($requestTypes as $type)
-                                                <option value="{{ $type->requesttypeid }}"
-                                                    {{ old('requesttypeid', $complaint->RequestType ?? '') == $type->requesttypeid ? 'selected' : '' }}>
-                                                    {{ $type->requesttypename }}
-                                                </option>
-                                                @endforeach
-                                            </select>
-                                            @error('requesttypeid')
-                                            <div class="error-text">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div id="nationalIdSection">
-                                        <div class="row mb-3"> <label class="col-sm-2 col-form-label">الرقم القومي</label>
-                                            <div class="col-sm-10"> <input type="text" class="form-control" name="ComplaintNationalID" autocomplete="off">
-                                                <div class="error-text" id="nidError"></div>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-3"> <label class="col-sm-2 col-form-label">النوع</label>
-                                            <div class="col-sm-10"> <input type="text" class="form-control" name="ComplainerGender" readonly> </div>
-                                        </div>
-                                    </div>
-
-                                    {{-- Name --}}
-                                    <div class="row mb-3">
-                                        <label class="col-sm-2 col-form-label">اسم العميل</label>
-                                        <div class="col-sm-10">
-                                            <input type="text"
-                                                class="form-control @error('ComplainerName') is-invalid @enderror"
-                                                name="ComplainerName">
-                                            @error('ComplainerName')
-                                            <div class="error-text">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    {{-- Email --}}
-                                    <div class="row mb-3">
-                                        <label class="col-sm-2 col-form-label">البريد</label>
-                                        <div class="col-sm-10">
-                                            <input type="email"
-                                                class="form-control @error('ComplainerEmail') is-invalid @enderror"
-                                                name="ComplainerEmail">
-                                            @error('ComplainerEmail')
-                                            <div class="error-text">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    {{-- Phone --}}
-                                    <div class="row mb-3">
-                                        <label class="col-sm-2 col-form-label">الهاتف</label>
-                                        <div class="col-sm-10">
-                                            <input type="text"
-                                                class="form-control @error('ComplainerPhone') is-invalid @enderror"
-                                                name="ComplainerPhone">
-                                            @error('ComplainerPhone')
-                                            <div class="error-text">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <button type="button" class="btn btn-primary nextBtn">التالي</button>
-
-                                </div>
-                            </div>
-
-                            {{-- ================= STEP 2 ================= --}}
-                            <div class="row setup-content" id="step-2">
-                                <div class="col-md-12">
-
-                                    <h4>تفاصيل الشكوى</h4>
-
-                                    {{-- Date --}}
-                                    <div class="row mb-3">
-                                        <label class="col-sm-2 col-form-label">التاريخ</label>
-                                        <div class="col-sm-10">
-                                            <input type="date"
-                                                class="form-control @error('ComplaintDate') is-invalid @enderror"
-                                                name="ComplaintDate">
-                                            @error('ComplaintDate')
-                                            <div class="error-text">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    {{-- Sector --}}
-                                    <div class="row mb-3">
-                                        <label class="col-sm-2 col-form-label">القطاع</label>
-                                        <div class="col-sm-10">
-                                            <select class="form-select @error('sector_id') is-invalid @enderror"
-                                                name="sector_id">
-                                                <option value="">اختر</option>
-                                                @foreach($sectors as $sector)
-                                                <option value="{{ $sector->sector_id }}">
-                                                    {{ $sector->sector_name }}
-                                                </option>
-                                                @endforeach
-                                            </select>
-                                            @error('sector_id')
-                                            <div class="error-text">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    {{-- Source --}}
-                                    <div class="row mb-3">
-                                        <label class="col-sm-2 col-form-label">مصدر الشكوى</label>
-                                        <div class="col-sm-10">
-                                            <select class="form-select @error('comsource_id') is-invalid @enderror"
-                                                name="comsource_id">
-                                                <option value="">اختر</option>
-                                                @foreach($comsources as $source)
-                                                <option value="{{ $source->comsourcesid }}">
-                                                    {{ $source->comsourcesname }}
-                                                </option>
-                                                @endforeach
-                                            </select>
-                                            @error('comsource_id')
-                                            <div class="error-text">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    {{-- Governorate --}}
-                                    <div class="row mb-3">
-                                        <label class="col-sm-2 col-form-label">المحافظة</label>
-                                        <div class="col-sm-10">
-                                            <select class="form-select @error('ComplaintGovernorate') is-invalid @enderror"
-                                                id="governorateSelect"
-                                                name="ComplaintGovernorate">
-                                                <option value="">اختر المحافظة</option>
-                                                @foreach ($govs as $gov)
-                                                <option value="{{ $gov->govsid }}">
-                                                    {{ $gov->govname }}
-                                                </option>
-                                                @endforeach
-                                            </select>
-                                            @error('ComplaintGovernorate')
-                                            <div class="error-text">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    {{-- Office --}}
-                                    <div class="row mb-3">
-                                        <label class="col-sm-2 col-form-label">المكتب</label>
-                                        <div class="col-sm-10">
-                                            <select class="form-select @error('office') is-invalid @enderror"
-                                                id="officeSelect"
-                                                name="office">
-                                                <option value="">اختر المكتب</option>
-                                                @foreach ($offices as $office)
-                                                <option value="{{ $office->ID }}"
-                                                    data-gov="{{ $office->FK_GOVT_CODE }}">
-                                                    {{ $office->REG_OFFIC_NAMA }}
-                                                </option>
-                                                @endforeach
-                                            </select>
-                                            @error('office')
-                                            <div class="error-text">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="d-flex justify-content-between mt-4">
-
-                                        <button type="button" class="btn btn-secondary prevBtn">
-                                            رجوع
-                                        </button>
-
-                                        <button type="submit" class="btn btn-success">
-                                            حفظ الشكوى
-                                        </button>
-
-                                    </div>
-
-                                </div>
-                            </div>
-
-                        </form>
 
                     </div>
+
+                </div>
+
+                <form method="POST"
+    action="{{ isset($complaint) ? route('complaints.update', $complaint) : route('complaints.store') }}">
+
+    @csrf
+
+    @if(isset($complaint))
+    @method('PUT')
+    @endif
+
+    {{-- ================= STEP 1 ================= --}}
+    <div class="setup-content active" id="step-1">
+
+        <div class="section-card">
+
+            <div class="section-title">
+                <i class="bx bx-user"></i>
+                البيانات الشخصية
+            </div>
+
+            <div class="row">
+
+                {{-- نوع الطلب --}}
+                <div class="col-md-6 mb-4">
+
+                    <label class="form-label">
+                        نوع الطلب
+                        <span class="required-star">*</span>
+                    </label>
+
+                    <select class="form-select @error('requesttypeid') is-invalid @enderror"
+                        name="requesttypeid"
+                        id="requesttypeid">
+
+                        <option value="">اختر</option>
+
+                        @foreach($requestTypes as $type)
+
+                        <option value="{{ $type->requesttypeid }}"
+                            {{ old('requesttypeid', $complaint->RequestType ?? '') == $type->requesttypeid ? 'selected' : '' }}>
+
+                            {{ $type->requesttypename }}
+
+                        </option>
+
+                        @endforeach
+
+                    </select>
+
+                    @error('requesttypeid')
+                    <div class="error-text">{{ $message }}</div>
+                    @enderror
+
+                </div>
+
+                {{-- الرقم القومي --}}
+                <div class="col-md-6 mb-4" id="nationalIdSection">
+
+                    <label class="form-label">
+                        الرقم القومي
+                    </label>
+
+                    <input type="text"
+                        class="form-control"
+                        name="ComplaintNationalID"
+                        value="{{ old('ComplaintNationalID', $complaint->ComplaintNationalID ?? '') }}"
+                        autocomplete="off">
+
+                    <div class="error-text" id="nidError"></div>
+
+                </div>
+
+                {{-- النوع --}}
+                <div class="col-md-6 mb-4">
+
+                    <label class="form-label">
+                        النوع
+                    </label>
+
+                    <input type="text"
+                        class="form-control"
+                        name="ComplainerGender"
+                        value="{{ old('ComplainerGender', $complaint->ComplainerGender ?? '') }}"
+                        disabled>
+
+                </div>
+
+                {{-- الاسم --}}
+                <div class="col-md-6 mb-4">
+
+                    <label class="form-label">
+                        اسم العميل
+                        <span class="required-star">*</span>
+                    </label>
+
+                    <input type="text"
+                        class="form-control @error('ComplainerName') is-invalid @enderror"
+                        name="ComplainerName"
+                        value="{{ old('ComplainerName', $complaint->ComplainerName ?? '') }}">
+
+                    @error('ComplainerName')
+                    <div class="error-text">{{ $message }}</div>
+                    @enderror
+
+                </div>
+
+                {{-- البريد --}}
+                <div class="col-md-6 mb-4">
+
+                    <label class="form-label">
+                        البريد الإلكتروني
+                    </label>
+
+                    <input type="email"
+                        class="form-control @error('ComplainerEmail') is-invalid @enderror"
+                        name="ComplainerEmail"
+                        value="{{ old('ComplainerEmail', $complaint->ComplainerEmail ?? '') }}">
+
+                    @error('ComplainerEmail')
+                    <div class="error-text">{{ $message }}</div>
+                    @enderror
+
+                </div>
+
+                {{-- الهاتف --}}
+                <div class="col-md-6 mb-4">
+
+                    <label class="form-label">
+                        رقم الهاتف
+                        <span class="required-star">*</span>
+                    </label>
+
+                    <input type="text"
+                        class="form-control @error('ComplainerPhone') is-invalid @enderror"
+                        name="ComplainerPhone"
+                        value="{{ old('ComplainerPhone', $complaint->ComplainerPhone ?? '') }}">
+
+                    @error('ComplainerPhone')
+                    <div class="error-text">{{ $message }}</div>
+                    @enderror
+
                 </div>
 
             </div>
+
+            <div class="text-end mt-3">
+
+                <button type="button" class="btn btn-primary btn-custom nextBtn">
+                    التالي
+                    <i class="bx bx-left-arrow-alt ms-1"></i>
+                </button>
+
+            </div>
+
         </div>
 
-        @endsection
+    </div>
 
-        @push('footerScripts')
-        <script src="{{ asset('assets/js/complaints.js') }}"></script>
-        @endpush
+    {{-- ================= STEP 2 ================= --}}
+    <div class="setup-content" id="step-2">
+
+        <div class="section-card">
+
+            <div class="section-title">
+                <i class="bx bx-detail"></i>
+                تفاصيل الشكوى
+            </div>
+
+            <div class="row">
+
+                {{-- التاريخ --}}
+                <div class="col-md-6 mb-4">
+
+                    <label class="form-label">
+                        التاريخ
+                    </label>
+
+                    <input type="date"
+                        class="form-control @error('ComplaintDate') is-invalid @enderror"
+                        name="ComplaintDate"
+                        value="{{ old('ComplaintDate', $complaint->ComplaintDate ?? '') }}">
+
+                    @error('ComplaintDate')
+                    <div class="error-text">{{ $message }}</div>
+                    @enderror
+
+                </div>
+
+                {{-- القطاع --}}
+                <div class="col-md-6 mb-4">
+
+                    <label class="form-label">
+                        القطاع
+                    </label>
+
+                    <select class="form-select @error('sector_id') is-invalid @enderror"
+                        name="sector_id">
+
+                        <option value="">اختر</option>
+
+                        @foreach($sectors as $sector)
+
+                        <option value="{{ $sector->sector_id }}"
+                            {{ old('sector_id', $complaint->department ?? '') == $sector->sector_id ? 'selected' : '' }}>
+
+                            {{ $sector->sector_name }}
+
+                        </option>
+
+                        @endforeach
+
+                    </select>
+
+                    @error('sector_id')
+                    <div class="error-text">{{ $message }}</div>
+                    @enderror
+
+                </div>
+
+                {{-- المحافظة --}}
+                <div class="col-md-6 mb-4">
+
+                    <label class="form-label">
+                        المحافظة
+                    </label>
+
+                    <select class="form-select @error('ComplaintGovernorate') is-invalid @enderror"
+                        id="governorateSelect"
+                        name="ComplaintGovernorate">
+
+                        <option value="">اختر المحافظة</option>
+
+                        @foreach ($govs as $gov)
+
+                        <option value="{{ $gov->govsid }}"
+                            {{ old('ComplaintGovernorate', $complaint->ComplaintGovernorate ?? '') == $gov->govsid ? 'selected' : '' }}>
+
+                            {{ $gov->govname }}
+
+                        </option>
+
+                        @endforeach
+
+                    </select>
+
+                    @error('ComplaintGovernorate')
+                    <div class="error-text">{{ $message }}</div>
+                    @enderror
+
+                </div>
+
+                {{-- المكتب --}}
+                <div class="col-md-6 mb-4">
+
+                    <label class="form-label">
+                        المكتب
+                    </label>
+
+                    <select class="form-select @error('office') is-invalid @enderror"
+                        id="officeSelect"
+                        name="office">
+
+                        <option value="">اختر المكتب</option>
+
+                        @foreach ($offices as $office)
+
+                        <option value="{{ $office->ID }}"
+                            data-gov="{{ $office->FK_GOVT_CODE }}"
+                            {{ old('office', $complaint->office ?? '') == $office->ID ? 'selected' : '' }}>
+
+                            {{ $office->REG_OFFIC_NAMA }}
+
+                        </option>
+
+                        @endforeach
+
+                    </select>
+
+                    @error('office')
+                    <div class="error-text">{{ $message }}</div>
+                    @enderror
+
+                </div>
+
+                {{-- مصدر الشكوى --}}
+                <div class="col-md-12 mb-4">
+
+                    <label class="form-label">
+                        مصدر الشكوى
+                    </label>
+
+                    <select class="form-select @error('comsource_id') is-invalid @enderror"
+                        name="comsource_id">
+
+                        <option value="">اختر</option>
+
+                        @foreach($comsources as $source)
+
+                        <option value="{{ $source->comsourcesid }}"
+                            {{ old('comsource_id', $complaint->ComplaintSources ?? '') == $source->comsourcesid ? 'selected' : '' }}>
+
+                            {{ $source->comsourcesname }}
+
+                        </option>
+
+                        @endforeach
+
+                    </select>
+
+                    @error('comsource_id')
+                    <div class="error-text">{{ $message }}</div>
+                    @enderror
+
+                </div>
+
+            </div>
+
+            <div class="d-flex justify-content-between gap-mobile mt-4">
+
+                <button type="button" class="btn btn-secondary btn-custom">
+
+                    <i class="bx bx-right-arrow-alt me-1"></i>
+
+                    رجوع
+
+                </button>
+
+                <button type="submit" class="btn btn-success btn-custom">
+
+                    <i class="bx bx-save me-1"></i>
+
+                    حفظ الشكوى
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</form>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+@endsection
+
+@push('footerScripts')
+<script src="{{ asset('assets/js/complaints.js') }}"></script>
+
+<script>
+    $(document).ready(function() {
+
+        $('.nextBtn').click(function() {
+
+            let isValid = true;
+
+            $('#step-1 .form-control, #step-1 .form-select').removeClass('is-invalid');
+
+            let requestType = $('#requesttypeid').val();
+            let nationalId = $("input[name='ComplaintNationalID']").val().trim();
+
+            // =========================
+            // VALIDATION FIELDS
+            // =========================
+            const requiredFields = [
+                'requesttypeid',
+                'ComplainerName',
+                'ComplainerPhone'
+            ];
+
+            requiredFields.forEach(function(fieldName) {
+
+                let field = $('[name="' + fieldName + '"]');
+
+                if ($.trim(field.val()) === '') {
+                    field.addClass('is-invalid');
+                    isValid = false;
+                }
+
+            });
+
+            // =========================
+            // EXTRA RULE (IMPORTANT)
+            // =========================
+            if (requestType == 2 && nationalId === '') {
+
+                $("input[name='ComplaintNationalID']").addClass('is-invalid');
+
+                alert("من فضلك قم بإدخال الرقم القومي لأنه مطلوب في هذا النوع من الطلبات");
+
+                isValid = false;
+            }
+
+            // STOP
+            if (!isValid) {
+                alert("من فضلك قم بإكمال جميع البيانات المطلوبة");
+                return;
+            }
+
+            // NEXT STEP
+            $('#step-1').removeClass('active');
+            $('#step-2').addClass('active');
+
+            $('.step-link').removeClass('active');
+            $('.step-link[href="#step-2"]').addClass('active');
+
+        });
+
+        $('.prevBtn').click(function() {
+
+            $('#step-2').removeClass('active');
+            $('#step-1').addClass('active');
+
+            $('.step-link').removeClass('active');
+            $('.step-link[href="#step-1"]').addClass('active');
+
+        });
+
+    });
+</script>
+@endpush
