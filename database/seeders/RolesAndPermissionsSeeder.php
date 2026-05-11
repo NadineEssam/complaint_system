@@ -94,7 +94,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
             $role->syncPermissions($permissionIds);
 
-            $user = User::where('userID', 'Nadine.Essam')->first();
+            $user = User::where('userID', 'amjad.anwar')->first();
             if ($user) {
                 $user->assignRole($role);
             }
