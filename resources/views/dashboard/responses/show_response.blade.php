@@ -141,11 +141,9 @@
 
                     <ol class="breadcrumb mb-0 p-0 shadow-none">
 
-                        <li class="breadcrumb-item">
-                            <a href="{{ route('dashboard') }}" class="text-secondary">
-                                <i class="bx bx-home-alt"></i>
-                                الرئيسية
-                            </a>
+
+                        <li class="breadcrumb-item active text-primary font-weight-bold">
+                            عرض الرد
                         </li>
 
                         <li class="breadcrumb-item">
@@ -156,9 +154,15 @@
                             </a>
                         </li>
 
-                        <li class="breadcrumb-item active text-primary font-weight-bold">
-                            عرض الرد
+                        <li class="breadcrumb-item">
+                            <a href="{{ route('dashboard') }}" class="text-secondary">
+                                <i class="bx bx-home-alt"></i>
+                                الرئيسية
+                            </a>
                         </li>
+
+
+
 
                     </ol>
 
@@ -257,7 +261,7 @@
                         </div>
 
                         {{-- التصنيف --}}
-                        <div class="col-md-6 info-row">
+                        <div class="col-md-12 info-row">
 
                             <label class="info-label">
                                 التصنيف
@@ -282,6 +286,31 @@
 
                         </div>
 
+                        {{-- أضيف بواسطة --}}
+                        <div class="col-md-6 info-row">
+
+                            <label class="info-label">
+                                تم الإضافة بواسطة
+                            </label>
+
+                            <div class="info-value">
+                                {{ $response->createdBy->userID ?? '-' }}
+                            </div>
+
+                        </div>
+
+                        {{-- آخر تعديل بواسطة --}}
+                        <div class="col-md-6 info-row">
+
+                            <label class="info-label">
+                                آخر تعديل بواسطة
+                            </label>
+
+                            <div class="info-value">
+                                {{ $response->updatedBy->userID ?? '-' }}
+                            </div>
+
+                        </div>
                     </div>
 
                 </div>

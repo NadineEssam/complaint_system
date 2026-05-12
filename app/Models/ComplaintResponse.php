@@ -15,6 +15,8 @@ class ComplaintResponse extends Model
         'ComplaintService',
         'fk_close_reason_id',
         'fk_close_reason_classify_id',
+        'created_by',
+        'updated_by',
     ];
 
     /*
@@ -66,5 +68,15 @@ class ComplaintResponse extends Model
             'complaint_id',
             'ComplaintID'
         );
+    }
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }

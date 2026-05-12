@@ -78,8 +78,9 @@ class ComplaintResponseController extends Controller
                 'ComplaintService' => 'nullable|integer',
                 'fk_close_reason_id' => 'nullable|integer',
                 'fk_close_reason_classify_id' => 'nullable|integer',
+                
             ]);
-
+            $data['created_by'] = auth()->id();
             $response = ComplaintResponse::create($data);
 
             $response->complaint()->update([
@@ -154,6 +155,7 @@ class ComplaintResponseController extends Controller
                 'fk_close_reason_classify_id' => 'nullable|integer',
             ]);
 
+            $data['updated_by'] = auth()->id();
             $response->update($data);
 
             $response->complaint()->update([
@@ -173,23 +175,28 @@ class ComplaintResponseController extends Controller
     }
 
     public function destroy($id)
-    {
-        try {
+{
+    try {
 
-            $response = ComplaintResponse::findOrFail($id);
+        $response = ComplaintResponse::findOrFail($id);
 
-            $response->delete();
+        $response->complaint()->update([
+            'ComplaintStatus' => 3
+        ]);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'تم الحذف بنجاح'
-            ]);
-        } catch (\Exception $e) {
+        $response->delete();
 
-            return response()->json([
-                'success' => false,
-                'message' => 'فشل الحذف'
-            ]);
-        }
+        return response()->json([
+            'success' => true,
+            'message' => 'تم الحذف بنجاح'
+        ]);
+
+    } catch (\Exception $e) {
+
+        return response()->json([
+            'success' => false,
+            'message' => 'فشل الحذف'
+        ]);
     }
+}
 }

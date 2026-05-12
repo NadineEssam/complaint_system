@@ -124,7 +124,9 @@ class ComplaintController extends Controller
             'ComplaintSources' => $data['comsource_id'],
             'ComplaintNationalID' => $data['ComplaintNationalID'] ?? null,
             'ComplainerGender' => $data['ComplainerGender'] ?? null,
+            'created_by' => auth()->id(),
         ]);
+        
 
         alert()->success('تم بنجاح', 'تم إضافة الشكوى بنجاح');
 
@@ -234,7 +236,9 @@ class ComplaintController extends Controller
             'ComplaintSources' => $data['comsource_id'],
             'ComplaintNationalID' => $data['ComplaintNationalID'] ?? null,
             'ComplainerGender' => $data['ComplainerGender'] ?? null,
+            'updated_by' => auth()->id(),
         ]);
+       
 
         alert()->success('تم بنجاح', 'تم تعديل الشكوى بنجاح');
 

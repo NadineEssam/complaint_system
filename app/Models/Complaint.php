@@ -6,16 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Complaint extends Model
 {
-    // 👇 IMPORTANT: your table name is NOT default
+
     protected $table = 'sfdcomplaints';
 
-    // 👇 Primary key is NOT 'id'
     protected $primaryKey = 'ComplaintID';
 
-    // 👇 Your table does NOT use Laravel timestamps
     public $timestamps = false;
 
-    // 👇 Optional: allow mass assignment
     protected $fillable = [
         'ComplaintTitle',
         'ComplaintText',
@@ -34,6 +31,8 @@ class Complaint extends Model
         'ComplaintGovernorate',
         'fk_close_reason_id',
         'fk_close_reason_classify_id',
+        'created_by',
+        'updated_by',
 
     ];
 
@@ -43,36 +42,47 @@ class Complaint extends Model
         'ComplaintStatus' => 3,
     ];
 
-  
+
     public function responses()
     {
         return $this->hasMany(ComplaintResponse::class, 'complaint_id', 'ComplaintID');
     }
 
     public function status()
-{
-    return $this->belongsTo(
-        CompStatus::class,
-        'ComplaintStatus',
-        'statusID'
-    );
-}
+    {
+        return $this->belongsTo(
+            CompStatus::class,
+            'ComplaintStatus',
+            'statusID'
+        );
+    }
 
-public function closeReason()
-{
-    return $this->belongsTo(
-        CompCloseReason::class,
-        'fk_close_reason_id',
-        'close_reason_ID'
-    );
-}
+    public function closeReason()
+    {
+        return $this->belongsTo(
+            CompCloseReason::class,
+            'fk_close_reason_id',
+            'close_reason_ID'
+        );
+    }
 
-public function departmentData()
-{
-    return $this->belongsTo(
-        Department::class,
-        'department',        // FK في sfdcomplaints
-        'department_id'      // PK في department
-    );
-}
+    public function departmentData()
+    {
+        return $this->belongsTo(
+            Department::class,
+            'department',        
+            'department_id'      
+        );
+    }
+
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
 }
