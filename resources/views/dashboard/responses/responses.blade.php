@@ -41,16 +41,24 @@
                         سجل الردود
                     </h4>
 
-                    @if (PerUser('responses.create'))
                     <!-- <a href="{{ route('responses.create', $complaint->ComplaintID) }}"
-                        class="btn btn-sm btn-success">
-                        <i class="bx bx-plus"></i> إضافة رد
-                    </a> -->
+                    class="btn btn-sm btn-success">
+                    <i class="bx bx-plus"></i> إضافة رد
+                </a> -->
+
+                    @if (
+                    PerUser('responses.create') &&
+                    !in_array($complaint->ComplaintStatus, [2,4])
+                    )
 
                     <a href="{{ route('responses.create', ['complaint_id' => $complaint->ComplaintID]) }}"
-                       class="btn btn-sm btn-success">
-                        <i class="bx bx-plus"></i>  إضافة رد
+                        class="btn btn-sm btn-success">
+
+                        <i class="bx bx-plus"></i>
+                        إضافة رد
+
                     </a>
+
                     @endif
                 </div>
 
@@ -189,7 +197,6 @@
             }
         });
     });
-     
 </script>
 @endpush
 <!-- <script src="{{ asset('assets/js/responses.js') }}"></script> -->

@@ -14,4 +14,15 @@ class CompCloseReasonClassify extends Model
         'close_reason_classify_Name',
         'fk_close_reason_id'
     ];
+
+
+
+    public function complaint()
+{
+    return $this->belongsTo(
+        Complaint::class,
+        'complaint_id',
+        'ComplaintID'
+    );
+}
 }

@@ -40,6 +40,7 @@ class Complaint extends Model
     protected $attributes = [
         'fk_close_reason_id' => 0,
         'fk_close_reason_classify_id' => 0,
+        'ComplaintStatus' => 3,
     ];
 
   

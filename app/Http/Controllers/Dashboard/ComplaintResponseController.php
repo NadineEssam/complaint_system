@@ -49,6 +49,14 @@ class ComplaintResponseController extends Controller
         }
 
         $complaint = Complaint::findOrFail($complaintId);
+          if (in_array($complaint->ComplaintStatus, [2,4])) {
+
+        return redirect()
+            ->route('responses.index', [
+                'complaint_id' => $complaint->ComplaintID
+            ])
+            ->with('error', 'لا يمكن إضافة رد على شكوى مغلقة');
+    }
 
         return view('dashboard.responses.create_edit_responses', [
             'complaint' => $complaint,
@@ -72,12 +80,11 @@ class ComplaintResponseController extends Controller
                 'fk_close_reason_classify_id' => 'nullable|integer',
             ]);
 
-            ComplaintResponse::create($data);
+            $response = ComplaintResponse::create($data);
 
-            Complaint::where('ComplaintID', $data['complaint_id'])
-                ->update([
-                    'ComplaintStatus' => $data['ComplaintStatus']
-                ]);
+            $response->complaint()->update([
+                'ComplaintStatus' => $response->ComplaintStatus
+            ]);
 
             alert()->success('تم بنجاح', 'تم إضافة الرد على الشكوى بنجاح');
 
@@ -114,8 +121,16 @@ class ComplaintResponseController extends Controller
 
         // جايب الـ complaint المرتبط
         $complaint = Complaint::findOrFail($response->complaint_id);
+        if (in_array($complaint->ComplaintStatus, [2,4])) {
 
-        return view('dashboard.responses.create_edit_responses', [ // 👈 ممكن توحد الفورم
+        return redirect()
+            ->route('responses.index', [
+                'complaint_id' => $complaint->ComplaintID
+            ])
+            ->with('error', 'لا يمكن تعديل ردود شكوى مغلقة');
+    }
+
+        return view('dashboard.responses.create_edit_responses', [ 
             'response' => $response,
             'complaint' => $complaint,
             'statuses' => CompStatus::all(),
@@ -141,17 +156,14 @@ class ComplaintResponseController extends Controller
 
             $response->update($data);
 
-            Complaint::where(
-                'ComplaintID',
-                $response->complaint_id
-            )->update([
-                'ComplaintStatus' => $data['ComplaintStatus']
+            $response->complaint()->update([
+                'ComplaintStatus' => $response->ComplaintStatus
             ]);
             alert()->success('تم بنجاح', 'تم تعديل الرد على الشكوى بنجاح');
             return redirect()->route(
-    'responses.index',
-    ['complaint_id' => $response->complaint_id]
-);
+                'responses.index',
+                ['complaint_id' => $response->complaint_id]
+            );
         } catch (\Exception $e) {
 
             return back()

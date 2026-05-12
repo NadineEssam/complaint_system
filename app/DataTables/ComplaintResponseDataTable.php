@@ -33,7 +33,22 @@ class ComplaintResponseDataTable extends DataTable
 
                 $html = '<div class="d-flex align-items-center gap-2 justify-content-end">';
 
-                if (PerUser('responses.edit')) {
+
+                if (PerUser('responses.show')) {
+
+                    $html .= ' <a href="' . route('responses.show', $model->id) . '" 
+                            class="btn btn-sm btn-outline-info action-btn"
+                            data-bs-toggle="tooltip" 
+                            title="عرض الرد">
+
+                                <i class="bx bx-show"></i>
+
+                            </a>';
+                }
+
+                if (
+                    PerUser('responses.edit') && !in_array($model->complaint->ComplaintStatus ?? null, [2, 4])
+                ) {
                     $html .= '
                         <a href="' . route('responses.edit', $model->id) . '" 
                         class="btn btn-sm btn-outline-primary action-btn"
@@ -53,8 +68,6 @@ class ComplaintResponseDataTable extends DataTable
                             title="إزاله الرد على الشكوى">
                             <i class="bx bx-trash"></i>
                         </button>';
-
-                
                 }
 
                 $html .= '</div>';
