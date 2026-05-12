@@ -36,7 +36,9 @@ class ComplaintResponseDataTable extends DataTable
                 if (PerUser('responses.edit')) {
                     $html .= '
                         <a href="' . route('responses.edit', $model->id) . '" 
-                        class="btn btn-sm btn-outline-primary action-btn">
+                        class="btn btn-sm btn-outline-primary action-btn"
+                        data-bs-toggle="tooltip" 
+                        title="تعديل الرد على الشكوى">
                             <i class="bx bx-edit-alt"></i>
                         </a>';
                 }
@@ -47,8 +49,8 @@ class ComplaintResponseDataTable extends DataTable
                             class="btn btn-sm btn-outline-danger action-btn delete-this"
                             data-id="' . $model->id . '"
                             data-url="' . route('responses.destroy', $model->id) . '"
-                            "data-bs-toggle="tooltip" 
-                            title="Delete complaint">
+                            data-bs-toggle="tooltip" 
+                            title="إزاله الرد على الشكوى">
                             <i class="bx bx-trash"></i>
                         </button>';
 

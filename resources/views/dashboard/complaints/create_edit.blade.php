@@ -206,7 +206,15 @@
     }
 </style>
 @endpush
-
+@php
+$step = (
+    $errors->has('ComplaintDate') ||
+    $errors->has('ComplaintGovernorate') ||
+    $errors->has('sector_id') ||
+    $errors->has('office') ||
+    $errors->has('comsource_id')
+) ? 2 : 1;
+@endphp
 @section('content')
 
 <div class="page-content-wrapper">
@@ -294,347 +302,347 @@
 
                 </div>
 
-                <form method="POST"
-    action="{{ isset($complaint) ? route('complaints.update', $complaint) : route('complaints.store') }}">
+                <form method="POST" novalidate
+                    action="{{ isset($complaint) ? route('complaints.update', $complaint) : route('complaints.store') }}">
 
-    @csrf
+                    @csrf
 
-    @if(isset($complaint))
-    @method('PUT')
-    @endif
+                    @if(isset($complaint))
+                    @method('PUT')
+                    @endif
 
-    {{-- ================= STEP 1 ================= --}}
-    <div class="setup-content active" id="step-1">
+                    {{-- ================= STEP 1 ================= --}}
+                    <div class="setup-content active" id="step-1">
 
-        <div class="section-card">
+                        <div class="section-card">
 
-            <div class="section-title">
-                <i class="bx bx-user"></i>
-                البيانات الشخصية
-            </div>
+                            <div class="section-title">
+                                <i class="bx bx-user"></i>
+                                البيانات الشخصية
+                            </div>
 
-            <div class="row">
+                            <div class="row">
 
-                {{-- نوع الطلب --}}
-                <div class="col-md-6 mb-4">
+                                {{-- نوع الطلب --}}
+                                <div class="col-md-6 mb-4">
 
-                    <label class="form-label">
-                        نوع الطلب
-                        <span class="required-star">*</span>
-                    </label>
+                                    <label class="form-label">
+                                        نوع الطلب
+                                        <span class="required-star">*</span>
+                                    </label>
 
-                    <select class="form-select @error('requesttypeid') is-invalid @enderror"
-                        name="requesttypeid"
-                        id="requesttypeid">
+                                    <select class="form-select @error('requesttypeid') is-invalid @enderror"
+                                        name="requesttypeid"
+                                        id="requesttypeid">
 
-                        <option value="">اختر</option>
+                                        <option value="">اختر</option>
 
-                        @foreach($requestTypes as $type)
+                                        @foreach($requestTypes as $type)
 
-                        <option value="{{ $type->requesttypeid }}"
-                            {{ old('requesttypeid', $complaint->RequestType ?? '') == $type->requesttypeid ? 'selected' : '' }}>
+                                        <option value="{{ $type->requesttypeid }}"
+                                            {{ old('requesttypeid', $complaint->RequestType ?? '') == $type->requesttypeid ? 'selected' : '' }}>
 
-                            {{ $type->requesttypename }}
+                                            {{ $type->requesttypename }}
 
-                        </option>
+                                        </option>
 
-                        @endforeach
+                                        @endforeach
 
-                    </select>
+                                    </select>
 
-                    @error('requesttypeid')
-                    <div class="error-text">{{ $message }}</div>
-                    @enderror
+                                    @error('requesttypeid')
+                                    <div class="error-text">{{ $message }}</div>
+                                    @enderror
 
-                </div>
+                                </div>
 
-                {{-- الرقم القومي --}}
-                <div class="col-md-6 mb-4" id="nationalIdSection">
+                                {{-- الرقم القومي --}}
+                                <div class="col-md-6 mb-4" id="nationalIdSection">
 
-                    <label class="form-label">
-                        الرقم القومي
-                    </label>
+                                    <label class="form-label">
+                                        الرقم القومي
+                                    </label>
 
-                    <input type="text"
-                        class="form-control"
-                        name="ComplaintNationalID"
-                        value="{{ old('ComplaintNationalID', $complaint->ComplaintNationalID ?? '') }}"
-                        autocomplete="off">
+                                    <input type="text"
+                                        class="form-control"
+                                        name="ComplaintNationalID"
+                                        value="{{ old('ComplaintNationalID', $complaint->ComplaintNationalID ?? '') }}"
+                                        autocomplete="off">
 
-                    <div class="error-text" id="nidError"></div>
+                                    <div class="error-text" id="nidError"></div>
 
-                </div>
+                                </div>
 
-                {{-- النوع --}}
-                <div class="col-md-6 mb-4">
+                                {{-- النوع --}}
+                                <div class="col-md-6 mb-4">
 
-                    <label class="form-label">
-                        النوع
-                    </label>
+                                    <label class="form-label">
+                                        النوع
+                                    </label>
 
-                    <input type="text"
-                        class="form-control"
-                        name="ComplainerGender"
-                        value="{{ old('ComplainerGender', $complaint->ComplainerGender ?? '') }}"
-                        disabled>
+                                    <input type="text"
+                                        class="form-control"
+                                        name="ComplainerGender"
+                                        value="{{ old('ComplainerGender', $complaint->ComplainerGender ?? '') }}"
+                                        disabled>
 
-                </div>
+                                </div>
 
-                {{-- الاسم --}}
-                <div class="col-md-6 mb-4">
+                                {{-- الاسم --}}
+                                <div class="col-md-6 mb-4">
 
-                    <label class="form-label">
-                        اسم العميل
-                        <span class="required-star">*</span>
-                    </label>
+                                    <label class="form-label">
+                                        اسم العميل
+                                        <span class="required-star">*</span>
+                                    </label>
 
-                    <input type="text"
-                        class="form-control @error('ComplainerName') is-invalid @enderror"
-                        name="ComplainerName"
-                        value="{{ old('ComplainerName', $complaint->ComplainerName ?? '') }}">
+                                    <input type="text"
+                                        class="form-control @error('ComplainerName') is-invalid @enderror"
+                                        name="ComplainerName"
+                                        value="{{ old('ComplainerName', $complaint->ComplainerName ?? '') }}">
 
-                    @error('ComplainerName')
-                    <div class="error-text">{{ $message }}</div>
-                    @enderror
+                                    @error('ComplainerName')
+                                    <div class="error-text">{{ $message }}</div>
+                                    @enderror
 
-                </div>
+                                </div>
 
-                {{-- البريد --}}
-                <div class="col-md-6 mb-4">
+                                {{-- البريد --}}
+                                <div class="col-md-6 mb-4">
 
-                    <label class="form-label">
-                        البريد الإلكتروني
-                    </label>
+                                    <label class="form-label">
+                                        البريد الإلكتروني
+                                    </label>
 
-                    <input type="email"
-                        class="form-control @error('ComplainerEmail') is-invalid @enderror"
-                        name="ComplainerEmail"
-                        value="{{ old('ComplainerEmail', $complaint->ComplainerEmail ?? '') }}">
+                                    <input type="email"
+                                        class="form-control @error('ComplainerEmail') is-invalid @enderror"
+                                        name="ComplainerEmail"
+                                        value="{{ old('ComplainerEmail', $complaint->ComplainerEmail ?? '') }}">
 
-                    @error('ComplainerEmail')
-                    <div class="error-text">{{ $message }}</div>
-                    @enderror
+                                    @error('ComplainerEmail')
+                                    <div class="error-text">{{ $message }}</div>
+                                    @enderror
 
-                </div>
+                                </div>
 
-                {{-- الهاتف --}}
-                <div class="col-md-6 mb-4">
+                                {{-- الهاتف --}}
+                                <div class="col-md-6 mb-4">
 
-                    <label class="form-label">
-                        رقم الهاتف
-                        <span class="required-star">*</span>
-                    </label>
+                                    <label class="form-label">
+                                        رقم الهاتف
+                                        <span class="required-star">*</span>
+                                    </label>
 
-                    <input type="text"
-                        class="form-control @error('ComplainerPhone') is-invalid @enderror"
-                        name="ComplainerPhone"
-                        value="{{ old('ComplainerPhone', $complaint->ComplainerPhone ?? '') }}">
+                                    <input type="text"
+                                        class="form-control @error('ComplainerPhone') is-invalid @enderror"
+                                        name="ComplainerPhone"
+                                        value="{{ old('ComplainerPhone', $complaint->ComplainerPhone ?? '') }}">
 
-                    @error('ComplainerPhone')
-                    <div class="error-text">{{ $message }}</div>
-                    @enderror
+                                    @error('ComplainerPhone')
+                                    <div class="error-text">{{ $message }}</div>
+                                    @enderror
 
-                </div>
+                                </div>
 
-            </div>
+                            </div>
 
-            <div class="text-end mt-3">
+                            <div class="text-end mt-3">
 
-                <button type="button" class="btn btn-primary btn-custom nextBtn">
-                    التالي
-                    <i class="bx bx-left-arrow-alt ms-1"></i>
-                </button>
+                                <button type="button" class="btn btn-primary btn-custom nextBtn">
+                                    التالي
+                                    <i class="bx bx-left-arrow-alt ms-1"></i>
+                                </button>
 
-            </div>
+                            </div>
 
-        </div>
+                        </div>
 
-    </div>
+                    </div>
 
-    {{-- ================= STEP 2 ================= --}}
-    <div class="setup-content" id="step-2">
+                    {{-- ================= STEP 2 ================= --}}
+                    <div class="setup-content" id="step-2">
 
-        <div class="section-card">
+                        <div class="section-card">
 
-            <div class="section-title">
-                <i class="bx bx-detail"></i>
-                تفاصيل الشكوى
-            </div>
+                            <div class="section-title">
+                                <i class="bx bx-detail"></i>
+                                تفاصيل الشكوى
+                            </div>
 
-            <div class="row">
+                            <div class="row">
 
-                {{-- التاريخ --}}
-                <div class="col-md-6 mb-4">
+                                {{-- التاريخ --}}
+                                <div class="col-md-6 mb-4">
 
-                    <label class="form-label">
-                        التاريخ
-                    </label>
+                                    <label class="form-label">
+                                        التاريخ
+                                    </label>
 
-                    <input type="date"
-                        class="form-control @error('ComplaintDate') is-invalid @enderror"
-                        name="ComplaintDate"
-                        value="{{ old('ComplaintDate', $complaint->ComplaintDate ?? '') }}">
+                                    <input type="date"
+                                        class="form-control @error('ComplaintDate') is-invalid @enderror"
+                                        name="ComplaintDate"
+                                        value="{{ old('ComplaintDate', $complaint->ComplaintDate ?? '') }}">
 
-                    @error('ComplaintDate')
-                    <div class="error-text">{{ $message }}</div>
-                    @enderror
+                                    @error('ComplaintDate')
+                                    <div class="error-text">{{ $message }}</div>
+                                    @enderror
 
-                </div>
+                                </div>
 
-                {{-- القطاع --}}
-                <div class="col-md-6 mb-4">
+                                {{-- القطاع --}}
+                                <div class="col-md-6 mb-4">
 
-                    <label class="form-label">
-                        القطاع
-                    </label>
+                                    <label class="form-label">
+                                        القطاع
+                                    </label>
 
-                    <select class="form-select @error('sector_id') is-invalid @enderror"
-                        name="sector_id">
+                                    <select class="form-select @error('sector_id') is-invalid @enderror"
+                                        name="sector_id">
 
-                        <option value="">اختر</option>
+                                        <option value="">اختر</option>
 
-                        @foreach($sectors as $sector)
+                                        @foreach($sectors as $sector)
 
-                        <option value="{{ $sector->sector_id }}"
-                            {{ old('sector_id', $complaint->department ?? '') == $sector->sector_id ? 'selected' : '' }}>
+                                        <option value="{{ $sector->sector_id }}"
+                                            {{ old('sector_id', $complaint->department ?? '') == $sector->sector_id ? 'selected' : '' }}>
 
-                            {{ $sector->sector_name }}
+                                            {{ $sector->sector_name }}
 
-                        </option>
+                                        </option>
 
-                        @endforeach
+                                        @endforeach
 
-                    </select>
+                                    </select>
 
-                    @error('sector_id')
-                    <div class="error-text">{{ $message }}</div>
-                    @enderror
+                                    @error('sector_id')
+                                    <div class="error-text">{{ $message }}</div>
+                                    @enderror
 
-                </div>
+                                </div>
 
-                {{-- المحافظة --}}
-                <div class="col-md-6 mb-4">
+                                {{-- المحافظة --}}
+                                <div class="col-md-6 mb-4">
 
-                    <label class="form-label">
-                        المحافظة
-                    </label>
+                                    <label class="form-label">
+                                        المحافظة
+                                    </label>
 
-                    <select class="form-select @error('ComplaintGovernorate') is-invalid @enderror"
-                        id="governorateSelect"
-                        name="ComplaintGovernorate">
+                                    <select class="form-select @error('ComplaintGovernorate') is-invalid @enderror"
+                                        id="governorateSelect"
+                                        name="ComplaintGovernorate">
 
-                        <option value="">اختر المحافظة</option>
+                                        <option value="">اختر المحافظة</option>
 
-                        @foreach ($govs as $gov)
+                                        @foreach ($govs as $gov)
 
-                        <option value="{{ $gov->govsid }}"
-                            {{ old('ComplaintGovernorate', $complaint->ComplaintGovernorate ?? '') == $gov->govsid ? 'selected' : '' }}>
+                                        <option value="{{ $gov->govsid }}"
+                                            {{ old('ComplaintGovernorate', $complaint->ComplaintGovernorate ?? '') == $gov->govsid ? 'selected' : '' }}>
 
-                            {{ $gov->govname }}
+                                            {{ $gov->govname }}
 
-                        </option>
+                                        </option>
 
-                        @endforeach
+                                        @endforeach
 
-                    </select>
+                                    </select>
 
-                    @error('ComplaintGovernorate')
-                    <div class="error-text">{{ $message }}</div>
-                    @enderror
+                                    @error('ComplaintGovernorate')
+                                    <div class="error-text">{{ $message }}</div>
+                                    @enderror
 
-                </div>
+                                </div>
 
-                {{-- المكتب --}}
-                <div class="col-md-6 mb-4">
+                                {{-- المكتب --}}
+                                <div class="col-md-6 mb-4">
 
-                    <label class="form-label">
-                        المكتب
-                    </label>
+                                    <label class="form-label">
+                                        المكتب
+                                    </label>
 
-                    <select class="form-select @error('office') is-invalid @enderror"
-                        id="officeSelect"
-                        name="office">
+                                    <select class="form-select @error('office') is-invalid @enderror"
+                                        id="officeSelect"
+                                        name="office">
 
-                        <option value="">اختر المكتب</option>
+                                        <option value="">اختر المكتب</option>
 
-                        @foreach ($offices as $office)
+                                        @foreach ($offices as $office)
 
-                        <option value="{{ $office->ID }}"
-                            data-gov="{{ $office->FK_GOVT_CODE }}"
-                            {{ old('office', $complaint->office ?? '') == $office->ID ? 'selected' : '' }}>
+                                        <option value="{{ $office->ID }}"
+                                            data-gov="{{ $office->FK_GOVT_CODE }}"
+                                            {{ old('office', $complaint->office ?? '') == $office->ID ? 'selected' : '' }}>
 
-                            {{ $office->REG_OFFIC_NAMA }}
+                                            {{ $office->REG_OFFIC_NAMA }}
 
-                        </option>
+                                        </option>
 
-                        @endforeach
+                                        @endforeach
 
-                    </select>
+                                    </select>
 
-                    @error('office')
-                    <div class="error-text">{{ $message }}</div>
-                    @enderror
+                                    @error('office')
+                                    <div class="error-text">{{ $message }}</div>
+                                    @enderror
 
-                </div>
+                                </div>
 
-                {{-- مصدر الشكوى --}}
-                <div class="col-md-12 mb-4">
+                                {{-- مصدر الشكوى --}}
+                                <div class="col-md-12 mb-4">
 
-                    <label class="form-label">
-                        مصدر الشكوى
-                    </label>
+                                    <label class="form-label">
+                                        مصدر الشكوى
+                                    </label>
 
-                    <select class="form-select @error('comsource_id') is-invalid @enderror"
-                        name="comsource_id">
+                                    <select class="form-select @error('comsource_id') is-invalid @enderror"
+                                        name="comsource_id">
 
-                        <option value="">اختر</option>
+                                        <option value="">اختر</option>
 
-                        @foreach($comsources as $source)
+                                        @foreach($comsources as $source)
 
-                        <option value="{{ $source->comsourcesid }}"
-                            {{ old('comsource_id', $complaint->ComplaintSources ?? '') == $source->comsourcesid ? 'selected' : '' }}>
+                                        <option value="{{ $source->comsourcesid }}"
+                                            {{ old('comsource_id', $complaint->ComplaintSources ?? '') == $source->comsourcesid ? 'selected' : '' }}>
 
-                            {{ $source->comsourcesname }}
+                                            {{ $source->comsourcesname }}
 
-                        </option>
+                                        </option>
 
-                        @endforeach
+                                        @endforeach
 
-                    </select>
+                                    </select>
 
-                    @error('comsource_id')
-                    <div class="error-text">{{ $message }}</div>
-                    @enderror
+                                    @error('comsource_id')
+                                    <div class="error-text">{{ $message }}</div>
+                                    @enderror
 
-                </div>
+                                </div>
 
-            </div>
+                            </div>
 
-            <div class="d-flex justify-content-between gap-mobile mt-4">
+                            <div class="d-flex justify-content-between gap-mobile mt-4">
 
-                <button type="button" class="btn btn-secondary btn-custom">
+                                <button type="button" class="btn btn-secondary btn-custom prevBtn">
 
-                    <i class="bx bx-right-arrow-alt me-1"></i>
+                                    <i class="bx bx-right-arrow-alt me-1"></i>
 
-                    رجوع
+                                    رجوع
 
-                </button>
+                                </button>
 
-                <button type="submit" class="btn btn-success btn-custom">
+                                <button type="submit" class="btn btn-success btn-custom">
 
-                    <i class="bx bx-save me-1"></i>
+                                    <i class="bx bx-save me-1"></i>
 
-                    حفظ الشكوى
+                                    حفظ الشكوى
 
-                </button>
+                                </button>
 
-            </div>
+                            </div>
 
-        </div>
+                        </div>
 
-    </div>
+                    </div>
 
-</form>
+                </form>
 
             </div>
 
@@ -646,77 +654,9 @@
 @endsection
 
 @push('footerScripts')
-<script src="{{ asset('assets/js/complaints.js') }}"></script>
-
 <script>
-    $(document).ready(function() {
-
-        $('.nextBtn').click(function() {
-
-            let isValid = true;
-
-            $('#step-1 .form-control, #step-1 .form-select').removeClass('is-invalid');
-
-            let requestType = $('#requesttypeid').val();
-            let nationalId = $("input[name='ComplaintNationalID']").val().trim();
-
-            // =========================
-            // VALIDATION FIELDS
-            // =========================
-            const requiredFields = [
-                'requesttypeid',
-                'ComplainerName',
-                'ComplainerPhone'
-            ];
-
-            requiredFields.forEach(function(fieldName) {
-
-                let field = $('[name="' + fieldName + '"]');
-
-                if ($.trim(field.val()) === '') {
-                    field.addClass('is-invalid');
-                    isValid = false;
-                }
-
-            });
-
-            // =========================
-            // EXTRA RULE (IMPORTANT)
-            // =========================
-            if (requestType == 2 && nationalId === '') {
-
-                $("input[name='ComplaintNationalID']").addClass('is-invalid');
-
-                alert("من فضلك قم بإدخال الرقم القومي لأنه مطلوب في هذا النوع من الطلبات");
-
-                isValid = false;
-            }
-
-            // STOP
-            if (!isValid) {
-                alert("من فضلك قم بإكمال جميع البيانات المطلوبة");
-                return;
-            }
-
-            // NEXT STEP
-            $('#step-1').removeClass('active');
-            $('#step-2').addClass('active');
-
-            $('.step-link').removeClass('active');
-            $('.step-link[href="#step-2"]').addClass('active');
-
-        });
-
-        $('.prevBtn').click(function() {
-
-            $('#step-2').removeClass('active');
-            $('#step-1').addClass('active');
-
-            $('.step-link').removeClass('active');
-            $('.step-link[href="#step-1"]').addClass('active');
-
-        });
-
-    });
+    window.currentWizardStep = "{{ $step == 2 ? 'step-2' : 'step-1' }}";
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ asset('assets/js/complaints.js') }}"></script>
 @endpush

@@ -1,62 +1,191 @@
 $(document).ready(function () {
 
-    // =========================
-    // STEP WIZARD
-    // =========================
-    var nav = $('.setup-panel a'),
-        allSteps = $('.setup-content');
+  // =========================
+// STEP WIZARD
+// =========================
+var nav = $('.setup-panel a'),
+    allSteps = $('.setup-content');
 
-    allSteps.hide();
-    $('#step-1').show();
+allSteps.hide();
+$('#step-1').show();
 
-    function setActiveStep(stepId) {
-        nav.removeClass('btn-primary').addClass('btn-default');
-        $('.setup-panel a[href="#' + stepId + '"]').addClass('btn-primary');
+function setActiveStep(stepId) {
 
-        allSteps.hide();
-        $('#' + stepId).show();
+    allSteps.removeClass('active').hide();
+
+    $('#' + stepId)
+        .addClass('active')
+        .show();
+
+    nav.removeClass('active btn-primary')
+        .addClass('btn-default');
+
+    $('.setup-panel a[href="#' + stepId + '"]')
+        .addClass('active btn-primary');
+}
+
+
+// =========================
+// INITIAL STEP
+// =========================
+
+// لو فيه أخطاء في step 2
+let hasStep2Errors =
+    $('[name="ComplaintDate"]').hasClass('is-invalid') ||
+    $('[name="sector_id"]').hasClass('is-invalid') ||
+    $('[name="ComplaintGovernorate"]').hasClass('is-invalid') ||
+    $('[name="office"]').hasClass('is-invalid') ||
+    $('[name="comsource_id"]').hasClass('is-invalid');
+
+// لو فيه أخطاء في step 1
+let hasStep1Errors =
+    $('[name="requesttypeid"]').hasClass('is-invalid') ||
+    $('[name="ComplainerName"]').hasClass('is-invalid') ||
+    $('[name="ComplainerEmail"]').hasClass('is-invalid') ||
+    $('[name="ComplainerPhone"]').hasClass('is-invalid') ||
+    $('[name="ComplaintNationalID"]').hasClass('is-invalid');
+
+if (hasStep2Errors) {
+
+    setActiveStep('step-2');
+
+} else {
+
+   setActiveStep(window.currentWizardStep || 'step-1');
+}
+
+
+// =========================
+// VALIDATION FUNCTION
+// =========================
+function validateStep1() {
+
+    let isValid = true;
+
+    $('#step-1 .form-control, #step-1 .form-select')
+        .removeClass('is-invalid');
+
+    let requestType = $('#requesttypeid').val();
+    let nationalId = $("input[name='ComplaintNationalID']").val().trim();
+
+    const requiredFields = [
+        'requesttypeid',
+        'ComplainerName',
+        'ComplainerPhone',
+        'ComplainerEmail'
+    ];
+
+    requiredFields.forEach(function (fieldName) {
+
+        let field = $('[name="' + fieldName + '"]');
+
+        if ($.trim(field.val()) === '') {
+            field.addClass('is-invalid');
+            isValid = false;
+        }
+    });
+
+    // الرقم القومي مطلوب
+    if (requestType == 2 && nationalId === '') {
+
+        $("input[name='ComplaintNationalID']")
+            .addClass('is-invalid');
+
+        $("#nidError").text("الرقم القومي مطلوب");
+
+        isValid = false;
     }
 
-    // Step click
-    nav.on('click', function (e) {
+    return isValid;
+}
+
+
+// =========================
+// STEP CLICK
+// =========================
+nav.on('click', function (e) {
+
+    e.preventDefault();
+
+    let target = $(this).attr('href').replace('#', '');
+
+    // لو رايح step 2 لازم validation
+    if (target === 'step-2') {
+
+        if (!validateStep1()) {
+
+            alert("من فضلك قم بإكمال جميع البيانات المطلوبة");
+
+            return false;
+        }
+    }
+
+    setActiveStep(target);
+});
+
+
+// =========================
+// NEXT BUTTON
+// =========================
+$('.nextBtn').on('click', function () {
+
+    if (!validateStep1()) {
+
+        alert("من فضلك قم بإكمال جميع البيانات المطلوبة");
+
+        return false;
+    }
+
+    setActiveStep('step-2');
+});
+
+
+// =========================
+// PREV BUTTON
+// =========================
+$('.prevBtn').on('click', function () {
+
+    setActiveStep('step-1');
+});
+
+
+ $("form").on("submit", function (e) {
+
+    let step1Valid = validateStep1();
+    let step2Valid = validateStep2();
+
+    if (!step1Valid) {
+
         e.preventDefault();
 
-        if ($(this).attr('disabled')) return;
+        setActiveStep('step-1');
 
-        setActiveStep($(this).attr('href').replace('#', ''));
-    });
+        Swal.fire({
+            icon: 'warning',
+            title: 'تنبيه',
+            text: 'من فضلك استكمل البيانات المطلوبة في البيانات الشخصية'
+        });
 
-    // NEXT
-    $('.nextBtn').on('click', function () {
-        let currentStep = $(this).closest(".setup-content");
-        let currentId = currentStep.attr("id");
+        return false;
+    }
 
-        let currentLink = $('.setup-panel a[href="#' + currentId + '"]');
-        let nextLink = currentLink.parent().next().find("a");
+    if (!step2Valid) {
 
-        if (nextLink.length) {
-            setActiveStep(nextLink.attr("href").replace('#', ''));
-        }
-    });
+        e.preventDefault();
 
-    // PREV (THIS WAS MISSING)
-    $('.prevBtn').on('click', function () {
-        let currentStep = $(this).closest(".setup-content");
-        let currentId = currentStep.attr("id");
+        setActiveStep('step-2');
 
-        let currentLink = $('.setup-panel a[href="#' + currentId + '"]');
-        let prevLink = currentLink.parent().prev().find("a");
+        Swal.fire({
+            icon: 'warning',
+            title: 'تنبيه',
+            text: 'من فضلك استكمل البيانات المطلوبة في تفاصيل الشكوى'
+        });
 
-        if (prevLink.length) {
-            setActiveStep(prevLink.attr("href").replace('#', ''));
-        }
-    });
+        return false;
+    }
 
-
-    $("form").on("submit", function () {
-        $("#step-1, #step-2").find(":input").prop("disabled", false);
-    });
-
+    return true;
+});
 
     // =========================
     // RESULT OBJECT
@@ -231,4 +360,134 @@ $(document).ready(function () {
         $("#officeSelect").val("");
     });
 
+
+
+
+function validateStep1() {
+
+    let isValid = true;
+
+    $('#step-1 .form-control, #step-1 .form-select')
+        .removeClass('is-invalid');
+
+    let requestType = $('#requesttypeid').val();
+
+    let nationalId = $("input[name='ComplaintNationalID']").val().trim();
+
+    let phone = $("input[name='ComplainerPhone']").val().trim();
+
+    let email = $("input[name='ComplainerEmail']").val().trim();
+
+    const requiredFields = [
+        'requesttypeid',
+        'ComplainerName',
+        'ComplainerPhone',
+        'ComplainerEmail'
+    ];
+
+    requiredFields.forEach(function (fieldName) {
+
+        let field = $('[name="' + fieldName + '"]');
+
+        if ($.trim(field.val()) === '') {
+
+            field.addClass('is-invalid');
+
+            isValid = false;
+        }
+    });
+
+    // VALID PHONE
+    let phoneRegex = /^01[0-2,5]{1}[0-9]{8}$/;
+
+    if (phone !== '' && !phoneRegex.test(phone)) {
+
+        $("input[name='ComplainerPhone']").addClass('is-invalid');
+
+        isValid = false;
+    }
+
+    // VALID EMAIL
+    let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (email !== '' && !emailRegex.test(email)) {
+
+        $("input[name='ComplainerEmail']").addClass('is-invalid');
+
+        isValid = false;
+    }
+
+    // NATIONAL ID
+    if (requestType == 2 && nationalId === '') {
+
+        $("input[name='ComplaintNationalID']")
+            .addClass('is-invalid');
+
+        $("#nidError").text("الرقم القومي مطلوب");
+
+        isValid = false;
+    }
+
+    return isValid;
+}
+
+
+$(document).on("keyup", "input[name='ComplainerPhone']", function () {
+
+    let phone = $(this).val().trim();
+
+    let regex = /^01[0-2,5]{1}[0-9]{8}$/;
+
+    if (phone === '') {
+
+        $(this).removeClass("is-invalid");
+
+        return;
+    }
+
+    if (!regex.test(phone)) {
+
+       
+$(this).addClass("is-invalid");
+if ($(this).next('.error-text').length === 0) {
+    $(this).after('<div class="error-text">رقم الهاتف غير صحيح</div>');
+}
+
+    } else {
+
+        $(this).removeClass("is-invalid");
+$(this).next('.error-text').remove();
+    }
+});
+
+
+
+
+$(document).on("keyup", "input[name='ComplainerEmail']", function () {
+
+    let email = $(this).val().trim();
+
+    let regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (email === '') {
+
+        $(this).removeClass("is-invalid");
+
+        return;
+    }
+
+    if (!regex.test(email)) {
+
+        $(this).addClass("is-invalid");
+
+if ($(this).next('.error-text').length === 0) {
+    $(this).after('<div class="error-text">البريد الإلكتروني غير صحيح</div>');
+}
+
+    } else {
+
+        $(this).removeClass("is-invalid");
+$(this).next('.error-text').remove();
+    }
+});
 });

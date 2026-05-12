@@ -66,44 +66,70 @@ class ComplaintController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-public function store(Request $request)
-{
-    $data = $request->validate([
-        'requesttypeid' => 'required|integer',
-        'ComplainerName' => 'required|string',
-        'ComplainerEmail' => 'required|email',
-        'ComplainerPhone' => 'required|string',
-        'ComplaintGovernorate' => 'required|integer',
-        'ComplaintDate' => 'required|date',
-        'sector_id' => 'required|integer',
-        'office' => 'required|integer',
-        'comsource_id' => 'required|integer',
+    public function store(Request $request)
+    {
+        $data = $request->validate([
 
-        // 👇 مهم: شرط حسب نوع الطلب
-        'ComplaintNationalID' => 'nullable|required_if:requesttypeid,2|digits:14',
+            'requesttypeid' => 'required|integer',
+            'ComplainerName' => 'required|string',
+            'ComplainerEmail' => 'required|email',
+            'ComplainerPhone' => [
+                'required',
+                'regex:/^01[0-2,5]{1}[0-9]{8}$/'
+            ],
 
-        'ComplainerGender' => 'nullable',
-    ]);
+            'ComplaintGovernorate' => 'required|integer',
+            'ComplaintDate' => 'required|date',
+            'sector_id' => 'required|integer',
+            'office' => 'required|integer',
+            'comsource_id' => 'required|integer',
+
+            'ComplaintNationalID' => 'nullable|required_if:requesttypeid,2|digits:14',
+
+        ], [
+
+            'requesttypeid.required' => 'يرجى اختيار نوع الطلب',
+            'ComplainerName.required' => 'يرجى إدخال اسم العميل',
+
+            'ComplainerEmail.email' => 'البريد الإلكتروني غير صحيح',
+
+            'ComplainerPhone.required' => 'يرجى إدخال رقم الهاتف',
+            'ComplainerPhone.regex' => 'رقم الهاتف غير صحيح',
+
+            'ComplaintNationalID.required_if' => 'الرقم القومي مطلوب',
+            'ComplaintNationalID.digits' => 'الرقم القومي يجب أن يكون 14 رقم',
+
+            'ComplaintDate.required' => 'يرجى إدخال تاريخ الشكوى',
+
+            'ComplaintGovernorate.required' => 'يرجى اختيار المحافظة',
+
+            'sector_id.required' => 'يرجى اختيار القطاع',
+
+            'office.required' => 'يرجى اختيار المكتب',
+
+            'comsource_id.required' => 'يرجى اختيار مصدر الشكوى',
+
+        ]);
 
 
-    Complaint::create([
-        'RequestType' => $data['requesttypeid'],
-        'ComplainerName' => $data['ComplainerName'],
-        'ComplainerEmail' => $data['ComplainerEmail'],
-        'ComplainerPhone' => $data['ComplainerPhone'],
-        'ComplaintGovernorate' => $data['ComplaintGovernorate'],
-        'ComplaintDate' => $data['ComplaintDate'],
-        'department' => $data['sector_id'],
-        'office' => $data['office'],
-        'ComplaintSources' => $data['comsource_id'],
-        'ComplaintNationalID' => $data['ComplaintNationalID'] ?? null,
-        'ComplainerGender' => $data['ComplainerGender'] ?? null,
-    ]);
+        Complaint::create([
+            'RequestType' => $data['requesttypeid'],
+            'ComplainerName' => $data['ComplainerName'],
+            'ComplainerEmail' => $data['ComplainerEmail'],
+            'ComplainerPhone' => $data['ComplainerPhone'],
+            'ComplaintGovernorate' => $data['ComplaintGovernorate'],
+            'ComplaintDate' => $data['ComplaintDate'],
+            'department' => $data['sector_id'],
+            'office' => $data['office'],
+            'ComplaintSources' => $data['comsource_id'],
+            'ComplaintNationalID' => $data['ComplaintNationalID'] ?? null,
+            'ComplainerGender' => $data['ComplainerGender'] ?? null,
+        ]);
 
-    alert()->success('تم بنجاح', 'تم إضافة الشكوى بنجاح');
+        alert()->success('تم بنجاح', 'تم إضافة الشكوى بنجاح');
 
-    return redirect()->route('complaints.index');
-}
+        return redirect()->route('complaints.index');
+    }
     /**
      * Display the specified resource.
      *
@@ -147,44 +173,73 @@ public function store(Request $request)
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
- 
 
-public function update(Request $request, Complaint $complaint)
-{
-    $data = $request->validate([
-        'requesttypeid' => 'required|integer',
-        'ComplainerName' => 'required|string',
-        'ComplainerEmail' => 'required|email',
-        'ComplainerPhone' => 'required|string',
-        'ComplaintGovernorate' => 'required|integer',
-        'ComplaintDate' => 'required|date',
-        'sector_id' => 'required|integer',
-        'office' => 'required|integer',
-        'comsource_id' => 'required|integer',
 
-        'ComplaintNationalID' => 'nullable|required_if:requesttypeid,2|digits:14',
-    ]);
+    public function update(Request $request, Complaint $complaint)
+    {
+        $data = $request->validate([
 
-  
+            'requesttypeid' => 'required|integer',
+            'ComplainerName' => 'required|string',
+            'ComplainerEmail' => 'required|email',
+            'ComplainerPhone' => [
+                'required',
+                'regex:/^01[0-2,5]{1}[0-9]{8}$/'
+            ],
 
-    $complaint->update([
-        'RequestType' => $data['requesttypeid'],
-        'ComplainerName' => $data['ComplainerName'],
-        'ComplainerEmail' => $data['ComplainerEmail'],
-        'ComplainerPhone' => $data['ComplainerPhone'],
-        'ComplaintGovernorate' => $data['ComplaintGovernorate'],
-        'ComplaintDate' => $data['ComplaintDate'],
-        'department' => $data['sector_id'],
-        'office' => $data['office'],
-        'ComplaintSources' => $data['comsource_id'],
-        'ComplaintNationalID' => $data['ComplaintNationalID'] ?? null,
-        'ComplainerGender' => $data['ComplainerGender'] ?? null,
-    ]);
+            'ComplaintGovernorate' => 'required|integer',
+            'ComplaintDate' => 'required|date',
+            'sector_id' => 'required|integer',
+            'office' => 'required|integer',
+            'comsource_id' => 'required|integer',
 
-    alert()->success('تم بنجاح', 'تم تعديل الشكوى بنجاح');
+            'ComplaintNationalID' => 'nullable|required_if:requesttypeid,2|digits:14',
 
-    return redirect()->route('complaints.index');
-}
+        ], [
+
+            'requesttypeid.required' => 'يرجى اختيار نوع الطلب',
+            'ComplainerName.required' => 'يرجى إدخال اسم العميل',
+
+            'ComplainerEmail.email' => 'البريد الإلكتروني غير صحيح',
+
+            'ComplainerPhone.required' => 'يرجى إدخال رقم الهاتف',
+            'ComplainerPhone.regex' => 'رقم الهاتف غير صحيح',
+
+            'ComplaintNationalID.required_if' => 'الرقم القومي مطلوب',
+            'ComplaintNationalID.digits' => 'الرقم القومي يجب أن يكون 14 رقم',
+
+            'ComplaintDate.required' => 'يرجى إدخال تاريخ الشكوى',
+
+            'ComplaintGovernorate.required' => 'يرجى اختيار المحافظة',
+
+            'sector_id.required' => 'يرجى اختيار القطاع',
+
+            'office.required' => 'يرجى اختيار المكتب',
+
+            'comsource_id.required' => 'يرجى اختيار مصدر الشكوى',
+
+        ]);
+
+
+
+        $complaint->update([
+            'RequestType' => $data['requesttypeid'],
+            'ComplainerName' => $data['ComplainerName'],
+            'ComplainerEmail' => $data['ComplainerEmail'],
+            'ComplainerPhone' => $data['ComplainerPhone'],
+            'ComplaintGovernorate' => $data['ComplaintGovernorate'],
+            'ComplaintDate' => $data['ComplaintDate'],
+            'department' => $data['sector_id'],
+            'office' => $data['office'],
+            'ComplaintSources' => $data['comsource_id'],
+            'ComplaintNationalID' => $data['ComplaintNationalID'] ?? null,
+            'ComplainerGender' => $data['ComplainerGender'] ?? null,
+        ]);
+
+        alert()->success('تم بنجاح', 'تم تعديل الشكوى بنجاح');
+
+        return redirect()->route('complaints.index');
+    }
 
     /**
      * Remove the specified resource from storage.
