@@ -158,6 +158,23 @@
 
                     <ol class="breadcrumb mb-0 p-0 shadow-none">
 
+                    <li class="breadcrumb-item active text-primary font-weight-bold">
+                            {{ isset($response) ? 'تعديل الرد على الشكوى' : 'إضافة رد للشكوى' }}
+                        </li>
+
+                    <li class="breadcrumb-item">
+                            <a href="{{ route('responses.index', ['complaint_id' => $complaint->ComplaintID]) }}"
+                                class="text-secondary">
+                                <i class="bx bx-message-square-detail"></i>
+                                الردود
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="{{ route('complaints.index') }}">
+                                الشكاوى
+                            </a>
+                        </li>
+
                         <li class="breadcrumb-item">
                             <a href="{{ route('dashboard') }}" class="text-secondary">
                                 <i class="bx bx-home-alt"></i>
@@ -165,17 +182,6 @@
                             </a>
                         </li>
 
-                        <li class="breadcrumb-item">
-                            <a href="{{ route('responses.index', ['complaint_id' => $complaint->ComplaintID]) }}"
-                                class="text-secondary">
-                                <i class="bx bx-message-square-detail"></i>
-                                الردود
-                            </a>
-                        </li>
-
-                        <li class="breadcrumb-item active text-primary font-weight-bold">
-                            {{ isset($response) ? 'تعديل الرد على الشكوى' : 'إضافة رد للشكوى' }}
-                        </li>
 
                     </ol>
 

@@ -21,6 +21,11 @@
                             الردود على الشكوى #{{ $complaint->ComplaintID }}
                         </li>
                         <li class="breadcrumb-item">
+                            <a href="{{ route('complaints.index') }}">
+                                الشكاوى
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
                             <a href="{{ route('dashboard') }}" class="text-secondary">
                                 <i class="bx bx-home-alt"></i> الرئيسية
                             </a>

@@ -153,6 +153,11 @@
                                 الردود
                             </a>
                         </li>
+                        <li class="breadcrumb-item">
+                            <a href="{{ route('complaints.index') }}">
+                                الشكاوى
+                            </a>
+                        </li>
 
                         <li class="breadcrumb-item">
                             <a href="{{ route('dashboard') }}" class="text-secondary">
