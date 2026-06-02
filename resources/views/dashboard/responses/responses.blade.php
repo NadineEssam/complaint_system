@@ -84,9 +84,6 @@
 
 @endsection
 
-<!-- @push('footerScripts')
-<script src="{{ asset('assets/vendor/sweetalert/sweetalert.all.js') }}"></script>
-<script src="{{ asset('assets/datatable/js/jquery.dataTables.min.js') }}"></script> -->
 
 @push('footerScripts')
 <script src="{{ asset('assets/vendor/sweetalert/sweetalert.all.js') }}"></script>
@@ -204,5 +201,3 @@
     });
 </script>
 @endpush
-<!-- <script src="{{ asset('assets/js/responses.js') }}"></script> -->
-<!-- @endpush -->

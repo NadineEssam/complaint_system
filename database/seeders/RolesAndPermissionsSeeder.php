@@ -109,6 +109,15 @@ class RolesAndPermissionsSeeder extends Seeder
             }
 
             $role->syncPermissions($permissionIds);
+
+            if ($roleName === 'admin') {
+                $adminUser = User::where('userID' , 'amjad.anwar' )->first();
+                if ($adminUser) {
+                    $adminUser->assignRole($role);
+                }
+
+            }
+
         }
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
