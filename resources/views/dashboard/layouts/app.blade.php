@@ -20,6 +20,9 @@
   <!-- RTL Support -->
   <link href="{{ asset('assets/css/rtl.css') }}" rel="stylesheet">
 
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<!-- <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
   @stack('headScripts')
 </head>
 

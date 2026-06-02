@@ -4,99 +4,113 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
-
-    /**
-     * Auto generated seed file
-     *
-     * @return void
-     */
     public function run()
     {
-        $gardName = config('auth.defaults.guard');
+        $guardName = config('auth.defaults.guard');
+
+        // 🔥 ترجمة الجروبات
+        $groupTranslations = [
+            'roles' => 'الأدوار',
+            'users' => 'المستخدمين',
+            'reports' => 'التقارير',
+            'complaints' => 'الشكاوى',
+            'responses' => 'الردود',
+        ];
+
         $permissionsByRole = [
             'admin' => [
 
-            // //      //  "roles",
-            //     "roles.rolesPermissions",
-            //     "roles.index",
-            //     "roles.create",
-            //     "roles.store",
-            //     "roles.update",
-            //     "roles.edit",
-            //     "roles.destroy",
-            //     "roles.show",
+                "roles.rolesPermissions" => "صلاحيات الأدوار",
+                "roles.index" => "عرض الأدوار",
+                "roles.create" => "إضافة دور",
+                "roles.store" => "حفظ الدور",
+                "roles.update" => "تحديث الدور",
+                "roles.edit" => "تعديل الدور",
+                "roles.destroy" => "حذف الدور",
+                "roles.show" => "عرض الدور",
 
-            //     //   "users",
-            //     "users.index",
-            //     "users.create",
-            //     "users.store",
-            //     "users.update",
-            //     "users.edit",
-            //     "users.destroy",
-            //     "users.show",
+                "users.index" => "عرض المستخدمين",
+                "users.create" => "إضافة مستخدم",
+                "users.store" => "حفظ المستخدم",
+                "users.update" => "تحديث المستخدم",
+                "users.edit" => "تعديل المستخدم",
+                "users.destroy" => "حذف المستخدم",
+                "users.show" => "عرض المستخدم",
 
-            //     //   "reports",
-                // "reports.index",
-                // "reports.view-report-central-report",
-                // "reports.view-report-complaint-percentage-report",
-                // "reports.view-report-complaint-saved-reasons-report",
-                // "reports.view-report-compare-request-type-between-years",
-                // "reports.view-report-complaints-inquiries-summary-by-source",
-                // "reports.view-report-offices-complaints-and-inquiries-summary-report",
-                // "reports.view-report-offices-saved-complaints-count-report",
-                // "reports.view-report-annual-sources-comparison",
+                "reports.index" => "عرض التقارير",
+                "reports.view-report-central-report" => "تقرير مركزي",
+                "reports.view-report-complaint-percentage-report" => "نسبة الشكاوى",
+                "reports.view-report-complaint-saved-reasons-report" => "أسباب حفظ الشكاوى",
+                "reports.view-report-compare-request-type-between-years" => "مقارنة الطلبات بين السنوات",
+                "reports.view-report-complaints-inquiries-summary-by-source" => "ملخص الشكاوى حسب المصدر",
+                "reports.view-report-offices-complaints-and-inquiries-summary-report" => "ملخص المكاتب",
+                "reports.view-report-offices-saved-complaints-count-report" => "عدد الشكاوى المحفوظة",
+                "reports.view-report-annual-sources-comparison" => "مقارنة المصادر السنوية",
 
-                //   "complaints",
-                "complaints.index",
-                "complaints.create",
-                "complaints.store",
-                "complaints.update",
-                "complaints.edit",
-                "complaints.destroy",
-                "complaints.show",
+                "complaints.index" => "عرض الشكاوى",
+                "complaints.create" => "إضافة شكوى",
+                "complaints.store" => "حفظ الشكوى",
+                "complaints.update" => "تحديث الشكوى",
+                "complaints.edit" => "تعديل الشكوى",
+                "complaints.reply" => "الرد على الشكوى",
+                "complaints.destroy" => "حذف الشكوى",
+                "complaints.show" => "عرض الشكوى",
 
-          
+                "responses.index" => "عرض الردود",
+                "responses.create" => "إضافة رد",
+                "responses.store" => "حفظ الرد",
+                "responses.update" => "تحديث الرد",
+                "responses.edit" => "تعديل الرد",
+                "responses.reply" => "الرد",
+                "responses.destroy" => "حذف الرد",
+                "responses.show" => "عرض الرد",
+                "responses.data" => "بيانات الردود",
             ],
         ];
 
+        foreach ($permissionsByRole as $roleName => $permissions) {
 
-        $insertPermissions = fn($role) => collect($permissionsByRole[$role])
-            ->map(fn($name) => DB::table(config('permission.table_names.permissions'))->insertGetId(['name' => $name, 'group' => ucfirst(explode('.', str_replace('_', ' ', $name))[0]), 'guard_name' => $gardName, 'created_at' => now(),]))
-            ->toArray();
+            $role = Role::firstOrCreate([
+                'name' => $roleName,
+                'guard_name' => $guardName,
+            ]);
 
-        $permissionIdsByRole = [
-            'admin' => $insertPermissions('admin'),
-        ];
+            $permissionIds = [];
 
-        foreach ($permissionIdsByRole as $roleName => $permissionIds) {
-            $role = Role::whereName($roleName)->first();
-            if (!$role) {
-                $role = Role::create([
-                    'name' => $roleName,
-                   // 'description' => 'Best for business owners and company administrators',
-                    'guard_name' => $gardName,
-                    'created_at' => now(),
-                ]);
-            }
-            DB::table(config('permission.table_names.role_has_permissions'))
-                ->insert(
-                    collect($permissionIds)->map(fn($id) => [
-                        'role_id' => $role->id,
-                        'permission_id' => $id,
-                    ])->toArray()
+            foreach ($permissions as $name => $arName) {
+
+                // 🔥 استخراج اسم الجروب
+                $group = explode('.', $name)[0];
+
+                $permission = Permission::firstOrCreate(
+                    [
+                        'name' => $name,
+                        'guard_name' => $guardName,
+                    ],
+                    [
+                        'group' => $group,
+                        'group_ar' => $groupTranslations[$group] ?? $group,
+                        'ar_name' => $arName,
+                    ]
                 );
-            $user = User::where('userID', 'amjad.anwar')->first();
-            if ($user) {
-                $user->assignRole($role);
-                //$user->givePermissionTo(DB::table('permissions')->whereIn('id',$permissionIds)->pluck('name')->toArray());
+
+                // 🔥 تحديث لو موجود قبل كده
+                $permission->update([
+                    'ar_name' => $arName,
+                    'group_ar' => $groupTranslations[$group] ?? $group,
+                ]);
+
+                $permissionIds[] = $permission->id;
             }
+
+            $role->syncPermissions($permissionIds);
         }
+
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
     }
 }

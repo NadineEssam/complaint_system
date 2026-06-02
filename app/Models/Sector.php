@@ -2,23 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
 
 class Sector extends Model
 {
-    use HasFactory;
-    protected $table = 'sector';
-
-    protected $primaryKey = 'sector_id';
-
+    protected $table = 'sector';          // Table name
+    protected $primaryKey = 'sector_id';  // Primary key
     public $timestamps = false;
 
-    protected $guarded=['sector_id'];
-
-
-
-
-
+    protected $fillable = [
+        'sector_name',
+        'sector_manager',
+        'sector_type'
+    ];
 }

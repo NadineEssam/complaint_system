@@ -23,19 +23,27 @@ class ComplaintDataTable extends DataTable
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
-        return (new EloquentDataTable($query ))
+        return (new EloquentDataTable($query))
 
             ->addColumn('action', function ($model) {
 
                 $html = '<div class="d-flex align-items-center gap-2 justify-content-end">';
-
+                if (PerUser('responses.index')) {
+                    $html .= '
+                         <a href="' . route('responses.index', ['complaint_id' => $model]) . '" 
+                        class="btn btn-sm btn-outline-primary action-btn"
+                        data-bs-toggle="tooltip" 
+                        title="الرد على الشكوى">
+                            <i class="fas fa-reply-all"></i>
+                        </a>';
+                }
                 // Edit Button
                 if (PerUser('complaints.edit')) {
                     $html .= '
                         <a href="' . route('complaints.edit', ['complaint' => $model]) . '" 
                         class="btn btn-sm btn-outline-primary action-btn"
                         data-bs-toggle="tooltip" 
-                        title="Edit complaint">
+                        title="تعديل الشكوى">
                             <i class="bx bx-edit-alt"></i>
                         </a>';
                 }
@@ -48,7 +56,7 @@ class ComplaintDataTable extends DataTable
                             data-id="' . $model->id . '"
                             data-url="' . route('complaints.destroy', ['complaint' => $model]) . '"
                             data-bs-toggle="tooltip" 
-                            title="Delete complaint">
+                            title="إزاله الشكوى">
                             <i class="bx bx-trash"></i>
                         </button>';
                 }
@@ -57,7 +65,7 @@ class ComplaintDataTable extends DataTable
 
                 return $html;
             })
-      
+
             ->setRowId('ComplaintID')
         ;
     }
@@ -90,7 +98,7 @@ class ComplaintDataTable extends DataTable
             ->parameters([
                 'scrollX' => true,
             ])
-            ->lengthMenu([10, 25 ,50])
+            ->lengthMenu([10, 25, 50])
             //                    ->buttons(
             //                        Button::make('export'),
             //                        Button::make('print'),
@@ -111,7 +119,7 @@ class ComplaintDataTable extends DataTable
 
             Column::make('ComplaintID')->title('رقم الشكوي'),
             Column::make('ComplainerName')->title('اسم الشاكي'),
-          
+
             Column::make('ComplaintNationalID')->title('الرقم القومي '),
             Column::make('ComplaintDate')->title('تاريخ الشكوي'),
             Column::computed('action')->title('الاجراءات')

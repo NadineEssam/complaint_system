@@ -2,23 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
 
 class Office extends Model
 {
-    use HasFactory;
-    protected $table = 'office';
-
-    protected $primaryKey = 'ID';
-
+    protected $table = 'office';           // Table name
+    protected $primaryKey = 'ID';          // Primary key
     public $timestamps = false;
 
-    protected $guarded=['ID'];
-
-
-
-
-
+    protected $fillable = [
+        'FK_GOVT_CODE',
+        'REG_OFFIC_NAMA',
+        'OFF_NAME',
+        'validity'
+    ];
+    
 }

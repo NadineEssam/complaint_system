@@ -2,23 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
 
 class RequestType extends Model
 {
-    use HasFactory;
     protected $table = 'requesttype';
-
     protected $primaryKey = 'requesttypeid';
-
     public $timestamps = false;
 
-    protected $guarded=['requesttypeid'];
 
-
-
-
-
+public function complaints()
+{
+    return $this->hasMany(\App\Models\Complaint::class, 'RequestType', 'requesttypeid');
+}
 }
