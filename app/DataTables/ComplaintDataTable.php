@@ -96,9 +96,32 @@ class ComplaintDataTable extends DataTable
      * @param \Spatie\Permission\Models\Role $model
      * @return \Illuminate\Database\Eloquent\Builder
      */
+    // public function query(Complaint $model): QueryBuilder
+    // {
+    //     return $model->newQuery();
+    // }
+
     public function query(Complaint $model): QueryBuilder
     {
-        return $model->newQuery();
+        $query = $model->newQuery();
+
+        if ($gender = $this->request->get('gender_filter')) {
+            $query->where('ComplainerGender', $gender);
+        }
+
+        if ($gov = $this->request->get('gov_filter')) {
+            $query->where('ComplaintGovernorate', $gov);
+        }
+
+        if ($status = $this->request->get('status_filter')) {
+            $query->where('ComplaintStatus', $status);
+        }
+
+        if ($reqtype = $this->request->get('reqtype_filter')) {
+            $query->where('RequestType', $reqtype);
+        }
+
+        return $query;
     }
 
     /**

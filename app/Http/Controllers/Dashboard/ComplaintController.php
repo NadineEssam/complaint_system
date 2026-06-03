@@ -33,9 +33,24 @@ class ComplaintController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    // public function index(ComplaintDataTable $dataTable)
+    // {
+    //     return $dataTable->render('dashboard.complaints.index');
+    // }
+
     public function index(ComplaintDataTable $dataTable)
     {
-        return $dataTable->render('dashboard.complaints.index');
+        $genders   = [['id' => 'ذكر', 'name' => 'ذكر'], ['id' => 'أنثى', 'name' => 'أنثى']];
+        $govs      = \App\Models\Gov::select('govsid as id', 'govname as name')->get();
+        $statuses  = \App\Models\CompStatus::select('statusID as id', 'statusText as name')->get();
+        $reqTypes  = \App\Models\RequestType::select('requesttypeid as id', 'requesttypename as name')->get();
+
+        return $dataTable->with([
+            'gender_filter'   => request('gender_filter'),
+            'gov_filter'      => request('gov_filter'),
+            'status_filter'   => request('status_filter'),
+            'reqtype_filter'  => request('reqtype_filter'),
+        ])->render('dashboard.complaints.index', compact('genders', 'govs', 'statuses', 'reqTypes'));
     }
     /**
      * Show the form for creating a new resource.
