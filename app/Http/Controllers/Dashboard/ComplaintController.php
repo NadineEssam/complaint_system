@@ -83,6 +83,7 @@ class ComplaintController extends Controller
             'sector_id' => 'required|integer',
             'office' => 'required|integer',
             'comsource_id' => 'required|integer',
+            'ComplainerGender' => 'nullable|string',
 
             'ComplaintNationalID' => 'nullable|required_if:requesttypeid,2|digits:14',
 
@@ -109,6 +110,7 @@ class ComplaintController extends Controller
 
             'comsource_id.required' => 'يرجى اختيار مصدر الشكوى',
 
+
         ]);
 
 
@@ -126,7 +128,7 @@ class ComplaintController extends Controller
             'ComplainerGender' => $data['ComplainerGender'] ?? null,
             'created_by' => auth()->id(),
         ]);
-        
+
 
         alert()->success('تم بنجاح', 'تم إضافة الشكوى بنجاح');
 
@@ -194,7 +196,7 @@ class ComplaintController extends Controller
             'sector_id' => 'required|integer',
             'office' => 'required|integer',
             'comsource_id' => 'required|integer',
-
+            'ComplainerGender' => 'nullable|string',
             'ComplaintNationalID' => 'nullable|required_if:requesttypeid,2|digits:14',
 
         ], [
@@ -238,7 +240,7 @@ class ComplaintController extends Controller
             'ComplainerGender' => $data['ComplainerGender'] ?? null,
             'updated_by' => auth()->id(),
         ]);
-       
+
 
         alert()->success('تم بنجاح', 'تم تعديل الشكوى بنجاح');
 

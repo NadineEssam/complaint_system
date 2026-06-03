@@ -384,7 +384,7 @@ $step = (
                                         class="form-control"
                                         name="ComplainerGender"
                                         value="{{ old('ComplainerGender', $complaint->ComplainerGender ?? '') }}"
-                                        disabled>
+                                        readonly>
 
                                 </div>
 
