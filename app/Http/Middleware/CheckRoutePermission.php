@@ -25,14 +25,7 @@ class CheckRoutePermission
             'dashboard',
             'home',
             'logout',
-               "reports.view-report-central-report" ,
-                "reports.view-report-complaint-percentage-report",
-                "reports.view-report-complaint-saved-reasons-report" ,
-                "reports.view-report-compare-request-type-between-years" ,
-                "reports.view-report-complaints-inquiries-summary-by-source" ,
-                "reports.view-report-offices-complaints-and-inquiries-summary-report",
-                "reports.view-report-offices-saved-complaints-count-report" ,
-                "reports.view-report-annual-sources-comparison" ,
+              
                 "reports.filters"   ,
                 "reports.generate"   ,
         ];
