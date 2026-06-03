@@ -37,7 +37,7 @@
               <a href="/" class="logo d-flex align-items-center w-auto">
                 <img src="{{ asset('logo.png') }}" style="width: 150px" alt="MSMEDA Logo">
                 <br>
-                <span class="d-none d-lg-block">نظام الشكاوي</span>
+                <span class="d-none d-lg-block">نظام خدمة العملاء</span>
               </a>
             </div>
 
