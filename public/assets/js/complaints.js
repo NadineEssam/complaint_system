@@ -461,7 +461,25 @@ $(this).next('.error-text').remove();
 });
 
 
+$(document).on("keyup", "input[name='ComplainerEmail']", function () {
+    let email = $(this).val().trim();
+    let regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    let errorSpan = $(this).siblings('.error-text');
 
+    if (email === '') {
+        $(this).removeClass("is-invalid");
+        errorSpan.text('');
+        return;
+    }
+
+    if (!regex.test(email)) {
+        $(this).addClass("is-invalid");
+        errorSpan.text('يرجى إدخال البريد الإلكتروني ');
+    } else {
+        $(this).removeClass("is-invalid");
+        errorSpan.text('');
+    }
+});
 
 $(document).on("keyup", "input[name='ComplainerEmail']", function () {
 

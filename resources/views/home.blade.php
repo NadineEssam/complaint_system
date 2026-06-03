@@ -27,14 +27,13 @@
 }
 
 .row.kpi-row {
-  flex-wrap: nowrap;
+  flex-wrap: wrap; /* allow wrapping on small screens */
 }
 
 .row.kpi-row > .col {
-  flex: 1 1 0% !important;
-  min-width: 0;
+  flex: 1 1 200px !important; /* shrink but not below 200px */
+  min-width: 200px;
 }
-
 /* ================= PAGE TITLE ================= */
 .pagetitle h1{
   font-size: 28px;
@@ -226,7 +225,7 @@
 <div class="row g-4 mb-4 kpi-row">
 
   {{-- TOTAL --}}
-  <div class="col-xxl-3 col-md-4 col-sm-6">
+  <div class="col">
     <div class="card kpi-card">
 
       <div class="card-body">
@@ -259,7 +258,7 @@
   </div>
 
   {{-- SOLVED --}}
-  <div class="col-xxl-3 col-md-4 col-sm-6">
+  <div class="col">
   <div class="card kpi-card">
     <div class="card-body">
 
@@ -283,7 +282,7 @@
   </div>
 </div>
 
- <div class="col-xxl-3 col-md-4 col-sm-6">
+ <div class="col">
   <div class="card kpi-card">
     <div class="card-body">
 
@@ -307,7 +306,7 @@
   </div>
 </div>
 
-<div class="col-xxl-3 col-md-4 col-sm-6">
+<div class="col">
   <div class="card kpi-card">
     <div class="card-body">
 
@@ -331,7 +330,7 @@
   </div>
 </div>
 
-<div class="col-xxl-3 col-md-4 col-sm-6">
+<div class="col">
   <div class="card kpi-card">
     <div class="card-body">
 
