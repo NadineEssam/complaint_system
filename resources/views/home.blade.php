@@ -226,7 +226,7 @@
 <div class="row g-4 mb-4 kpi-row">
 
   {{-- TOTAL --}}
-  <div class="col-xxl col-md-4 col-sm-6">
+  <div class="col-xxl-3 col-md-4 col-sm-6">
     <div class="card kpi-card">
 
       <div class="card-body">
@@ -259,7 +259,7 @@
   </div>
 
   {{-- SOLVED --}}
-  <div class="col-xxl col-md-4 col-sm-6">
+  <div class="col-xxl-3 col-md-4 col-sm-6">
   <div class="card kpi-card">
     <div class="card-body">
 
@@ -283,7 +283,7 @@
   </div>
 </div>
 
- <div class="col-xxl col-md-4 col-sm-6">
+ <div class="col-xxl-3 col-md-4 col-sm-6">
   <div class="card kpi-card">
     <div class="card-body">
 
@@ -307,7 +307,7 @@
   </div>
 </div>
 
-<div class="col-xxl col-md-4 col-sm-6">
+<div class="col-xxl-3 col-md-4 col-sm-6">
   <div class="card kpi-card">
     <div class="card-body">
 
@@ -316,7 +316,7 @@
         <div>
           <div class="card-title mb-2">جديدة</div>
 
-          <h2 class="counter">{{ $statusNew }}</h2>
+          <h2 class="counter"> {{ $statusNew }} </h2>
 
           <div class="counter-label">شكاوى جديدة</div>
         </div>
@@ -331,7 +331,7 @@
   </div>
 </div>
 
-<div class="col-xxl col-md-4 col-sm-6">
+<div class="col-xxl-3 col-md-4 col-sm-6">
   <div class="card kpi-card">
     <div class="card-body">
 

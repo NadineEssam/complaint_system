@@ -28,15 +28,15 @@ class ComplaintDataTable extends DataTable
                 'sfdcomplaints.*',
                 'compstatus.statusText as status_name',
                 'complainttype.comtypename as complaint_type',
-                'requesttype.requesttypename as requesttypename',
-                'users_groups.userID as created_by_name',
-                'updated_by.userID as updated_by_name'
+                'requesttype.requesttypename as requesttypename'
+                // 'users_groups.userID as created_by_name',
+                // 'updated_by.userID as updated_by_name'
             )
                 ->leftJoin('compstatus', 'sfdcomplaints.ComplaintStatus', '=', 'compstatus.statusID')
                 ->leftJoin('complainttype', 'sfdcomplaints.ComplaintType', '=', 'complainttype.comtypeid')
                 ->leftJoin('requesttype', 'sfdcomplaints.RequestType', '=', 'requesttype.requesttypeid')
-                    ->leftJoin('users_groups', 'sfdcomplaints.created_by', '=', 'users_groups.ID')
-                    ->leftJoin('users_groups as updated_by', 'sfdcomplaints.updated_by', '=', 'updated_by.ID')
+                    // ->leftJoin('users_groups', 'sfdcomplaints.created_by', '=', 'users_groups.ID')
+                    // ->leftJoin('users_groups as updated_by', 'sfdcomplaints.updated_by', '=', 'updated_by.ID')
                 
 
 
@@ -181,12 +181,11 @@ class ComplaintDataTable extends DataTable
                 
             Column::make('ComplaintDate')->title('تاريخ الشكوي'),
 
-                 Column::make('created_by_name')
-                ->name('users_groups.userID')
+                 Column::make('username')
                 ->title('موظف الشكوي'),
 
-                   Column::make('updated_by_name')
-                ->name('updated_by.userID')
+                   Column::make('UpdateUser')
+                
                 ->title('موظف التعديل'),
 
 

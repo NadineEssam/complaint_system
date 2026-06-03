@@ -33,6 +33,8 @@ class Complaint extends Model
         'fk_close_reason_classify_id',
         'created_by',
         'updated_by',
+        'UpdateUser',
+        'username'
 
     ];
 

@@ -89,7 +89,7 @@ class RolesDataTable extends DataTable
             ->orderBy(1)
             ->pageLength(10)
             ->parameters([
-                'scrollX' => true,
+                //'scrollX' => true,
             ])
             ->lengthMenu([10, 25 ,50])
             //                    ->buttons(
