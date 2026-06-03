@@ -6,6 +6,15 @@
     <link href="{{ asset('assets/css/datatable.css') }}" rel="stylesheet" type="text/css">
 @endpush
 @section('content')
+<style>
+    
+select.form-select {
+    background-position: left 0.75rem center !important;
+    padding-left: 2.25rem !important;
+    padding-right: 0.75rem !important;
+}
+</style>
+
     <div class="page-content-wrapper">
         <div class="page-content">
             <!--breadcrumb-->

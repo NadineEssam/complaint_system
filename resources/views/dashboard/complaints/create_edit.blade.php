@@ -4,6 +4,12 @@
 
 @push('headScripts')
 <style>
+    select.form-select {
+        background-position: left 0.75rem center !important;
+        padding-left: 2.25rem !important;
+        padding-right: 0.75rem !important;
+    }
+
     .page-breadcrumb .breadcrumb {
         background: transparent;
     }
@@ -208,11 +214,11 @@
 @endpush
 @php
 $step = (
-    $errors->has('ComplaintDate') ||
-    $errors->has('ComplaintGovernorate') ||
-    $errors->has('sector_id') ||
-    $errors->has('office') ||
-    $errors->has('comsource_id')
+$errors->has('ComplaintDate') ||
+$errors->has('ComplaintGovernorate') ||
+$errors->has('sector_id') ||
+$errors->has('office') ||
+$errors->has('comsource_id')
 ) ? 2 : 1;
 @endphp
 @section('content')
