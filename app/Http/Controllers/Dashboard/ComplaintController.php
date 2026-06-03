@@ -141,7 +141,7 @@ class ComplaintController extends Controller
             'ComplaintSources' => $data['comsource_id'],
             'ComplaintNationalID' => $data['ComplaintNationalID'] ?? null,
             'ComplainerGender' => $data['ComplainerGender'] ?? null,
-            'created_by' => auth()->id(),
+            'username' => auth()->user()->userID,
             
         ]);
 
@@ -197,6 +197,7 @@ class ComplaintController extends Controller
 
     public function update(Request $request, Complaint $complaint)
     {
+        
         $data = $request->validate([
 
             'requesttypeid' => 'required|integer',
@@ -254,7 +255,8 @@ class ComplaintController extends Controller
             'ComplaintSources' => $data['comsource_id'],
             'ComplaintNationalID' => $data['ComplaintNationalID'] ?? null,
             'ComplainerGender' => $data['ComplainerGender'] ?? null,
-            'updated_by' => auth()->id(),
+           
+            'UpdateUser' => auth()->user()->userID,
         ]);
 
 
