@@ -1,4 +1,4 @@
-                                        class="bx bx-plus"></i> إضافة مستخدم</a>
+
 @extends('dashboard.layouts.app')
 @push('headScripts')
     <link href="{{ asset('assets/datatable/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css">

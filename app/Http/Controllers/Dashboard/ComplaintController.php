@@ -125,6 +125,7 @@ class ComplaintController extends Controller
             'ComplaintNationalID' => $data['ComplaintNationalID'] ?? null,
             'ComplainerGender' => $data['ComplainerGender'] ?? null,
             'created_by' => auth()->id(),
+            
         ]);
         
 
