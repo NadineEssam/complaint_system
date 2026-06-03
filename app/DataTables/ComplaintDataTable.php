@@ -23,7 +23,24 @@ class ComplaintDataTable extends DataTable
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
-        return (new EloquentDataTable($query))
+        return (new EloquentDataTable(
+            $query->select(
+                'sfdcomplaints.*',
+                'compstatus.statusText as status_name',
+                'complainttype.comtypename as complaint_type',
+                'requesttype.requesttypename as requesttypename',
+                'users_groups.userID as created_by_name',
+                'updated_by.userID as updated_by_name'
+            )
+                ->leftJoin('compstatus', 'sfdcomplaints.ComplaintStatus', '=', 'compstatus.statusID')
+                ->leftJoin('complainttype', 'sfdcomplaints.ComplaintType', '=', 'complainttype.comtypeid')
+                ->leftJoin('requesttype', 'sfdcomplaints.RequestType', '=', 'requesttype.requesttypeid')
+                    ->leftJoin('users_groups', 'sfdcomplaints.created_by', '=', 'users_groups.ID')
+                    ->leftJoin('users_groups as updated_by', 'sfdcomplaints.updated_by', '=', 'updated_by.ID')
+                
+
+
+        ))
 
             ->addColumn('action', function ($model) {
 
@@ -65,6 +82,9 @@ class ComplaintDataTable extends DataTable
 
                 return $html;
             })
+            // ->editColumn('status_name', function ($model) {
+            //     return $model->status_name ?? 'غير محدد';
+            // })
 
             ->setRowId('ComplaintID')
         ;
@@ -116,10 +136,10 @@ class ComplaintDataTable extends DataTable
             ->columns($this->getColumns())
             ->minifiedAjax()
             //                    ->dom('Bfrtip')
-            ->orderBy(1)
+            ->orderBy(0)
             ->pageLength(10)
             ->parameters([
-                'scrollX' => true,
+               // 'scrollX' => true,
             ])
             ->lengthMenu([10, 25, 50])
             //                    ->buttons(
@@ -141,15 +161,45 @@ class ComplaintDataTable extends DataTable
         return [
 
             Column::make('ComplaintID')->title('رقم الشكوي'),
+            Column::make('requesttypename')
+                ->name('requesttype.requesttypename')
+                ->title('نوع الشكوى'),
+            Column::make('complaint_type')
+                ->name('complainttype.comtypename')
+                ->title('تصنيف الشكوى'),
             Column::make('ComplainerName')->title('اسم الشاكي'),
 
             Column::make('ComplaintNationalID')->title('الرقم القومي '),
+            Column::make('ComplainerPhone')->title('رقم الهاتف '),
+
+
+            Column::make('status_name')
+                ->name('compstatus.statusText')
+                ->title('الحالة'),
+
+
+                
             Column::make('ComplaintDate')->title('تاريخ الشكوي'),
+
+                 Column::make('created_by_name')
+                ->name('users_groups.userID')
+                ->title('موظف الشكوي'),
+
+                   Column::make('updated_by_name')
+                ->name('updated_by.userID')
+                ->title('موظف التعديل'),
+
+
+          
             Column::computed('action')->title('الاجراءات')
                 ->exportable(false)
                 ->printable(false)
                 ->width(60)
                 ->addClass('text-center'),
+
+
+                
+                
         ];
     }
 

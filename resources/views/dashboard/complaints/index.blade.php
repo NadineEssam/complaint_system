@@ -1,24 +1,24 @@
-                                        class="bx bx-plus"></i> إضافة مستخدم</a>
-                                        @extends('dashboard.layouts.app')
-                                        @push('headScripts')
-                                        <link href="{{ asset('assets/datatable/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css">
-                                        <link href="{{ asset('assets/datatable/css/buttons.bootstrap4.min.css') }}" rel="stylesheet" type="text/css">
-                                        <link href="{{ asset('assets/css/datatable.css') }}" rel="stylesheet" type="text/css">
-                                        @endpush
-                                        @section('content')
-                                        <div class="page-content-wrapper">
-                                            <div class="page-content">
-                                                <!--breadcrumb-->
-                                                <div class="page-breadcrumb d-md-flex align-items-center mb-4 pb-2 border-bottom" dir="rtl">
-                                                    <div class="pr-3">
-                                                        <nav aria-label="breadcrumb">
-                                                            <ol class="breadcrumb mb-0 p-0 shadow-none">
-                                                                <li class="breadcrumb-item active text-primary font-weight-bold" aria-current="page">الشكاوى
-                                                                </li>
-                                                                <li class="breadcrumb-item">
-                                                                    <a href="{{ route('dashboard') }}" class="text-secondary"><i class="bx bx-home-alt"></i>
-                                                                        الرئيسية</a>
-                                                                </li>
+
+@extends('dashboard.layouts.app')
+@push('headScripts')
+    <link href="{{ asset('assets/datatable/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('assets/datatable/css/buttons.bootstrap4.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('assets/css/datatable.css') }}" rel="stylesheet" type="text/css">
+@endpush
+@section('content')
+    <div class="page-content-wrapper">
+        <div class="page-content">
+            <!--breadcrumb-->
+            <div class="page-breadcrumb d-md-flex align-items-center mb-4 pb-2 border-bottom" dir="rtl">
+                <div class="pr-3">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0 p-0 shadow-none">
+                            <li class="breadcrumb-item active text-primary font-weight-bold" aria-current="page">الشكاوى
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{{ route('dashboard') }}" class="text-secondary"><i class="bx bx-home-alt"></i>
+                                    الرئيسية</a>
+                            </li>
 
                                                             </ol>
                                                         </nav>
