@@ -26,6 +26,15 @@
   border-radius: 24px;
 }
 
+.row.kpi-row {
+  flex-wrap: nowrap;
+}
+
+.row.kpi-row > .col {
+  flex: 1 1 0% !important;
+  min-width: 0;
+}
+
 /* ================= PAGE TITLE ================= */
 .pagetitle h1{
   font-size: 28px;
@@ -214,10 +223,10 @@
 </div>
 
 {{-- ================= KPI ================= --}}
-<div class="row g-4 mb-4">
+<div class="row g-4 mb-4 kpi-row">
 
   {{-- TOTAL --}}
-  <div class="col-xxl-3 col-md-6">
+  <div class="col-xxl col-md-4 col-sm-6">
     <div class="card kpi-card">
 
       <div class="card-body">
@@ -250,73 +259,104 @@
   </div>
 
   {{-- SOLVED --}}
-  <div class="col-xxl-3 col-md-6">
-    <div class="card kpi-card">
+  <div class="col-xxl col-md-4 col-sm-6">
+  <div class="card kpi-card">
+    <div class="card-body">
 
-      <div class="card-body">
+      <div class="d-flex align-items-center justify-content-between">
 
-        <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <div class="card-title mb-2">تم الحل</div>
 
-          <div>
-            <div class="card-title mb-2">
-              تم الحل
-            </div>
+          <h2 class="counter">{{ $statusSolved }}</h2>
 
-            <h2 class="counter">
-              {{ $status24Total }}
-            </h2>
+          <div class="counter-label">الشكاوى المكتملة</div>
+        </div>
 
-            <div class="counter-label">
-              الشكاوى المغلقة
-            </div>
-          </div>
-
-          <div class="card-icon bg-success-gradient">
-            <i class="bi bi-check-circle"></i>
-          </div>
-
+        <div class="card-icon bg-success-gradient">
+          <i class="bi bi-check-circle"></i>
         </div>
 
       </div>
 
     </div>
   </div>
+</div>
 
-  {{-- PENDING --}}
-  <div class="col-xxl-3 col-md-6">
-    <div class="card kpi-card">
+ <div class="col-xxl col-md-4 col-sm-6">
+  <div class="card kpi-card">
+    <div class="card-body">
 
-      <div class="card-body">
+      <div class="d-flex align-items-center justify-content-between">
 
-        <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <div class="card-title mb-2">قيد المعالجة</div>
 
-          <div>
-            <div class="card-title mb-2">
-              قيد المعالجة
-            </div>
+          <h2 class="counter">{{ $statusProcessing }}</h2>
 
-            <h2 class="counter">
-              {{ $total - $status24Total }}
-            </h2>
+          <div class="counter-label">تحتاج متابعة</div>
+        </div>
 
-            <div class="counter-label">
-              تحتاج متابعة
-            </div>
-          </div>
-
-          <div class="card-icon bg-warning-gradient">
-            <i class="bi bi-hourglass-split"></i>
-          </div>
-
+        <div class="card-icon bg-warning-gradient">
+          <i class="bi bi-hourglass-split"></i>
         </div>
 
       </div>
 
     </div>
   </div>
+</div>
+
+<div class="col-xxl col-md-4 col-sm-6">
+  <div class="card kpi-card">
+    <div class="card-body">
+
+      <div class="d-flex align-items-center justify-content-between">
+
+        <div>
+          <div class="card-title mb-2">جديدة</div>
+
+          <h2 class="counter">{{ $statusNew }}</h2>
+
+          <div class="counter-label">شكاوى جديدة</div>
+        </div>
+
+        <div class="card-icon bg-primary-gradient">
+          <i class="bi bi-plus-circle"></i>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="col-xxl col-md-4 col-sm-6">
+  <div class="card kpi-card">
+    <div class="card-body">
+
+      <div class="d-flex align-items-center justify-content-between">
+
+        <div>
+          <div class="card-title mb-2">تم الحفظ</div>
+
+          <h2 class="counter">{{ $statusSaved }}</h2>
+
+          <div class="counter-label">مسودات محفوظة</div>
+        </div>
+
+        <div class="card-icon bg-danger-gradient">
+          <i class="bi bi-save"></i>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
 
   {{-- GOV --}}
-  <div class="col-xxl-3 col-md-6">
+  <!-- <div class="col-xxl-3 col-md-6">
     <div class="card kpi-card">
 
       <div class="card-body">
@@ -346,7 +386,9 @@
       </div>
 
     </div>
-  </div>
+  </div> -->
+
+  
 
 </div>
 

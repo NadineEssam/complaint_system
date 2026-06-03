@@ -16,6 +16,14 @@ class DashboardController extends Controller
         try {
 
             $total = Complaint::count();
+            $statuses = Complaint::select('ComplaintStatus', DB::raw('COUNT(*) as total'))
+                ->groupBy('ComplaintStatus')
+                ->pluck('total', 'ComplaintStatus');
+
+            $statusSolved = $statuses[2] ?? 0;
+            $statusProcessing = $statuses[1] ?? 0;
+            $statusNew = $statuses[3] ?? 0;
+            $statusSaved = $statuses[4] ?? 0;
 
 
             $requestTypesStats = RequestType::withCount('complaints')->get();
@@ -93,6 +101,10 @@ class DashboardController extends Controller
                 'total',
                 'requestTypesStats',
                 'statusStats',
+                'statusSolved',
+                'statusProcessing',
+                'statusNew',
+                'statusSaved',
                 'status24Total',
                 'closeReasonStats',
                 'departmentsStats',

@@ -43,7 +43,7 @@
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h4 class="mb-0 text-primary">
                         <i class="bx bx-message-square-detail ml-2"></i>
-                        سجل الردود
+                        سجل ردود  {{ $complaint->ComplainerName }}
                     </h4>
 
                     <!-- <a href="{{ route('responses.create', $complaint->ComplaintID) }}"
