@@ -47,16 +47,20 @@ class UsersController extends Controller
     public function store(Request $request)
     {
         
-        // $this->validateUsers($request);
-        // $imageAttr=[];
-        // if($request->file('image')){
-        //     $imageAttr=uploadImage($request->file('image'));
-        // }
-        // $user=User::create(array_merge($request->only(['userid']),['password'=>Hash::make($request->password)],$imageAttr));
-        // $user->syncRoles($request->input('role_id'));
-        // $user->syncPermissions($request->input('permissions'));
-        // alert()->success(__('Success'),__('Create Successfully'));
-        // return redirect()->back();
+         $this->validateUsers($request);
+        $array=[];
+        
+        $user=User::create([
+            "userID"=>$request->userid,
+            "userEmail"=>$request->userid . "@sfdegypt.org",
+            "groupID"=> 0 ,
+        ]);
+        $user->syncRoles($request->input('role_id'));
+        $user->syncPermissions($request->input('permissions'));
+        alert()->success(__('Success'),__('Update Successfully'));
+        return redirect()->back();
+
+        
     }
 
     /**
