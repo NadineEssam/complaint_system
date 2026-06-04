@@ -313,7 +313,7 @@ async function loadFilters(key) {
     `;
 
     try {
-        const res = await fetch( {{ url('/') }} +  `/reports/${key}/filters`);
+        const res = await fetch( "{{ url('/') }}" +  `/reports/${key}/filters`);
         const filters = await res.json();
 
         let html = `
@@ -353,7 +353,7 @@ async function loadFilters(key) {
 
         html += '<div class="row"></div></div>';
         container.innerHTML = html;
-        form.action = {{ url('/') }} + `/reports/${key}/generate`;
+        form.action = "{{ url('/') }}" + `/reports/${key}/generate`;
         buttons.style.display = 'block';
     } catch (err) {
         container.innerHTML = `
