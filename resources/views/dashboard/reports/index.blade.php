@@ -313,7 +313,7 @@ async function loadFilters(key) {
     `;
 
     try {
-        const res = await fetch( {{ url('') }} +  `/reports/${key}/filters`);
+        const res = await fetch( {{ url('/') }} +  `/reports/${key}/filters`);
         const filters = await res.json();
 
         let html = `
