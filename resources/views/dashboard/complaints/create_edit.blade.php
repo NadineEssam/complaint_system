@@ -218,6 +218,7 @@ $errors->has('ComplaintDate') ||
 $errors->has('ComplaintGovernorate') ||
 $errors->has('sector_id') ||
 $errors->has('office') ||
+$errors->has('ComplaintText')||
 $errors->has('comsource_id')
 ) ? 2 : 1;
 @endphp
@@ -367,11 +368,13 @@ $errors->has('comsource_id')
 
                                     <label class="form-label">
                                         الرقم القومي
+                                        <span class="required-star" id="nidStar" style="display:none;">*</span>
                                     </label>
 
                                     <input type="text"
                                         class="form-control"
                                         name="ComplaintNationalID"
+                                        id="ComplaintNationalID"
                                         value="{{ old('ComplaintNationalID', $complaint->ComplaintNationalID ?? '') }}"
                                         autocomplete="off">
 
@@ -379,19 +382,29 @@ $errors->has('comsource_id')
 
                                 </div>
 
-                                {{-- النوع --}}
-                                <div class="col-md-6 mb-4">
-
-                                    <label class="form-label">
-                                        النوع
-                                    </label>
-
+                                {{-- النوع - readonly (requesttypeid = 2, auto from NID) --}}
+                                <div class="col-md-6 mb-4" id="genderReadonlySection">
+                                    <label class="form-label">النوع</label>
                                     <input type="text"
                                         class="form-control"
                                         name="ComplainerGender"
+                                        id="ComplainerGenderReadonly"
                                         value="{{ old('ComplainerGender', $complaint->ComplainerGender ?? '') }}"
                                         readonly>
+                                </div>
 
+                                {{-- النوع - dropdown (requesttypeid = 1, required) --}}
+                                <div class="col-md-6 mb-4" id="genderSelectSection" style="display:none;">
+                                    <label class="form-label">
+                                        النوع
+                                        <span class="required-star">*</span>
+                                    </label>
+                                    <select class="form-select" name="ComplainerGenderSelect" id="ComplainerGenderSelect">
+                                        <option value="">اختر النوع</option>
+                                        <option value="ذكر" {{ old('ComplainerGender', $complaint->ComplainerGender ?? '') == 'ذكر'  ? 'selected' : '' }}>ذكر</option>
+                                        <option value="أنثى" {{ old('ComplainerGender', $complaint->ComplainerGender ?? '') == 'أنثى' ? 'selected' : '' }}>أنثى</option>
+                                    </select>
+                                    <div class="error-text" id="genderError"></div>
                                 </div>
 
                                 {{-- الاسم --}}
@@ -416,8 +429,9 @@ $errors->has('comsource_id')
                                 {{-- البريد --}}
                                 <div class="col-md-6 mb-4">
 
-                                    <label class="form-label">
+                                   <label class="form-label">
                                         البريد الإلكتروني
+                                        <span class="required-star">*</span>
                                     </label>
 
                                     <input type="email"
@@ -431,11 +445,11 @@ $errors->has('comsource_id')
 
                                 </div>
 
-                                {{-- الهاتف --}}
+                                {{-- الهاتف المحمول --}}
                                 <div class="col-md-6 mb-4">
 
                                     <label class="form-label">
-                                        رقم الهاتف
+                                        رقم الهاتف المحمول
                                         <span class="required-star">*</span>
                                     </label>
 
@@ -495,35 +509,22 @@ $errors->has('comsource_id')
 
                                 </div>
 
-                                {{-- القطاع --}}
+                                {{-- القطاع (from projecttype table) --}}
                                 <div class="col-md-6 mb-4">
-
-                                    <label class="form-label">
-                                        القطاع
-                                    </label>
-
+                                    <label class="form-label">القطاع</label>
                                     <select class="form-select @error('sector_id') is-invalid @enderror"
                                         name="sector_id">
-
                                         <option value="">اختر</option>
-
-                                        @foreach($sectors as $sector)
-
-                                        <option value="{{ $sector->sector_id }}"
-                                            {{ old('sector_id', $complaint->department ?? '') == $sector->sector_id ? 'selected' : '' }}>
-
-                                            {{ $sector->sector_name }}
-
+                                        @foreach($projectTypes as $projectType)
+                                        <option value="{{ $projectType->projecttypeid }}"
+                                            {{ old('sector_id', $complaint->ComplaintProjectType ?? '') == $projectType->projecttypeid ? 'selected' : '' }}>
+                                            {{ $projectType->projecttypename }}
                                         </option>
-
                                         @endforeach
-
                                     </select>
-
                                     @error('sector_id')
                                     <div class="error-text">{{ $message }}</div>
                                     @enderror
-
                                 </div>
 
                                 {{-- المحافظة --}}
@@ -531,6 +532,7 @@ $errors->has('comsource_id')
 
                                     <label class="form-label">
                                         المحافظة
+                                        <span class="required-star">*</span>
                                     </label>
 
                                     <select class="form-select @error('ComplaintGovernorate') is-invalid @enderror"
@@ -555,6 +557,7 @@ $errors->has('comsource_id')
                                     @error('ComplaintGovernorate')
                                     <div class="error-text">{{ $message }}</div>
                                     @enderror
+                                    <div class="error-text" id="governorateError"></div>
 
                                 </div>
 
@@ -563,6 +566,7 @@ $errors->has('comsource_id')
 
                                     <label class="form-label">
                                         المكتب
+                                        <span class="required-star">*</span>
                                     </label>
 
                                     <select class="form-select @error('office') is-invalid @enderror"
@@ -588,6 +592,7 @@ $errors->has('comsource_id')
                                     @error('office')
                                     <div class="error-text">{{ $message }}</div>
                                     @enderror
+                                    <div class="error-text" id="officeError"></div>
 
                                 </div>
 
@@ -596,6 +601,7 @@ $errors->has('comsource_id')
 
                                     <label class="form-label">
                                         مصدر الشكوى
+                                        <span class="required-star">*</span>
                                     </label>
 
                                     <select class="form-select @error('comsource_id') is-invalid @enderror"
@@ -619,8 +625,28 @@ $errors->has('comsource_id')
                                     @error('comsource_id')
                                     <div class="error-text">{{ $message }}</div>
                                     @enderror
+                                    <div class="error-text" id="comsourceError"></div>
 
                                 </div>
+
+                                {{-- نص الشكوى --}}
+                                <div class="col-md-12 mb-4">
+                                    <label class="form-label">
+                                        نص الشكوى
+                                        <span class="required-star">*</span>
+                                    </label>
+                                    <textarea
+                                        class="form-control @error('ComplaintText') is-invalid @enderror"
+                                        name="ComplaintText"
+                                        id="ComplaintText"
+                                        rows="5"
+                                        placeholder="أدخل تفاصيل الشكوى هنا...">{{ old('ComplaintText', $complaint->ComplaintText ?? '') }}</textarea>
+                                    @error('ComplaintText')
+                                    <div class="error-text">{{ $message }}</div>
+                                    @enderror
+                                    <div class="error-text" id="complaintTextError"></div>
+                                </div>
+
 
                             </div>
 

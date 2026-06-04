@@ -17,8 +17,10 @@ use App\Models\CompStatus;
 use App\Models\ServiceType;
 use App\Models\CompCloseReason;
 use App\Models\CompCloseReasonClassify;
-use App\Models\ComplaintResponse;
+use App\Models\ProjectType;
 use Illuminate\Support\Facades\Http;
+use App\Models\ComplaintResponse;
+
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
@@ -62,15 +64,17 @@ class ComplaintController extends Controller
         $requestTypes = RequestType::all();
         $govs = Gov::all();
         $sectors = Sector::all();
+        $projectTypes = ProjectType::orderBy('projecttypename')->get();
         $comsources = Comsource::all();
         $offices = Office::all();
 
         return view('dashboard.complaints.create_edit', compact(
             'requestTypes',
             'govs',
-            'sectors',
+            'projectTypes',
             'comsources',
-            'offices'
+            'offices',
+            'sectors'
         ));
     }
 
@@ -95,12 +99,13 @@ class ComplaintController extends Controller
 
             'ComplaintGovernorate' => 'required|integer',
             'ComplaintDate' => 'required|date',
-            'sector_id' => 'required|integer',
+            'sector_id'        => 'nullable|exists:projecttype,projecttypeid',
             'office' => 'required|integer',
             'comsource_id' => 'required|integer',
-            'ComplainerGender' => 'nullable|string',
+            'ComplainerGender' => 'required|string|max:10',
 
             'ComplaintNationalID' => 'nullable|required_if:requesttypeid,2|digits:14',
+            'ComplaintText'    => 'required|string',
 
         ], [
 
@@ -109,8 +114,8 @@ class ComplaintController extends Controller
 
             'ComplainerEmail.email' => 'البريد الإلكتروني غير صحيح',
 
-            'ComplainerPhone.required' => 'يرجى إدخال رقم الهاتف',
-            'ComplainerPhone.regex' => 'رقم الهاتف غير صحيح',
+            'ComplainerPhone.required' => 'يرجى إدخال رقم الهاتف المحمول',
+            'ComplainerPhone.regex' => 'رقم الهاتف المحمول غير صحيح',
 
             'ComplaintNationalID.required_if' => 'الرقم القومي مطلوب',
             'ComplaintNationalID.digits' => 'الرقم القومي يجب أن يكون 14 رقم',
@@ -124,6 +129,7 @@ class ComplaintController extends Controller
             'office.required' => 'يرجى اختيار المكتب',
 
             'comsource_id.required' => 'يرجى اختيار مصدر الشكوى',
+            'ComplaintText.required' => 'يرجى إدخال نص الشكوى',
 
 
         ]);
@@ -136,7 +142,8 @@ class ComplaintController extends Controller
             'ComplainerPhone' => $data['ComplainerPhone'],
             'ComplaintGovernorate' => $data['ComplaintGovernorate'],
             'ComplaintDate' => $data['ComplaintDate'],
-            'department' => $data['sector_id'],
+            'ComplaintProjectType' => $data['sector_id'],
+            'ComplaintText' => $data['ComplaintText'],
             'office' => $data['office'],
             'ComplaintSources' => $data['comsource_id'],
             'ComplaintNationalID' => $data['ComplaintNationalID'] ?? null,
@@ -174,6 +181,7 @@ class ComplaintController extends Controller
         $govs = Gov::all();
         $sectors = Sector::all();
         $comsources = Comsource::all();
+        $projectTypes = ProjectType::orderBy('projecttypename')->get();
         $offices = Office::all();
 
         return view('dashboard.complaints.create_edit', compact(
@@ -182,7 +190,8 @@ class ComplaintController extends Controller
             'govs',
             'sectors',
             'comsources',
-            'offices'
+            'offices',
+            'projectTypes'
         ));
     }
 
@@ -210,11 +219,12 @@ class ComplaintController extends Controller
 
             'ComplaintGovernorate' => 'required|integer',
             'ComplaintDate' => 'required|date',
-            'sector_id' => 'required|integer',
             'office' => 'required|integer',
             'comsource_id' => 'required|integer',
-            'ComplainerGender' => 'nullable|string',
             'ComplaintNationalID' => 'nullable|required_if:requesttypeid,2|digits:14',
+            'ComplainerGender' => 'required|string|max:10',
+            'sector_id'        => 'nullable|exists:projecttype,projecttypeid',
+            'ComplaintText'    => 'required|string',
 
         ], [
 
@@ -223,8 +233,8 @@ class ComplaintController extends Controller
 
             'ComplainerEmail.email' => 'البريد الإلكتروني غير صحيح',
 
-            'ComplainerPhone.required' => 'يرجى إدخال رقم الهاتف',
-            'ComplainerPhone.regex' => 'رقم الهاتف غير صحيح',
+            'ComplainerPhone.required' => 'يرجى إدخال رقم الهاتف المحمول',
+            'ComplainerPhone.regex' => 'رقم الهاتف المحمول غير صحيح',
 
             'ComplaintNationalID.required_if' => 'الرقم القومي مطلوب',
             'ComplaintNationalID.digits' => 'الرقم القومي يجب أن يكون 14 رقم',
@@ -238,6 +248,7 @@ class ComplaintController extends Controller
             'office.required' => 'يرجى اختيار المكتب',
 
             'comsource_id.required' => 'يرجى اختيار مصدر الشكوى',
+            'ComplaintText.required' => 'يرجى إدخال نص الشكوى',
 
         ]);
 
@@ -250,11 +261,13 @@ class ComplaintController extends Controller
             'ComplainerPhone' => $data['ComplainerPhone'],
             'ComplaintGovernorate' => $data['ComplaintGovernorate'],
             'ComplaintDate' => $data['ComplaintDate'],
-            'department' => $data['sector_id'],
+            'ComplaintProjectType' => $data['sector_id'],
             'office' => $data['office'],
+            'ComplaintText' => $data['ComplaintText'],
+
             'ComplaintSources' => $data['comsource_id'],
             'ComplaintNationalID' => $data['ComplaintNationalID'] ?? null,
-            'ComplainerGender' => $data['ComplainerGender'] ?? null,
+            'ComplainerGender' => $data['ComplainerGender'],
            
             'UpdateUser' => auth()->user()->userID,
         ]);

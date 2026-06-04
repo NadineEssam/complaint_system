@@ -14,13 +14,14 @@ return [
         'requesttypeid' => 'نوع الطلب',
         'ComplainerName' => 'اسم العميل',
         'ComplainerEmail' => 'البريد الإلكتروني',
-        'ComplainerPhone' => 'رقم الهاتف',
+        'ComplainerPhone' => 'رقم الهاتف المحمول',
         'ComplaintGovernorate' => 'المحافظة',
         'ComplaintDate' => 'تاريخ الشكوى',
         'sector_id' => 'القطاع',
         'office' => 'المكتب',
         'comsource_id' => 'مصدر الشكوى',
         'ComplaintNationalID' => 'الرقم القومي',
+        
 
     ],
 

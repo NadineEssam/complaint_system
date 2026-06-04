@@ -18,6 +18,7 @@ class Complaint extends Model
         'ComplaintText',
         'ComplaintType',
         'ComplainerName',
+        'ComplaintText',
         'ComplainerEmail',
         'ComplainerPhone',
         'ComplaintDate',

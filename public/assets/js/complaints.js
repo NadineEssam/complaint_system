@@ -35,7 +35,8 @@ let hasStep2Errors =
     $('[name="sector_id"]').hasClass('is-invalid') ||
     $('[name="ComplaintGovernorate"]').hasClass('is-invalid') ||
     $('[name="office"]').hasClass('is-invalid') ||
-    $('[name="comsource_id"]').hasClass('is-invalid');
+    $('[name="comsource_id"]').hasClass('is-invalid') ||
+    $('[name="ComplaintText"]').hasClass('is-invalid');
 
 // لو فيه أخطاء في step 1
 let hasStep1Errors =
@@ -85,7 +86,7 @@ function validateStep1() {
         }
     });
 
-    // الرقم القومي مطلوب
+   // الرقم القومي مطلوب
     if (requestType == 2 && nationalId === '') {
 
         $("input[name='ComplaintNationalID']")
@@ -96,8 +97,19 @@ function validateStep1() {
         isValid = false;
     }
 
+    // النوع مطلوب للنوع 1
+    if (requestType == 1) {
+        let genderVal = $("#ComplainerGenderSelect").val();
+        if (!genderVal || genderVal === '') {
+            $("#ComplainerGenderSelect").addClass('is-invalid');
+            $("#genderError").text("يرجى اختيار النوع.");
+            isValid = false;
+        }
+    }
+
     return isValid;
 }
+
 
 
 // =========================
@@ -114,7 +126,7 @@ nav.on('click', function (e) {
 
         if (!validateStep1()) {
 
-            alert("من فضلك قم بإكمال جميع البيانات المطلوبة");
+           Swal.fire({ icon: 'warning', title: 'تنبيه', text: 'من فضلك قم بإكمال جميع البيانات المطلوبة' });
 
             return false;
         }
@@ -131,7 +143,7 @@ $('.nextBtn').on('click', function () {
 
     if (!validateStep1()) {
 
-        alert("من فضلك قم بإكمال جميع البيانات المطلوبة");
+       Swal.fire({ icon: 'warning', title: 'تنبيه', text: 'من فضلك قم بإكمال جميع البيانات المطلوبة' });
 
         return false;
     }
@@ -182,6 +194,12 @@ $('.prevBtn').on('click', function () {
         });
 
         return false;
+    }
+
+ 
+    if ($("#requesttypeid").val() == 1) {
+        let selectedGender = $("#ComplainerGenderSelect").val();
+        $("#ComplainerGenderReadonly").val(selectedGender).removeAttr('readonly');
     }
 
     return true;
@@ -306,6 +324,8 @@ $('.prevBtn').on('click', function () {
     // =========================
     $(document).on("keyup", "input[name='ComplaintNationalID']", function () {
 
+        if ($("#requesttypeid").val() != 2) return;
+
         let value = $(this).val();
         let result = national_no_validate(value);
 
@@ -332,10 +352,33 @@ $('.prevBtn').on('click', function () {
 
         if (value == 2) {
             $("input[name='ComplaintNationalID']").attr('required', true);
+            $("#nidStar").show();
+            $("#genderReadonlySection").show();
+            $("#genderSelectSection").hide();
+            $("#ComplainerGenderReadonly").val('');
+        } else if (value == 1) {
+            $("input[name='ComplaintNationalID']").removeAttr('required');
+            $("#nidStar").hide();
+            $("#nidError").text("");
+            $("input[name='ComplaintNationalID']").removeClass('is-invalid');
+            $("#genderReadonlySection").hide();
+            $("#genderSelectSection").show();
+            $("#ComplainerGenderReadonly").val('');
         } else {
             $("input[name='ComplaintNationalID']").removeAttr('required');
+            $("#nidStar").hide();
+            $("#nidError").text("");
+            $("input[name='ComplaintNationalID']").removeClass('is-invalid');
+            $("#genderReadonlySection").show();
+            $("#genderSelectSection").hide();
         }
+
+        $("#ComplainerGenderSelect").removeClass('is-invalid');
+        $("#genderError").text('');
     });
+
+    // Run on page load to set correct state
+    $("#requesttypeid").trigger("change");
 
     // =========================
     // GOVERNORATE FILTER OFFICE
@@ -362,150 +405,112 @@ $('.prevBtn').on('click', function () {
 
 
 
+// =========================
+    // VALIDATE STEP 2
+    // =========================
+    function validateStep2() {
+        let isValid = true;
+        $('#step-2 .form-control, #step-2 .form-select').removeClass('is-invalid');
+        $("#complaintTextError").text('');
 
-function validateStep1() {
-
-    let isValid = true;
-
-    $('#step-1 .form-control, #step-1 .form-select')
-        .removeClass('is-invalid');
-
-    let requestType = $('#requesttypeid').val();
-
-    let nationalId = $("input[name='ComplaintNationalID']").val().trim();
-
-    let phone = $("input[name='ComplainerPhone']").val().trim();
-
-    let email = $("input[name='ComplainerEmail']").val().trim();
-
-    const requiredFields = [
-        'requesttypeid',
-        'ComplainerName',
-        'ComplainerPhone',
-        'ComplainerEmail'
-    ];
-
-    requiredFields.forEach(function (fieldName) {
-
-        let field = $('[name="' + fieldName + '"]');
-
-        if ($.trim(field.val()) === '') {
-
-            field.addClass('is-invalid');
-
+        // المحافظة required
+        if (!$('[name="ComplaintGovernorate"]').val()) {
+            $('[name="ComplaintGovernorate"]').addClass('is-invalid');
+            $("#governorateError").text("يرجى اختيار المحافظة.");
             isValid = false;
+        } else {
+            $("#governorateError").text('');
+        }
+
+        // المكتب required
+        if (!$('[name="office"]').val()) {
+            $('[name="office"]').addClass('is-invalid');
+            $("#officeError").text("يرجى اختيار المكتب.");
+            isValid = false;
+        } else {
+            $("#officeError").text('');
+        }
+
+        // مصدر الشكوى required
+        if (!$('[name="comsource_id"]').val()) {
+            $('[name="comsource_id"]').addClass('is-invalid');
+            $("#comsourceError").text("يرجى اختيار مصدر الشكوى.");
+            isValid = false;
+        } else {
+            $("#comsourceError").text('');
+        }
+
+        // نص الشكوى required
+        if ($("textarea[name='ComplaintText']").val().trim() === '') {
+            $("textarea[name='ComplaintText']").addClass('is-invalid');
+            $("#complaintTextError").text("يرجى إدخال نص الشكوى.");
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    // =========================
+    // GENDER DROPDOWN CLEAR ERROR
+    // =========================
+    $(document).on("change", "#ComplainerGenderSelect", function () {
+        if ($(this).val() !== '') {
+            $(this).removeClass('is-invalid');
+            $("#genderError").text('');
         }
     });
 
-    // VALID PHONE
-    let phoneRegex = /^01[0-2,5]{1}[0-9]{8}$/;
+    // =========================
+    // COMPLAINT TEXT CLEAR ERROR
+    // =========================
+    $(document).on("input", "textarea[name='ComplaintText']", function () {
+        if ($(this).val().trim() !== '') {
+            $(this).removeClass('is-invalid');
+            $("#complaintTextError").text('');
+        }
+    });
 
-    if (phone !== '' && !phoneRegex.test(phone)) {
+    // =========================
+    // PHONE LIVE VALIDATION
+    // =========================
+    $(document).on("keyup", "input[name='ComplainerPhone']", function () {
+        let phone = $(this).val().trim();
+        let regex = /^01[0-2,5]{1}[0-9]{8}$/;
+        if (phone === '') {
+            $(this).removeClass("is-invalid");
+            $(this).next('.error-text').remove();
+            return;
+        }
+        if (!regex.test(phone)) {
+            $(this).addClass("is-invalid");
+            if ($(this).next('.error-text').length === 0) {
+                $(this).after('<div class="error-text">رقم الهاتف غير صحيح</div>');
+            }
+        } else {
+            $(this).removeClass("is-invalid");
+            $(this).next('.error-text').remove();
+        }
+    });
 
-        $("input[name='ComplainerPhone']").addClass('is-invalid');
+    // =========================
+    // EMAIL LIVE VALIDATION
+    // =========================
+    $(document).on("keyup", "input[name='ComplainerEmail']", function () {
+        let email = $(this).val().trim();
+        let regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        let errorSpan = $(this).siblings('.error-text');
+        if (email === '') {
+            $(this).removeClass("is-invalid");
+            errorSpan.text('');
+            return;
+        }
+        if (!regex.test(email)) {
+            $(this).addClass("is-invalid");
+            errorSpan.text('يرجى إدخال بريد إلكتروني صحيح');
+        } else {
+            $(this).removeClass("is-invalid");
+            errorSpan.text('');
+        }
+    });
 
-        isValid = false;
-    }
-
-    // VALID EMAIL
-    let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (email !== '' && !emailRegex.test(email)) {
-
-        $("input[name='ComplainerEmail']").addClass('is-invalid');
-
-        isValid = false;
-    }
-
-    // NATIONAL ID
-    if (requestType == 2 && nationalId === '') {
-
-        $("input[name='ComplaintNationalID']")
-            .addClass('is-invalid');
-
-        $("#nidError").text("الرقم القومي مطلوب");
-
-        isValid = false;
-    }
-
-    return isValid;
-}
-
-
-$(document).on("keyup", "input[name='ComplainerPhone']", function () {
-
-    let phone = $(this).val().trim();
-
-    let regex = /^01[0-2,5]{1}[0-9]{8}$/;
-
-    if (phone === '') {
-
-        $(this).removeClass("is-invalid");
-
-        return;
-    }
-
-    if (!regex.test(phone)) {
-
-       
-$(this).addClass("is-invalid");
-if ($(this).next('.error-text').length === 0) {
-    $(this).after('<div class="error-text">رقم الهاتف غير صحيح</div>');
-}
-
-    } else {
-
-        $(this).removeClass("is-invalid");
-$(this).next('.error-text').remove();
-    }
-});
-
-
-$(document).on("keyup", "input[name='ComplainerEmail']", function () {
-    let email = $(this).val().trim();
-    let regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    let errorSpan = $(this).siblings('.error-text');
-
-    if (email === '') {
-        $(this).removeClass("is-invalid");
-        errorSpan.text('');
-        return;
-    }
-
-    if (!regex.test(email)) {
-        $(this).addClass("is-invalid");
-        errorSpan.text('يرجى إدخال البريد الإلكتروني ');
-    } else {
-        $(this).removeClass("is-invalid");
-        errorSpan.text('');
-    }
-});
-
-$(document).on("keyup", "input[name='ComplainerEmail']", function () {
-
-    let email = $(this).val().trim();
-
-    let regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (email === '') {
-
-        $(this).removeClass("is-invalid");
-
-        return;
-    }
-
-    if (!regex.test(email)) {
-
-        $(this).addClass("is-invalid");
-
-if ($(this).next('.error-text').length === 0) {
-    $(this).after('<div class="error-text">البريد الإلكتروني غير صحيح</div>');
-}
-
-    } else {
-
-        $(this).removeClass("is-invalid");
-$(this).next('.error-text').remove();
-    }
-});
 });

@@ -170,7 +170,7 @@ class ComplaintDataTable extends DataTable
             Column::make('ComplainerName')->title('اسم الشاكي'),
 
             Column::make('ComplaintNationalID')->title('الرقم القومي '),
-            Column::make('ComplainerPhone')->title('رقم الهاتف '),
+            Column::make('ComplainerPhone')->title('رقم الهاتف المحمول '),
 
 
             Column::make('status_name')
