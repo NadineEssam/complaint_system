@@ -1,0 +1,13 @@
+services:
+  app:
+    build: .
+    container_name: laravel_app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+    ports:
+      - "127.0.0.1:9001:9000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: sh -c " mkdir -p /var/www/vendor/mpdf/mpdf/tmp && chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache /var/www/vendor/mpdf/mpdf/tmp && chmod -R 775 /var/www/storage /var/www/bootstrap/cache /var/www/vendor/mpdf/mpdf/tmp && php-fpm"
