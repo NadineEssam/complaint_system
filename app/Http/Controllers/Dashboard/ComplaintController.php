@@ -6,11 +6,11 @@ use App\DataTables\ComplaintDataTable;
 use App\DataTables\RolesDataTable;
 use App\Http\Controllers\Controller;
 use App\Models\Complaint;
+use App\Models\ComSource;
 use Illuminate\Http\Request;
 use App\Models\Gov;
 use App\Models\RequestType;
 use App\Models\Sector;
-use App\Models\Comsource;
 use App\Models\Office;
 use App\Models\ComplaintSource;
 use App\Models\CompStatus;
@@ -65,7 +65,7 @@ class ComplaintController extends Controller
         $govs = Gov::all();
         $sectors = Sector::all();
         $projectTypes = ProjectType::orderBy('projecttypename')->get();
-        $comsources = Comsource::all();
+        $comsources = ComSource::all();
         $offices = Office::all();
 
         return view('dashboard.complaints.create_edit', compact(
