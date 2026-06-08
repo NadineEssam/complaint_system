@@ -468,7 +468,7 @@
   </div>
 
   {{-- ================= DEPARTMENTS ================= --}}
-  <div class="row mt-4">
+  <!-- <div class="row mt-4">
 
     <div class="col-12">
 
@@ -489,7 +489,7 @@
 
     </div>
 
-  </div>
+  </div> -->
 
   {{-- ================= GOVERNORATES ================= --}}
   <div class="row mt-4">
@@ -708,105 +708,105 @@
 
    // ================= DEPARTMENT =================
 
-new ApexCharts(document.querySelector("#departmentChart"), {
+// new ApexCharts(document.querySelector("#departmentChart"), {
 
-  series: [{
-    name: 'عدد الشكاوى',
-    data: deptCounts
-  }],
+//   series: [{
+//     name: 'عدد الشكاوى',
+//     data: deptCounts
+//   }],
 
-  chart: {
-    type: 'bar',
-    height: 500,
-    toolbar: {
-      show: false
-    },
-    fontFamily: 'Cairo, sans-serif'
-  },
+//   chart: {
+//     type: 'bar',
+//     height: 500,
+//     toolbar: {
+//       show: false
+//     },
+//     fontFamily: 'Cairo, sans-serif'
+//   },
 
-  colors: ['#7c4dff'],
+//   colors: ['#7c4dff'],
 
-  plotOptions: {
-    bar: {
-      borderRadius: 8,
-      columnWidth: '45%',
-      distributed: true
-    }
-  },
+//   plotOptions: {
+//     bar: {
+//       borderRadius: 8,
+//       columnWidth: '45%',
+//       distributed: true
+//     }
+//   },
 
-  dataLabels: {
-    enabled: false
-  },
+//   dataLabels: {
+//     enabled: false
+//   },
 
-  stroke: {
-    show: true,
-    width: 2,
-    colors: ['transparent']
-  },
+//   stroke: {
+//     show: true,
+//     width: 2,
+//     colors: ['transparent']
+//   },
 
-  grid: {
-    borderColor: '#f1f1f1',
-    strokeDashArray: 4
-  },
+//   grid: {
+//     borderColor: '#f1f1f1',
+//     strokeDashArray: 4
+//   },
 
-  xaxis: {
-    categories: deptLabels,
+//   xaxis: {
+//     categories: deptLabels,
 
-    labels: {
-      rotate: -45,
-      rotateAlways: true,
-      trim: true,
-      maxHeight: 120,
+//     labels: {
+//       rotate: -45,
+//       rotateAlways: true,
+//       trim: true,
+//       maxHeight: 120,
 
-      style: {
-        fontSize: '12px',
-        fontWeight: 600,
-        colors: '#374151'
-      },
+//       style: {
+//         fontSize: '12px',
+//         fontWeight: 600,
+//         colors: '#374151'
+//       },
 
-      formatter: function(value) {
+//       formatter: function(value) {
 
-        if(value.length > 18){
-          return value.substring(0,18) + '...';
-        }
+//         if(value.length > 18){
+//           return value.substring(0,18) + '...';
+//         }
 
-        return value;
-      }
-    }
-  },
+//         return value;
+//       }
+//     }
+//   },
 
-  yaxis: {
-    labels: {
-      style: {
-        colors: '#6b7280'
-      }
-    }
-  },
+//   yaxis: {
+//     labels: {
+//       style: {
+//         colors: '#6b7280'
+//       }
+//     }
+//   },
 
-  tooltip: {
-    theme: 'light'
-  },
+//   tooltip: {
+//     theme: 'light'
+//   },
 
-  responsive: [{
-    breakpoint: 768,
-    options: {
+//   responsive: [{
+//     breakpoint: 768,
+//     options: {
 
-      chart: {
-        height: 420
-      },
+//       chart: {
+//         height: 420
+//       },
 
-      xaxis: {
-        labels: {
-          rotate: -60,
-          style: {
-            fontSize: '10px'
-          }
-        }
-      }
-    }
-  }]
+//       xaxis: {
+//         labels: {
+//           rotate: -60,
+//           style: {
+//             fontSize: '10px'
+//           }
+//         }
+//       }
+//     }
+//   }]
 
-}).render();
+// }).render();
 
     // ================= GOVERNORATE =================
     new ApexCharts(document.querySelector("#govChart"), {
