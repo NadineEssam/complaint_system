@@ -58,7 +58,10 @@ class ComplaintResponseDataTable extends DataTable
                         </a>';
                 }
 
-                if (PerUser('responses.destroy')) {
+                if (
+                    PerUser('responses.destroy') &&
+                    !in_array($model->complaint->ComplaintStatus ?? null, [2, 4])
+                ) {
                     $html .= '
                         <button 
                             class="btn btn-sm btn-outline-danger action-btn delete-this"
