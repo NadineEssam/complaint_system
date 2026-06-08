@@ -18,7 +18,7 @@
                 <nav>
                     <ol class="breadcrumb mb-0 p-0 shadow-none">
                         <li class="breadcrumb-item active text-primary font-weight-bold">
-                            الردود على الشكوى #{{ $complaint->ComplaintID }}
+                            الردود على الشكوى {{ $complaint->ComplaintID }}#
                         </li>
                         <li class="breadcrumb-item">
                             <a href="{{ route('complaints.index') }}">
