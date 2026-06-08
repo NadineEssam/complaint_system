@@ -31,12 +31,20 @@ class ComplaintResponseController extends Controller
     public function index(ComplaintResponseDataTable $dataTable)
     {
         $id = request('complaint_id');
-        $complaint = Complaint::findOrFail($id);
+
+        $complaint = Complaint::with([
+            'responses.status'
+        ])->findOrFail($id);
+
+        $lastResponse = $complaint->responses
+            ->sortByDesc('id')
+            ->first();
 
         return $dataTable
             ->withComplaint($id)
             ->render('dashboard.responses.responses', [
-                'complaint' => $complaint
+                'complaint' => $complaint,
+                'lastResponse' => $lastResponse
             ]);
     }
 
@@ -49,18 +57,25 @@ class ComplaintResponseController extends Controller
         }
 
         $complaint = Complaint::findOrFail($complaintId);
-          if (in_array($complaint->ComplaintStatus, [2,4])) {
+        if (in_array($complaint->ComplaintStatus, [2, 4])) {
 
-        return redirect()
-            ->route('responses.index', [
-                'complaint_id' => $complaint->ComplaintID
-            ])
-            ->with('error', 'لا يمكن إضافة رد على شكوى مغلقة');
-    }
+            return redirect()
+                ->route('responses.index', [
+                    'complaint_id' => $complaint->ComplaintID
+                ])
+                ->with('error', 'لا يمكن إضافة رد على شكوى مغلقة');
+        }
+        $usedStatuses = ComplaintResponse::where('complaint_id', $complaintId)
+            ->pluck('ComplaintStatus')
+            ->toArray();
+
+        $statuses = CompStatus::where('statusID', '!=', 3)
+            ->whereNotIn('statusID', $usedStatuses)
+            ->get();
 
         return view('dashboard.responses.create_edit_responses', [
             'complaint' => $complaint,
-            'statuses' => CompStatus::all(),
+            'statuses' => $statuses,
             'serviceTypes' => ServiceType::all(),
             'closeReasons' => CompCloseReason::all(),
             'classifications' => CompCloseReasonClassify::all(),
@@ -78,7 +93,7 @@ class ComplaintResponseController extends Controller
                 'ComplaintService' => 'nullable|integer',
                 'fk_close_reason_id' => 'nullable|integer',
                 'fk_close_reason_classify_id' => 'nullable|integer',
-                
+
             ]);
             $data['created_by'] = auth()->id();
             $response = ComplaintResponse::create($data);
@@ -122,19 +137,28 @@ class ComplaintResponseController extends Controller
 
         // جايب الـ complaint المرتبط
         $complaint = Complaint::findOrFail($response->complaint_id);
-        if (in_array($complaint->ComplaintStatus, [2,4])) {
+        if (in_array($complaint->ComplaintStatus, [2, 4])) {
 
-        return redirect()
-            ->route('responses.index', [
-                'complaint_id' => $complaint->ComplaintID
-            ])
-            ->with('error', 'لا يمكن تعديل ردود شكوى مغلقة');
-    }
+            return redirect()
+                ->route('responses.index', [
+                    'complaint_id' => $complaint->ComplaintID
+                ])
+                ->with('error', 'لا يمكن تعديل ردود شكوى مغلقة');
+        }
+        $usedStatuses = ComplaintResponse::where('complaint_id', $complaint->ComplaintID)
+            ->where('id', '!=', $response->id)
+            ->pluck('ComplaintStatus')
+            ->toArray();
 
-        return view('dashboard.responses.create_edit_responses', [ 
+        $statuses = CompStatus::where('statusID', '!=', 3)
+            ->whereNotIn('statusID', $usedStatuses)
+            ->orWhere('statusID', $response->ComplaintStatus)
+            ->get();
+
+        return view('dashboard.responses.create_edit_responses', [
             'response' => $response,
             'complaint' => $complaint,
-            'statuses' => CompStatus::all(),
+            'statuses' => $statuses,
             'serviceTypes' => ServiceType::all(),
             'closeReasons' => CompCloseReason::all(),
             'classifications' => CompCloseReasonClassify::all(),
@@ -175,28 +199,27 @@ class ComplaintResponseController extends Controller
     }
 
     public function destroy($id)
-{
-    try {
+    {
+        try {
 
-        $response = ComplaintResponse::findOrFail($id);
+            $response = ComplaintResponse::findOrFail($id);
 
-        $response->complaint()->update([
-            'ComplaintStatus' => 3
-        ]);
+            $response->complaint()->update([
+                'ComplaintStatus' => 3
+            ]);
 
-        $response->delete();
+            $response->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'تم الحذف بنجاح'
-        ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'تم الحذف بنجاح'
+            ]);
+        } catch (\Exception $e) {
 
-    } catch (\Exception $e) {
-
-        return response()->json([
-            'success' => false,
-            'message' => 'فشل الحذف'
-        ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'فشل الحذف'
+            ]);
+        }
     }
-}
 }

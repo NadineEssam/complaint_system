@@ -43,7 +43,7 @@
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h4 class="mb-0 text-primary">
                         <i class="bx bx-message-square-detail ml-2"></i>
-                        سجل ردود  {{ $complaint->ComplainerName }}
+                        سجل ردود {{ $complaint->ComplainerName }}
                     </h4>
 
                     <!-- <a href="{{ route('responses.create', $complaint->ComplaintID) }}"
@@ -67,7 +67,77 @@
                     @endif
                 </div>
 
+
                 <hr class="d-none">
+
+                <div class="px-2 pt-3">
+
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body">
+
+                            <div class="row align-items-center">
+
+                                <!-- Complaint Text -->
+                                <div class="col-md-8 mb-3">
+
+                                    <label class="font-weight-bold text-muted mb-2 d-block">
+                                        <i class="bx bx-message-detail"></i>
+                                        نص الشكوى
+                                    </label>
+
+                                    <div class="bg-light border rounded p-3" style="min-height:80px;">
+                                        {{ $complaint->ComplaintText ?? 'لا يوجد نص للشكوى' }}
+                                    </div>
+
+                                </div>
+
+                                <!-- Last Status -->
+                                <div class="col-md-4 mb-3">
+
+                                    <label class="font-weight-bold text-muted mb-2 d-block">
+                                        <i class="bx bx-info-circle"></i>
+                                        آخر حالة
+                                    </label>
+
+                                    @php
+
+                                    $statusId = $lastResponse?->ComplaintStatus ?? 3;
+
+                                    $statusStyle = match($statusId) {
+                                    1 => 'background:#f0ad4e;color:#fff;',
+                                    2 => 'background:#28a745;color:#fff;',
+                                    3 => 'background:#17a2b8;color:#fff;',
+                                    4 => 'background:#dc3545;color:#fff;',
+                                    default => 'background:#6c757d;color:#fff;',
+                                    };
+
+                                    $statusText = $lastResponse?->status?->statusText
+                                    ?? 'جديدة';
+
+                                    @endphp
+
+                                    <div>
+                                        <span class="px-3 py-2 d-inline-block"
+                                            style="
+                                                    {{ $statusStyle }}
+                                                    font-size:14px;
+                                                    font-weight:600;
+                                                    border-radius:8px;
+                                                ">
+                                            {{ $statusText }}
+                                        </span>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+
 
                 <!-- 🔹 Your ORIGINAL table -->
                 <div class="px-2 pb-3">
