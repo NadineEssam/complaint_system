@@ -71,7 +71,7 @@ class ComplaintController extends Controller
         return view('dashboard.complaints.create_edit', compact(
             'requestTypes',
             'govs',
-            'projectTypes',
+            'sectors',
             'comsources',
             'offices',
             'sectors'
@@ -98,8 +98,8 @@ class ComplaintController extends Controller
             ],
 
             'ComplaintGovernorate' => 'required|integer',
-            'ComplaintDate' => 'required|date',
-            'sector_id'        => 'nullable|exists:projecttype,projecttypeid',
+            'ComplaintDate' => 'required|date|before_or_equal:today',
+            'sector_id' => 'required|integer',
             'office' => 'required|integer',
             'comsource_id' => 'required|integer',
             'ComplainerGender' => 'required|string|max:10',
@@ -121,6 +121,7 @@ class ComplaintController extends Controller
             'ComplaintNationalID.digits' => 'الرقم القومي يجب أن يكون 14 رقم',
 
             'ComplaintDate.required' => 'يرجى إدخال تاريخ الشكوى',
+            'ComplaintDate.before_or_equal' => 'لا يمكن إدخال تاريخ مستقبلي',
 
             'ComplaintGovernorate.required' => 'يرجى اختيار المحافظة',
 
@@ -142,7 +143,8 @@ class ComplaintController extends Controller
             'ComplainerPhone' => $data['ComplainerPhone'],
             'ComplaintGovernorate' => $data['ComplaintGovernorate'],
             'ComplaintDate' => $data['ComplaintDate'],
-            'ComplaintProjectType' => $data['sector_id'],
+             'department' => $data['sector_id'],
+            // 'ComplaintProjectType' => $data['sector_id'],
             'ComplaintText' => $data['ComplaintText'],
             'office' => $data['office'],
             'ComplaintSources' => $data['comsource_id'],
@@ -218,12 +220,12 @@ class ComplaintController extends Controller
             ],
 
             'ComplaintGovernorate' => 'required|integer',
-            'ComplaintDate' => 'required|date',
+            'ComplaintDate' => 'required|date|before_or_equal:today',
             'office' => 'required|integer',
             'comsource_id' => 'required|integer',
             'ComplaintNationalID' => 'nullable|required_if:requesttypeid,2|digits:14',
             'ComplainerGender' => 'required|string|max:10',
-            'sector_id'        => 'nullable|exists:projecttype,projecttypeid',
+            'sector_id' => 'required|integer',
             'ComplaintText'    => 'required|string',
 
         ], [
@@ -240,6 +242,7 @@ class ComplaintController extends Controller
             'ComplaintNationalID.digits' => 'الرقم القومي يجب أن يكون 14 رقم',
 
             'ComplaintDate.required' => 'يرجى إدخال تاريخ الشكوى',
+            'ComplaintDate.before_or_equal' => 'لا يمكن إدخال تاريخ مستقبلي',
 
             'ComplaintGovernorate.required' => 'يرجى اختيار المحافظة',
 
@@ -261,7 +264,7 @@ class ComplaintController extends Controller
             'ComplainerPhone' => $data['ComplainerPhone'],
             'ComplaintGovernorate' => $data['ComplaintGovernorate'],
             'ComplaintDate' => $data['ComplaintDate'],
-            'ComplaintProjectType' => $data['sector_id'],
+            'department' => $data['sector_id'],
             'office' => $data['office'],
             'ComplaintText' => $data['ComplaintText'],
 

@@ -499,9 +499,12 @@ $errors->has('comsource_id')
                                     </label>
 
                                     <input type="date"
-                                        class="form-control @error('ComplaintDate') is-invalid @enderror"
-                                        name="ComplaintDate"
-                                        value="{{ old('ComplaintDate', $complaint->ComplaintDate ?? '') }}">
+                                    dir="rtl"
+                                    lang="ar"
+                                    class="form-control @error('ComplaintDate') is-invalid @enderror"
+                                    name="ComplaintDate"
+                                    max="{{ date('Y-m-d') }}"
+                                    value="{{ old('ComplaintDate', $complaint->ComplaintDate ?? '') }}">
 
                                     @error('ComplaintDate')
                                     <div class="error-text">{{ $message }}</div>
@@ -509,18 +512,20 @@ $errors->has('comsource_id')
 
                                 </div>
 
-                                {{-- القطاع (from projecttype table) --}}
+                                {{-- القطاع --}}
                                 <div class="col-md-6 mb-4">
                                     <label class="form-label">القطاع</label>
                                     <select class="form-select @error('sector_id') is-invalid @enderror"
                                         name="sector_id">
                                         <option value="">اختر</option>
-                                        @foreach($projectTypes as $projectType)
-                                        <option value="{{ $projectType->projecttypeid }}"
-                                            {{ old('sector_id', $complaint->ComplaintProjectType ?? '') == $projectType->projecttypeid ? 'selected' : '' }}>
-                                            {{ $projectType->projecttypename }}
-                                        </option>
-                                        @endforeach
+                                              @foreach($sectors as $sector)
+
+                                        <option value="{{ $sector->sector_id }}"
+                                            {{ old('sector_id', $complaint->department ?? '') == $sector->sector_id ? 'selected' : '' }}>
+
+                                            {{ $sector->sector_name }}
+                                        </option>    
+                                        @endforeach 
                                     </select>
                                     @error('sector_id')
                                     <div class="error-text">{{ $message }}</div>
@@ -689,6 +694,16 @@ $errors->has('comsource_id')
 <script>
     window.currentWizardStep = "{{ $step == 2 ? 'step-2' : 'step-1' }}";
 </script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ar.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="{{ asset('assets/js/complaints.js') }}"></script>
+<script src="{{ asset('assets/js/complaints.js') }}">
+    flatpickr("input[name='ComplaintDate']", {
+    locale: "ar",
+    dateFormat: "Y-m-d",
+    maxDate: "today"
+});
+</script>
 @endpush

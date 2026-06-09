@@ -18,7 +18,6 @@ class Complaint extends Model
         'ComplaintText',
         'ComplaintType',
         'ComplainerName',
-        'ComplaintText',
         'ComplainerEmail',
         'ComplainerPhone',
         'ComplaintDate',
@@ -88,4 +87,14 @@ class Complaint extends Model
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
+
+    public function sources()
+{
+    return $this->belongsToMany(
+        ComSource::class,
+        'complaint_sources',
+        'complaint_id',
+        'comsource_id'
+    );
+}
 }

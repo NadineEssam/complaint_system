@@ -35,9 +35,9 @@ class ComplaintDataTable extends DataTable
                 ->leftJoin('compstatus', 'sfdcomplaints.ComplaintStatus', '=', 'compstatus.statusID')
                 ->leftJoin('complainttype', 'sfdcomplaints.ComplaintType', '=', 'complainttype.comtypeid')
                 ->leftJoin('requesttype', 'sfdcomplaints.RequestType', '=', 'requesttype.requesttypeid')
-                    // ->leftJoin('users_groups', 'sfdcomplaints.created_by', '=', 'users_groups.ID')
-                    // ->leftJoin('users_groups as updated_by', 'sfdcomplaints.updated_by', '=', 'updated_by.ID')
-                
+            // ->leftJoin('users_groups', 'sfdcomplaints.created_by', '=', 'users_groups.ID')
+            // ->leftJoin('users_groups as updated_by', 'sfdcomplaints.updated_by', '=', 'updated_by.ID')
+
 
 
         ))
@@ -50,7 +50,7 @@ class ComplaintDataTable extends DataTable
                          <a href="' . route('responses.index', ['complaint_id' => $model]) . '" 
                         class="btn btn-sm btn-outline-primary action-btn"
                         data-bs-toggle="tooltip" 
-                        title="الرد على الشكوى">
+                        title="الرد على الطلب">
                             <i class="fas fa-reply-all"></i>
                         </a>';
                 }
@@ -101,10 +101,36 @@ class ComplaintDataTable extends DataTable
     //     return $model->newQuery();
     // }
 
+    // public function query(Complaint $model): QueryBuilder
+    // {
+    //     $query = $model->newQuery();
+
+    //     if ($gender = $this->request->get('gender_filter')) {
+    //         $query->where('ComplainerGender', $gender);
+    //     }
+
+    //     if ($gov = $this->request->get('gov_filter')) {
+    //         $query->where('ComplaintGovernorate', $gov);
+    //     }
+
+    //     if ($status = $this->request->get('status_filter')) {
+    //         $query->where('ComplaintStatus', $status);
+    //     }
+
+    //     if ($reqtype = $this->request->get('reqtype_filter')) {
+    //         $query->where('RequestType', $reqtype);
+    //     }
+
+    //     return $query;
+    // }
+
     public function query(Complaint $model): QueryBuilder
     {
         $query = $model->newQuery();
 
+        // عرض شكاوى عام 2025 فقط
+        // $query->whereYear('ComplaintDate', 2025);
+        $query->whereYear('ComplaintDate', '>=', 2025);
         if ($gender = $this->request->get('gender_filter')) {
             $query->where('ComplainerGender', $gender);
         }
@@ -139,7 +165,7 @@ class ComplaintDataTable extends DataTable
             ->orderBy(0)
             ->pageLength(10)
             ->parameters([
-               // 'scrollX' => true,
+                // 'scrollX' => true,
             ])
             ->lengthMenu([10, 25, 50])
             //                    ->buttons(
@@ -178,18 +204,18 @@ class ComplaintDataTable extends DataTable
                 ->title('الحالة'),
 
 
-                
+
             Column::make('ComplaintDate')->title('تاريخ الشكوي'),
 
-                 Column::make('username')
+            Column::make('username')
                 ->title('موظف الشكوي'),
 
-                   Column::make('UpdateUser')
-                
+            Column::make('UpdateUser')
+
                 ->title('موظف التعديل'),
 
 
-          
+
             Column::computed('action')->title('الاجراءات')
                 ->exportable(false)
                 ->printable(false)
@@ -197,8 +223,8 @@ class ComplaintDataTable extends DataTable
                 ->addClass('text-center'),
 
 
-                
-                
+
+
         ];
     }
 
