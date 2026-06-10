@@ -12,6 +12,42 @@
   <link href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
 
   <style>
+    #page-loader{
+    position: fixed;
+    inset: 0;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+}
+
+.loader-box{
+    text-align: center;
+}
+
+.spinner{
+    width: 55px;
+    height: 55px;
+    border: 5px solid #e5e7eb;
+    border-top: 5px solid #003b8e;
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+    margin: auto;
+}
+
+@keyframes spin{
+    100%{
+        transform: rotate(360deg);
+    }
+}
+
+.loader-box p{
+    margin-top: 12px;
+    font-weight: 600;
+    color: #003b8e;
+}
     * { box-sizing: border-box; }
 
     body {
@@ -161,6 +197,12 @@
 </head>
 
 <body>
+  <div id="page-loader">
+    <div class="loader-box">
+        <div class="spinner"></div>
+        <p>جاري التحميل...</p>
+    </div>
+</div>
   <div class="login-wrapper">
 
     {{-- ── Logo ── --}}
@@ -218,5 +260,31 @@
   </div>
 
   <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script>
+function hideLoader() {
+    const loader = document.getElementById("page-loader");
+    if (!loader) return;
+
+    loader.style.opacity = "0";
+    loader.style.transition = "0.4s ease";
+
+    setTimeout(() => {
+        loader.style.display = "none";
+    }, 400);
+}
+
+// أفضل من load
+document.addEventListener("DOMContentLoaded", function () {
+    // احتياطي لو الصفحة خفيفة
+    setTimeout(hideLoader, 300);
+});
+
+window.addEventListener("load", function () {
+    hideLoader();
+});
+
+// safety net (لو أي حاجة حصلت)
+setTimeout(hideLoader, 3000);
+</script>
 </body>
 </html>

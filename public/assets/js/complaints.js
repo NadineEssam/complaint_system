@@ -72,8 +72,7 @@ function validateStep1() {
     const requiredFields = [
         'requesttypeid',
         'ComplainerName',
-        'ComplainerPhone',
-        'ComplainerEmail'
+        'ComplainerPhone'
     ];
 
     requiredFields.forEach(function (fieldName) {
@@ -493,24 +492,33 @@ $('.prevBtn').on('click', function () {
     });
 
     // =========================
-    // EMAIL LIVE VALIDATION
-    // =========================
-    $(document).on("keyup", "input[name='ComplainerEmail']", function () {
-        let email = $(this).val().trim();
-        let regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        let errorSpan = $(this).siblings('.error-text');
-        if (email === '') {
-            $(this).removeClass("is-invalid");
-            errorSpan.text('');
-            return;
+// EMAIL LIVE VALIDATION
+// =========================
+$(document).on("keyup", "input[name='ComplainerEmail']", function () {
+
+    let email = $(this).val().trim();
+    let regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (email === '') {
+
+        $(this).removeClass("is-invalid");
+        $(this).next('.error-text').remove();
+        return;
+    }
+
+    if (!regex.test(email)) {
+
+        $(this).addClass("is-invalid");
+
+        if ($(this).next('.error-text').length === 0) {
+            $(this).after('<div class="error-text">البريد الإلكتروني غير صحيح</div>');
         }
-        if (!regex.test(email)) {
-            $(this).addClass("is-invalid");
-            errorSpan.text('يرجى إدخال بريد إلكتروني صحيح');
-        } else {
-            $(this).removeClass("is-invalid");
-            errorSpan.text('');
-        }
-    });
+
+    } else {
+
+        $(this).removeClass("is-invalid");
+        $(this).next('.error-text').remove();
+    }
+});
 
 });

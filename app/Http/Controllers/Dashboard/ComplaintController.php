@@ -91,7 +91,7 @@ class ComplaintController extends Controller
 
             'requesttypeid' => 'required|integer',
             'ComplainerName' => 'required|string',
-            'ComplainerEmail' => 'required|email',
+            'ComplainerEmail' => 'nullable|email',
             'ComplainerPhone' => [
                 'required',
                 'regex:/^01[0-2,5]{1}[0-9]{8}$/'
@@ -213,7 +213,7 @@ class ComplaintController extends Controller
 
             'requesttypeid' => 'required|integer',
             'ComplainerName' => 'required|string',
-            'ComplainerEmail' => 'required|email',
+            'ComplainerEmail' => 'nullable|email',
             'ComplainerPhone' => [
                 'required',
                 'regex:/^01[0-2,5]{1}[0-9]{8}$/'
