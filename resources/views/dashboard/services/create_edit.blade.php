@@ -90,7 +90,7 @@
                             {{ isset($serviceType) ? 'تعديل نوع الخدمة' : 'إضافة نوع الخدمة' }}
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="{{ route('service.index') }}" class="text-secondary">
+                            <a href="{{ route('service-types.index') }}" class="text-secondary">
                                 <i class="bx bx-service"></i>
                                 أنواع الخدمات
                             </a>
@@ -122,7 +122,7 @@
             <div class="card-body p-lg-4 p-3">
 
                 <form method="POST"
-                    action="{{ isset($serviceType) ? route('service.update', $serviceType->srevicetyptid) : route('service.store') }}">
+                    action="{{ isset($serviceType) ? route('service-types.update', $serviceType->srevicetyptid) : route('service-types.store') }}">
 
                     @csrf
 

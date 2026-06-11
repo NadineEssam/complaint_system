@@ -24,7 +24,7 @@ class ServiceTypeDataTable extends DataTable
             ->addColumn('action', function ($model) {
                 $html = '<div class="d-flex align-items-center gap-2 justify-content-end">';
 
-                if (PerUser('service.show')) {
+                if (PerUser('service-types.show')) {
                     $html .= '<a href="' . route('service.show', $model->srevicetyptid) . '" 
                         class="btn btn-sm btn-outline-info action-btn"
                         data-bs-toggle="tooltip" 
@@ -46,7 +46,7 @@ class ServiceTypeDataTable extends DataTable
                     $html .= '<button 
                         class="btn btn-sm btn-outline-danger action-btn delete-this"
                         data-id="' . $model->srevicetyptid . '"
-                        data-url="' . route('service.destroy', $model->srevicetyptid) . '"
+                        data-url="' . route('service-types.destroy', $model->srevicetyptid) . '"
                         data-bs-toggle="tooltip" 
                         title="حذف">
                         <i class="bx bx-trash"></i>

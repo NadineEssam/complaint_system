@@ -34,7 +34,7 @@ class ServiceTypeController extends Controller
             ServiceType::create($data);
 
             alert()->success('تم بنجاح', 'تم إضافة نوع الخدمة بنجاح');
-            return redirect()->route('service.index');
+            return redirect()->route('service-types.index');
         } catch (\Exception $e) {
             return back()->withInput()->with('error', 'حدث خطأ: ' . $e->getMessage());
         }
@@ -43,13 +43,13 @@ class ServiceTypeController extends Controller
     public function show($id)
     {
         $serviceType = ServiceType::with('createdBy', 'updatedBy')->findOrFail($id);
-        return view('dashboard.reference-data.service.show', compact('serviceType'));
+        return view('dashboard.reference-data.service-types.show', compact('serviceType'));
     }
 
     public function edit($id)
     {
         $serviceType = ServiceType::findOrFail($id);
-        return view('dashboard.reference-data.service.edit', compact('serviceType'));
+        return view('dashboard.reference-data.service-types.edit', compact('serviceType'));
     }
 
     public function update(Request $request, $id)
@@ -68,7 +68,7 @@ class ServiceTypeController extends Controller
             $serviceType->update($data);
 
             alert()->success('تم بنجاح', 'تم تحديث نوع الخدمة بنجاح');
-            return redirect()->route('service.index');
+            return redirect()->route('service-types.index');
         } catch (\Exception $e) {
             return back()->withInput()->with('error', 'حدث خطأ: ' . $e->getMessage());
         }

@@ -41,8 +41,8 @@
                         أنواع الخدمات
                     </h4>
 
-                    @if (PerUser('service.create'))
-                    <a href="{{ route('service.create') }}" class="btn btn-sm btn-success">
+                    @if (PerUser('service-types.create'))
+                    <a href="{{ route('service-types.create') }}" class="btn btn-sm btn-success">
                         <i class="bx bx-plus"></i>
                         إضافة نوع خدمة
                     </a>
