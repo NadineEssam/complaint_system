@@ -125,12 +125,12 @@ class ComplaintController extends Controller
 
             'ComplaintGovernorate.required' => 'يرجى اختيار المحافظة',
 
-            'sector_id.required' => 'يرجى اختيار القطاع',
+            'sector_id.required' => 'يرجى اختيار نوع النشاط',
 
             'office.required' => 'يرجى اختيار المكتب',
 
             'comsource_id.required' => 'يرجى اختيار مصدر الشكوى',
-            'ComplaintText.required' => 'يرجى إدخال نص الشكوى',
+            'ComplaintText.required' => 'يرجى إدخال نص البيان',
 
 
         ]);
@@ -246,12 +246,12 @@ class ComplaintController extends Controller
 
             'ComplaintGovernorate.required' => 'يرجى اختيار المحافظة',
 
-            'sector_id.required' => 'يرجى اختيار القطاع',
+            'sector_id.required' => 'يرجى اختيار نوع النشاط',
 
             'office.required' => 'يرجى اختيار المكتب',
 
             'comsource_id.required' => 'يرجى اختيار مصدر الشكوى',
-            'ComplaintText.required' => 'يرجى إدخال نص الشكوى',
+            'ComplaintText.required' => 'يرجى إدخال نص البيان',
 
         ]);
 

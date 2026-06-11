@@ -57,7 +57,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 "complaints.store" => "حفظ الشكوى",
                 "complaints.update" => "تحديث الشكوى",
                 "complaints.edit" => "تعديل الشكوى",
-                "complaints.reply" => "الرد على الشكوى",
+                "complaints.reply" => "الرد على البيان",
                 "complaints.destroy" => "حذف الشكوى",
                 "complaints.show" => "عرض الشكوى",
 

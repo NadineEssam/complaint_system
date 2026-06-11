@@ -102,7 +102,7 @@ class ComplaintResponseController extends Controller
                 'ComplaintStatus' => $response->ComplaintStatus
             ]);
 
-            alert()->success('تم بنجاح', 'تم إضافة الرد على الشكوى بنجاح');
+            alert()->success('تم بنجاح', 'تم إضافة الرد على البيان بنجاح');
 
             return redirect()->route(
                 'responses.index',
@@ -185,7 +185,7 @@ class ComplaintResponseController extends Controller
             $response->complaint()->update([
                 'ComplaintStatus' => $response->ComplaintStatus
             ]);
-            alert()->success('تم بنجاح', 'تم تعديل الرد على الشكوى بنجاح');
+            alert()->success('تم بنجاح', 'تم تعديل الرد على البيان بنجاح');
             return redirect()->route(
                 'responses.index',
                 ['complaint_id' => $response->complaint_id]

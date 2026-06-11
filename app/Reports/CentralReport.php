@@ -172,7 +172,7 @@ class CentralReport implements ReportInterface
     {
         return [
             'تاريخ الشكوى',
-            'نص الشكوى',
+            'نص البيان',
             'التعليق',
             'تفاصيل الحالة',
             'سبب الحفظ',

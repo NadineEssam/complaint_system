@@ -50,7 +50,7 @@ class ComplaintDataTable extends DataTable
                          <a href="' . route('responses.index', ['complaint_id' => $model]) . '" 
                         class="btn btn-sm btn-outline-primary action-btn"
                         data-bs-toggle="tooltip" 
-                        title="الرد على الطلب">
+                        title="الرد على البيان">
                             <i class="fas fa-reply-all"></i>
                         </a>';
                 }

@@ -513,11 +513,11 @@ $errors->has('comsource_id')
 
                                 </div>
 
-                                {{-- نوع الشكوى --}}
+                                {{-- نوعية وتوجيه البيان--}}
                                 <div class="col-md-6 mb-4">
 
                                     <label class="form-label">
-                                        نوع الشكوى
+                                       نوعية وتوجيه البيان
                                         <span class="required-star">*</span>
                                     </label>
 
@@ -545,9 +545,9 @@ $errors->has('comsource_id')
 
                                 </div>
 
-                                {{-- القطاع --}}
+                                {{-- نوع النشاط --}}
                                 <div class="col-md-6 mb-4">
-                                    <label class="form-label">القطاع
+                                    <label class="form-label">نوع النشاط
                                         <span class="required-star">*</span>
                                     </label>
                                     <select class="form-select @error('sector_id') is-invalid @enderror"
@@ -669,10 +669,10 @@ $errors->has('comsource_id')
 
                                 </div>
 
-                                {{-- نص الشكوى --}}
+                                {{-- نص البيان --}}
                                 <div class="col-md-12 mb-4">
                                     <label class="form-label">
-                                        نص الشكوى
+                                        نص البيان
                                         <span class="required-star">*</span>
                                     </label>
                                     <textarea

@@ -53,7 +53,7 @@ class ComplaintResponseDataTable extends DataTable
                         <a href="' . route('responses.edit', $model->id) . '" 
                         class="btn btn-sm btn-outline-primary action-btn"
                         data-bs-toggle="tooltip" 
-                        title="تعديل الرد على الشكوى">
+                        title="تعديل الرد على البيان">
                             <i class="bx bx-edit-alt"></i>
                         </a>';
                 }
@@ -68,7 +68,7 @@ class ComplaintResponseDataTable extends DataTable
                             data-id="' . $model->id . '"
                             data-url="' . route('responses.destroy', $model->id) . '"
                             data-bs-toggle="tooltip" 
-                            title="إزاله الرد على الشكوى">
+                            title="إزاله الرد على البيان">
                             <i class="bx bx-trash"></i>
                         </button>';
                 }

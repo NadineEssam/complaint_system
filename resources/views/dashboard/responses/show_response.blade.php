@@ -1,6 +1,6 @@
 @extends('dashboard.layouts.app')
 
-@section('title', 'عرض الرد على الشكوى')
+@section('title', 'عرض الرد على البيان')
 
 @push('headScripts')
 <style>
@@ -184,7 +184,7 @@
 
                 <h4>
                     <i class="bx bx-show-alt"></i>
-                    عرض الرد على الشكوى
+                    عرض الرد على البيان
                 </h4>
 
                 <p>

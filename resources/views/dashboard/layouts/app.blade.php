@@ -3,91 +3,104 @@
 
 <head>
   <style>
-#page-loader{
-    position: fixed;
-    inset: 0;
-    background: rgba(255,255,255,0.75);
-    backdrop-filter: blur(8px);
-    z-index: 999999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all .4s ease;
-}
+    /* ════════════════════════════════════════════════════════════════ */
+    /* PAGE LOADER - Global route navigation loader */
+    /* ════════════════════════════════════════════════════════════════ */
+    #page-loader {
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 999999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.4s ease;
+      opacity: 1;
+      visibility: visible;
+    }
 
-.loader-content{
-    text-align: center;
-}
+    #page-loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
 
-.loader-logo{
-    width: 85px;
-    height: 85px;
-    margin: auto;
-    border-radius: 24px;
-    background: linear-gradient(135deg,#003b8e,#0057d9);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 34px;
-    margin-bottom: 25px;
-    animation: float 2s ease-in-out infinite;
-    box-shadow: 0 10px 30px rgba(0,59,142,.25);
-}
+    .loader-content {
+      text-align: center;
+    }
 
-.modern-spinner{
-    width: 50px;
-    height: 50px;
-    margin: auto;
-    border: 4px solid #dbeafe;
-    border-top: 4px solid #003b8e;
-    border-radius: 50%;
-    animation: spin .7s linear infinite;
-}
+    .loader-logo {
+      width: 85px;
+      height: 85px;
+      margin: auto;
+      border-radius: 24px;
+      background: linear-gradient(135deg, #003b8e, #0057d9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 34px;
+      margin-bottom: 25px;
+      animation: float 2s ease-in-out infinite;
+      box-shadow: 0 10px 30px rgba(0, 59, 142, 0.25);
+    }
 
-.loading-text{
-    margin-top: 20px;
-    font-size: 16px;
-    color: #003b8e;
-    font-weight: 600;
-    letter-spacing: .5px;
-}
+    .modern-spinner {
+      width: 50px;
+      height: 50px;
+      margin: auto;
+      border: 4px solid #dbeafe;
+      border-top: 4px solid #003b8e;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
 
-.dots::after{
-    content:'';
-    animation:dots 1.5s infinite;
-}
+    .loading-text {
+      margin-top: 20px;
+      font-size: 16px;
+      color: #003b8e;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
 
-@keyframes spin{
-    100%{
+    .dots::after {
+      content: '';
+      animation: dots 1.5s infinite;
+    }
+
+    @keyframes spin {
+      100% {
         transform: rotate(360deg);
+      }
     }
-}
 
-@keyframes float{
-    0%,100%{
+    @keyframes float {
+      0%,
+      100% {
         transform: translateY(0px);
-    }
-    50%{
+      }
+      50% {
         transform: translateY(-10px);
+      }
     }
-}
 
-@keyframes dots{
-    0%{
-        content:'';
+    @keyframes dots {
+      0% {
+        content: '';
+      }
+      33% {
+        content: '.';
+      }
+      66% {
+        content: '..';
+      }
+      100% {
+        content: '...';
+      }
     }
-    33%{
-        content:'.';
-    }
-    66%{
-        content:'..';
-    }
-    100%{
-        content:'...';
-    }
-}
-</style>
+  </style>
+
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
@@ -113,21 +126,22 @@
 </head>
 
 <body>
- <div id="page-loader">
+  <!-- ════════════════════════════════════════════════════════════════ -->
+  <!-- GLOBAL PAGE LOADER - Shows on route navigation -->
+  <!-- ════════════════════════════════════════════════════════════════ -->
+  <div id="page-loader">
     <div class="loader-content">
+      <div class="loader-logo">
+        <i class="fa-solid fa-chart-line"></i>
+      </div>
 
-        <div class="loader-logo">
-            <i class="fa-solid fa-chart-line"></i>
-        </div>
+      <div class="modern-spinner"></div>
 
-        <div class="modern-spinner"></div>
-
-        <p class="loading-text">
-            Loading Dashboard<span class="dots"></span>
-        </p>
-
+      <p class="loading-text">
+        جاري التحميل<span class="dots"></span>
+      </p>
     </div>
-</div>
+  </div>
 
   {{-- Header --}}
   @include('dashboard.partials.header')
@@ -160,9 +174,8 @@
 
   @stack('footerScripts')
 
-
-
   @include('sweetalert::alert')
+
   <style>
     .swal2-popup {
       border-radius: 20px !important;
@@ -183,18 +196,124 @@
       background: #e74c3c !important;
     }
   </style>
+
+  <!-- ════════════════════════════════════════════════════════════════ -->
+  <!-- GLOBAL ROUTE LOADER SCRIPT -->
+  <!-- ════════════════════════════════════════════════════════════════ -->
   <script>
-window.addEventListener("load", function () {
+    /**
+     * Global Page Loader for Route Navigation
+     * Shows loader when clicking links or submitting forms
+     * Hides when new page loads
+     */
 
-    const loader = document.getElementById("page-loader");
+    const pageLoader = {
+      element: document.getElementById('page-loader'),
+      loaderTimeout: null,
 
-    setTimeout(() => {
-        loader.style.opacity = "0";
-        loader.style.visibility = "hidden";
-    }, 500);
+      show: function() {
+        if (this.element) {
+          this.element.classList.remove('hidden');
+          clearTimeout(this.loaderTimeout);
+          
+          // Safety timeout - hide after 5 seconds
+          this.loaderTimeout = setTimeout(() => {
+            this.hide();
+          }, 5000);
+        }
+      },
 
-});
-</script>
+      hide: function() {
+        if (this.element) {
+          this.element.classList.add('hidden');
+          clearTimeout(this.loaderTimeout);
+        }
+      }
+    };
+
+    // ── Show loader on link click ──
+    document.addEventListener('click', function(e) {
+      const link = e.target.closest('a');
+
+      // Ignore if:
+      // - Not a link
+      // - Has data-no-loader attribute
+      // - Opens in new tab
+      // - Is a hash/anchor link
+      // - Is a download link
+      if (!link ||
+        link.hasAttribute('data-no-loader') ||
+        link.target === '_blank' ||
+        link.href.startsWith('#') ||
+        link.hasAttribute('download')) {
+        return;
+      }
+
+      // Check if it's same domain
+      try {
+        const linkUrl = new URL(link.href);
+        const currentUrl = new URL(window.location.href);
+
+        if (linkUrl.origin === currentUrl.origin) {
+          pageLoader.show();
+        }
+      } catch (e) {
+        // If URL parsing fails, still show loader for relative links
+        if (link.href.startsWith('/') || !link.href.includes('://')) {
+          pageLoader.show();
+        }
+      }
+    });
+
+    // ── Show loader on form submit ──
+    document.addEventListener('submit', function(e) {
+      const form = e.target;
+
+      // Ignore if form has data-no-loader attribute
+      if (form.hasAttribute('data-no-loader')) {
+        return;
+      }
+
+      // Only show loader if form posts to same domain
+      if (form.method.toUpperCase() === 'POST' || form.method.toUpperCase() === 'GET') {
+        const action = form.getAttribute('action') || window.location.href;
+
+        try {
+          const formUrl = new URL(action, window.location.href);
+          const currentUrl = new URL(window.location.href);
+
+          if (formUrl.origin === currentUrl.origin) {
+            pageLoader.show();
+          }
+        } catch (e) {
+          pageLoader.show();
+        }
+      }
+    });
+
+    // ── Hide loader when page loads ──
+    window.addEventListener('load', function() {
+      // Add a small delay for smoother transition
+      setTimeout(() => {
+        pageLoader.hide();
+      }, 300);
+    });
+
+    // ── Hide loader when user navigates back/forward ──
+    window.addEventListener('pageshow', function() {
+      pageLoader.hide();
+    });
+
+    // ── Initial page load - hide loader after 500ms ──
+    window.addEventListener('DOMContentLoaded', function() {
+      setTimeout(() => {
+        pageLoader.hide();
+      }, 500);
+    });
+
+    // Expose globally for manual control if needed
+    window.pageLoader = pageLoader;
+  </script>
 </body>
 
 </html>

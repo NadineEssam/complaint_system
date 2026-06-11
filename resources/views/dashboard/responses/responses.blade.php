@@ -1,6 +1,6 @@
 @extends('dashboard.layouts.app')
 
-@section('title', 'الرد على الشكوى')
+@section('title', 'الرد على البيان')
 
 @push('headScripts')
 <link href="{{ asset('assets/datatable/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
@@ -82,7 +82,7 @@
 
                                     <label class="font-weight-bold text-muted mb-2 d-block">
                                         <i class="bx bx-message-detail"></i>
-                                        نص الشكوى
+                                        نص البيان
                                     </label>
 
                                     <div class="bg-light border rounded p-3" style="min-height:80px;">

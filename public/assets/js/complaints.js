@@ -439,10 +439,10 @@ $('.prevBtn').on('click', function () {
             $("#comsourceError").text('');
         }
 
-        // نص الشكوى required
+        // نص البيان required
         if ($("textarea[name='ComplaintText']").val().trim() === '') {
             $("textarea[name='ComplaintText']").addClass('is-invalid');
-            $("#complaintTextError").text("يرجى إدخال نص الشكوى.");
+            $("#complaintTextError").text("يرجى إدخال نص البيان.");
             isValid = false;
         }
 
