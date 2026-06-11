@@ -70,6 +70,37 @@ class RolesAndPermissionsSeeder extends Seeder
                 "responses.destroy" => "حذف الرد",
                 "responses.show" => "عرض الرد",
                 "responses.data" => "بيانات الردود",
+
+                "services.index" => "عرض الخدمات",
+                "services.create" => "إضافة خدمة",
+                "services.store" => "حفظ الخدمة",
+                "services.update" => "تحديث الخدمة",
+                "services.edit" => "تعديل الخدمة",
+                "services.destroy" => "حذف الخدمة",
+                "services.show" => "عرض الخدمة",
+                "services.data" => "بيانات الخدمات",
+
+                "ComSource.index" => "عرض مصادر الشكاوي",
+                "ComSource.create" => "إضافة مصدر شكوى",
+                "ComSource.store" => "حفظ مصدر شكوى",
+                "ComSource.update" => "تحديث مصدر شكوى",
+                "ComSource.edit" => "تعديل مصدر شكوى",
+                "ComSource.destroy" => "حذف مصدر شكوى",
+                "ComSource.show" => "عرض مصدر شكوى",
+                "ComSource.data" => "بيانات مصادر الشكاوي",
+
+                "CompCloseReasoncClassify.index" => "عرض أسباب إغلاق الشكاوي",
+                "CompCloseReasoncClassify.create" => "إضافة سبب إغلاق شكوى",
+                "CompCloseReasoncClassify.store" => "حفظ سبب إغلاق شكوى",
+                "CompCloseReasoncClassify.update" => "تحديث سبب إغلاق شكوى",
+                "CompCloseReasoncClassify.edit" => "تعديل سبب إغلاق شكوى",
+                "CompCloseReasoncClassify.destroy" => "حذف سبب إغلاق شكوى",
+                "CompCloseReasoncClassify.show" => "عرض سبب إغلاق شكوى",
+                "CompCloseReasoncClassify.data" => "بيانات أسباب إغلاق الشكاوي",
+
+              
+
+
             ],
         ];
 

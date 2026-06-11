@@ -70,10 +70,15 @@ function validateStep1() {
     let nationalId = $("input[name='ComplaintNationalID']").val().trim();
 
     const requiredFields = [
-        'requesttypeid',
-        'ComplainerName',
-        'ComplainerPhone'
-    ];
+    'requesttypeid',
+    'ComplainerName',
+    'ComplainerPhone'
+];
+
+    // البريد الإلكتروني مطلوب فقط عند نوع الطلب = 5
+    if (requestType == 5) {
+        requiredFields.push('ComplainerEmail');
+    }
 
     requiredFields.forEach(function (fieldName) {
 
@@ -85,8 +90,27 @@ function validateStep1() {
         }
     });
 
+      if (requestType == 5) {
+
+        let emailField = $('[name="ComplainerEmail"]');
+        let email = emailField.val().trim();
+        let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (email === '') {
+
+            emailField.addClass('is-invalid');
+            isValid = false;
+
+        } else if (!emailRegex.test(email)) {
+
+            emailField.addClass('is-invalid');
+            isValid = false;
+        }
+    }
+
+
    // الرقم القومي مطلوب
-    if (requestType == 2 && nationalId === '') {
+    if (requestType == 2 && requestType == 3 && nationalId === '') {
 
         $("input[name='ComplaintNationalID']")
             .addClass('is-invalid');
@@ -97,7 +121,7 @@ function validateStep1() {
     }
 
     // النوع مطلوب للنوع 1
-    if (requestType == 1) {
+    if (requestType == 1 && requestType == 4 && requestType == 5) {
         let genderVal = $("#ComplainerGenderSelect").val();
         if (!genderVal || genderVal === '') {
             $("#ComplainerGenderSelect").addClass('is-invalid');
@@ -196,7 +220,7 @@ $('.prevBtn').on('click', function () {
     }
 
  
-    if ($("#requesttypeid").val() == 1) {
+    if ($("#requesttypeid").val() == 1 || $("#requesttypeid").val() == 4 || $("#requesttypeid").val() == 5) {
         let selectedGender = $("#ComplainerGenderSelect").val();
         $("#ComplainerGenderReadonly").val(selectedGender).removeAttr('readonly');
     }
@@ -323,7 +347,7 @@ $('.prevBtn').on('click', function () {
     // =========================
     $(document).on("keyup", "input[name='ComplaintNationalID']", function () {
 
-        if ($("#requesttypeid").val() != 2) return;
+        if ($("#requesttypeid").val() != 2 && $("#requesttypeid").val() != 3) return;
 
         let value = $(this).val();
         let result = national_no_validate(value);
@@ -349,13 +373,22 @@ $('.prevBtn').on('click', function () {
 
         let value = $(this).val();
 
-        if (value == 2) {
+        if (value == 5) {
+        $("input[name='ComplainerEmail']").attr('required', true);
+        $("#emailStar").show();
+        } else {
+            $("input[name='ComplainerEmail']").removeAttr('required');
+            $("#emailStar").hide();
+            $("input[name='ComplainerEmail']").removeClass('is-invalid');
+        }
+
+        if (value == 2 || value == 3) {
             $("input[name='ComplaintNationalID']").attr('required', true);
             $("#nidStar").show();
             $("#genderReadonlySection").show();
             $("#genderSelectSection").hide();
             $("#ComplainerGenderReadonly").val('');
-        } else if (value == 1) {
+        } else if (value == 1 || value == 4 || value == 5) {
             $("input[name='ComplaintNationalID']").removeAttr('required');
             $("#nidStar").hide();
             $("#nidError").text("");
@@ -431,13 +464,34 @@ $('.prevBtn').on('click', function () {
         }
 
         // مصدر الشكوى required
-        if (!$('[name="comsource_id"]').val()) {
-            $('[name="comsource_id"]').addClass('is-invalid');
-            $("#comsourceError").text("يرجى اختيار مصدر الشكوى.");
-            isValid = false;
-        } else {
-            $("#comsourceError").text('');
-        }
+        // if (!$('[name="comsource_id"]').val()) {
+        //     $('[name="comsource_id"]').addClass('is-invalid');
+        //     $("#comsourceError").text("يرجى اختيار مصدر الشكوى.");
+        //     isValid = false;
+        // } else {
+        //     $("#comsourceError").text('');
+        // }
+
+        // مصدر الشكوى required (MULTI-SELECT)
+       if (!$('#comsourceSelect').val() || $('#comsourceSelect').val().length === 0) {
+
+        $('#comsourceSelect')
+            .next('.select2-container')
+            .find('.select2-selection')
+            .addClass('is-invalid');
+
+        $("#comsourceError").text("يرجى اختيار مصدر الشكوى.");
+        isValid = false;
+
+    } else {
+
+        $('#comsourceSelect')
+            .next('.select2-container')
+            .find('.select2-selection')
+            .removeClass('is-invalid');
+
+        $("#comsourceError").text('');
+    }
 
         // نص البيان required
         if ($("textarea[name='ComplaintText']").val().trim() === '') {

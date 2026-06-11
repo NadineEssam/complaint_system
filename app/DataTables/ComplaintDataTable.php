@@ -128,9 +128,9 @@ class ComplaintDataTable extends DataTable
     {
         $query = $model->newQuery();
 
-        // عرض شكاوى عام 2025 فقط
-        // $query->whereYear('ComplaintDate', 2025);
-        $query->whereYear('ComplaintDate', '>=', 2025);
+        // عرض شكاوى عام 2022 فقط
+        // $query->whereYear('ComplaintDate', 2022);
+        $query->whereYear('ComplaintDate', '>=', 2022);
         if ($gender = $this->request->get('gender_filter')) {
             $query->where('ComplainerGender', $gender);
         }

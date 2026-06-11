@@ -210,6 +210,67 @@
             gap: 10px;
         }
     }
+
+    /* Select2 Multi Select Design */
+.select2-container--bootstrap-5 .select2-selection {
+    min-height: 50px !important;
+    border: 1px solid #dce1e7 !important;
+    border-radius: 12px !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    padding: 6px 10px !important;
+}
+
+.select2-container--bootstrap-5.select2-container--focus .select2-selection,
+.select2-container--bootstrap-5 .select2-selection:focus {
+    border-color: #0d6efd !important;
+    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.08) !important;
+}
+
+.select2-container--bootstrap-5 .select2-selection__choice {
+    border-radius: 8px !important;
+    padding: 4px 10px !important;
+    margin: 3px !important;
+    font-size: 13px !important;
+}
+
+.select2-container--bootstrap-5 .select2-selection__rendered {
+    display: flex !important;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+}
+
+.select2-container--bootstrap-5 .select2-search--inline .select2-search__field {
+    margin-top: 0 !important;
+    height: 30px !important;
+}
+
+.select2-container--bootstrap-5 .select2-dropdown {
+    border-radius: 12px !important;
+    border: 1px solid #dce1e7 !important;
+    overflow: hidden;
+}
+
+.select2-container--bootstrap-5 .select2-results__option {
+    padding: 10px 15px;
+}
+
+/* Validation */
+.select2-container--bootstrap-5 .select2-selection.is-invalid,
+.is-invalid + .select2-container .select2-selection {
+    border-color: #dc3545 !important;
+}
+
+.select2-container {
+    width: 100% !important;
+}
+
+.select2-container--bootstrap-5 .select2-selection--multiple {
+    padding-right: 12px !important;
+    padding-left: 35px !important;
+    background-position: left 0.75rem center !important;
+}
 </style>
 @endpush
 @php
@@ -431,7 +492,7 @@ $errors->has('comsource_id')
 
                                     <label class="form-label">
                                         البريد الإلكتروني
-
+                                        <span id="emailStar" style="display:none;color:red">*</span>
                                     </label>
 
                                     <input type="email"
@@ -517,7 +578,7 @@ $errors->has('comsource_id')
                                 <div class="col-md-6 mb-4">
 
                                     <label class="form-label">
-                                       نوعية وتوجيه البيان
+                                        نوعية وتوجيه البيان
                                         <span class="required-star">*</span>
                                     </label>
 
@@ -636,7 +697,7 @@ $errors->has('comsource_id')
 
                                 </div>
 
-                                {{-- مصدر الشكوى --}}
+                                {{-- مصدر الشكوى (MULTI-SELECT) --}}
                                 <div class="col-md-12 mb-4">
 
                                     <label class="form-label">
@@ -644,15 +705,20 @@ $errors->has('comsource_id')
                                         <span class="required-star">*</span>
                                     </label>
 
-                                    <select class="form-select @error('comsource_id') is-invalid @enderror"
-                                        name="comsource_id">
+                                    <select class="form-select select2-multi @error('comsource_ids') is-invalid @enderror"
+                                        name="comsource_ids[]"
+                                        id="comsourceSelect"
+                                        multiple
+                                        style="width: 100%;">
 
                                         <option value="">اختر</option>
 
                                         @foreach($comsources as $source)
 
                                         <option value="{{ $source->comsourcesid }}"
-                                            {{ old('comsource_id', $complaint->ComplaintSources ?? '') == $source->comsourcesid ? 'selected' : '' }}>
+                                            @if(isset($complaint) && $complaint->sources->pluck('comsourcesid')->contains($source->comsourcesid))
+                                            selected
+                                            @endif>
 
                                             {{ $source->comsourcesname }}
 
@@ -662,7 +728,7 @@ $errors->has('comsource_id')
 
                                     </select>
 
-                                    @error('comsource_id')
+                                    @error('comsource_ids')
                                     <div class="error-text">{{ $message }}</div>
                                     @enderror
                                     <div class="error-text" id="comsourceError"></div>
@@ -734,6 +800,30 @@ $errors->has('comsource_id')
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ar.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+$(document).ready(function () {
+    // Initialize Select2 for multi-select complaint sources
+    $('#comsourceSelect').select2({
+        theme: 'bootstrap-5',
+        dir: 'rtl',
+        placeholder: 'اختر مصادر الشكوى',
+        allowClear: true,
+        width: '100%',
+        closeOnSelect: false
+    });
+
+    // Clear error on selection
+    $('#comsourceSelect').on('change', function () {
+        if ($(this).val() && $(this).val().length > 0) {
+            $(this).removeClass('is-invalid');
+            $("#comsourceError").text('');
+        }
+    });
+});
+</script>
 <script src="{{ asset('assets/js/complaints.js') }}">
     flatpickr("input[name='ComplaintDate']", {
         locale: "ar",

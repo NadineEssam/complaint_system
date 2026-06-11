@@ -78,7 +78,11 @@ class ComplaintResponseController extends Controller
             'statuses' => $statuses,
             'serviceTypes' => ServiceType::all(),
             'closeReasons' => CompCloseReason::all(),
-            'classifications' => CompCloseReasonClassify::all(),
+            'classifications' => CompCloseReasonClassify::select(
+            'close_reason_classify_id',
+            'close_reason_classify_Name',
+            'fk_close_reason_id'
+        )->get(),
         ]);
     }
 
@@ -161,7 +165,12 @@ class ComplaintResponseController extends Controller
             'statuses' => $statuses,
             'serviceTypes' => ServiceType::all(),
             'closeReasons' => CompCloseReason::all(),
-            'classifications' => CompCloseReasonClassify::all(),
+            'classifications' => CompCloseReasonClassify::select(
+            'close_reason_classify_id',
+            'close_reason_classify_Name',
+            'fk_close_reason_id'
+        )->get(),
+            // 'classifications' => CompCloseReasonClassify::all(),
         ]);
     }
 

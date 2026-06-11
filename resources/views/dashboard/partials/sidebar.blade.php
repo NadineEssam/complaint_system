@@ -1,43 +1,55 @@
  <!-- ======= Sidebar ======= -->
 
-  <aside id="sidebar" class="sidebar">
+ <aside id="sidebar" class="sidebar">
 
-    <ul class="sidebar-nav" id="sidebar-nav">
+   <ul class="sidebar-nav" id="sidebar-nav">
 
-      <li class="nav-item  @if (request()->segment(1) == '') mm-active @endif  ">
-        <a class="nav-link collapsed" href="{{ route('home') }}">
-           <i class="bi bi-grid"></i>
-           <span>الرئيسية</span>
-        </a>
-      </li>
-
-
-       <li class="nav-heading"> ادارة الشكاوى </li>
-
-      @if (PerUser('complaints.index') )
-      <li class="nav-item  @if (request()->segment(1) == 'complaints') mm-active @endif  ">
-        <a class="nav-link collapsed" href="{{ route('complaints.index') }}">
-          <i class="bi bi-card-list"></i>
-          <span> الشكاوى </span>
-        </a>
-      </li>
-      @endif
+     <li class="nav-item  @if (request()->segment(1) == '') mm-active @endif  ">
+       <a class="nav-link collapsed" href="{{ route('home') }}">
+         <i class="bi bi-grid"></i>
+         <span>الرئيسية</span>
+       </a>
+     </li>
 
 
+     <li class="nav-heading"> ادارة الشكاوى </li>
 
-      <li class="nav-heading">تقارير النظام</li>
+     @if (PerUser('complaints.index'))
+     <li class="nav-item {{ request()->segment(1) == 'complaints' ? 'mm-active' : '' }}">
+       <a class="nav-link collapsed" href="{{ route('complaints.index') }}">
+         <i class="bi bi-card-list"></i>
+         <span> الشكاوى </span>
+       </a>
+     </li>
+     @endif
 
-      @if (PerUser('reports.index') )
-      <li class="nav-item  @if (request()->segment(1) == 'reports') mm-active @endif  ">
-        <a class="nav-link collapsed" href="{{ route('reports.index') }}">
-          <i class="bi bi-card-list"></i>
-          <span> التقارير </span>
-        </a>
-      </li>
-      @endif
+     @if (PerUser('service.index'))
+     <li class="nav-item {{ request()->segment(1) == 'service' ? 'mm-active' : '' }}">
+       <a class="nav-link collapsed" href="{{ route('service.index') }}">
+         <i class="bi bi-card-list"></i>
+         <span> انواع الخدمات </span>
+       </a>
+     </li>
+     @endif
 
 
-      {{-- <li class="nav-item">
+
+
+
+
+     <li class="nav-heading">تقارير النظام</li>
+
+     @if (PerUser('reports.index') )
+     <li class="nav-item  @if (request()->segment(1) == 'reports') mm-active @endif  ">
+       <a class="nav-link collapsed" href="{{ route('reports.index') }}">
+         <i class="bi bi-card-list"></i>
+         <span> التقارير </span>
+       </a>
+     </li>
+     @endif
+
+
+     {{-- <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-menu-button-wide"></i><span>Components</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
@@ -115,29 +127,29 @@
         </ul>
       </li><!-- End Components Nav --> --}}
 
-      <li class="nav-heading">اعدادات النظام</li>
+     <li class="nav-heading">اعدادات النظام</li>
 
-      @if (PerUser('roles.index') )
-      <li class="nav-item  @if (request()->segment(1) == 'roles') mm-active @endif  ">
-        <a class="nav-link collapsed" href="{{ route('roles.index') }}">
-          <i class="bx bx-shield-quarter"></i>
-          <span>الأدوار والصلاحيات </span>
-        </a>
-      </li>
-      @endif
+     @if (PerUser('roles.index') )
+     <li class="nav-item  @if (request()->segment(1) == 'roles') mm-active @endif  ">
+       <a class="nav-link collapsed" href="{{ route('roles.index') }}">
+         <i class="bx bx-shield-quarter"></i>
+         <span>الأدوار والصلاحيات </span>
+       </a>
+     </li>
+     @endif
 
-      @if(PerUser('users.index') )
-      <li class="nav-item  @if (request()->segment(1) == 'users') mm-active @endif ">
-        <a class="nav-link collapsed" href="{{ route('users.index') }}">
-          <i class="bi bi-person"></i>
-          <span>المستخدمين</span>
-        </a>
-      </li>
-      @endif
-
-     
+     @if(PerUser('users.index') )
+     <li class="nav-item  @if (request()->segment(1) == 'users') mm-active @endif ">
+       <a class="nav-link collapsed" href="{{ route('users.index') }}">
+         <i class="bi bi-person"></i>
+         <span>المستخدمين</span>
+       </a>
+     </li>
+     @endif
 
 
-    </ul>
 
-  </aside><!-- End Sidebar-->
+
+   </ul>
+
+ </aside><!-- End Sidebar-->

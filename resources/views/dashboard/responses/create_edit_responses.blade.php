@@ -375,14 +375,12 @@
                                     <option value="">اختر التصنيف</option>
 
                                     @foreach ($classifications as $classify)
-
-                                    <option value="{{ $classify->close_reason_classify_id }}"
+                                    <option
+                                        value="{{ $classify->close_reason_classify_id }}"
+                                        data-reason="{{ $classify->fk_close_reason_id }}"
                                         {{ old('fk_close_reason_classify_id', $response->fk_close_reason_classify_id ?? '') == $classify->close_reason_classify_id ? 'selected' : '' }}>
-
                                         {{ $classify->close_reason_classify_Name }}
-
                                     </option>
-
                                     @endforeach
 
                                 </select>
@@ -438,15 +436,50 @@
             $('#closeReasonBox').addClass('disabled-box');
         }
     }
+    function filterClassifications() {
+
+    let reasonId = $('#reasonSelect').val();
+
+    $('#classifySelect option').each(function () {
+
+        let optionReason = $(this).data('reason');
+
+        if ($(this).val() === '') {
+            $(this).show();
+            return;
+        }
+
+        if (reasonId == optionReason) {
+            $(this).show();
+        } else {
+            $(this).hide();
+        }
+    });
+
+    // إعادة تعيين التصنيف إذا لم يعد متوافقاً
+    let selectedOption = $('#classifySelect option:selected');
+
+    if (
+        selectedOption.val() &&
+        selectedOption.data('reason') != reasonId
+    ) {
+        $('#classifySelect').val('');
+    }
+}
 
     $(document).ready(function() {
 
+    toggleFields();
+    filterClassifications();
+
+    $('#statusSelect').on('change', function() {
         toggleFields();
-
-        $('#statusSelect').on('change', function() {
-            toggleFields();
-        });
-
     });
+
+    $('#reasonSelect').on('change', function() {
+        filterClassifications();
+    });
+
+});
 </script>
 @endpush

@@ -91,7 +91,7 @@ class ComplaintController extends Controller
 
             'requesttypeid' => 'required|integer',
             'ComplainerName' => 'required|string',
-            'ComplainerEmail' => 'nullable|email',
+            'ComplainerEmail' => 'nullable|required_if:requesttypeid,4|email',
             'ComplainerPhone' => [
                 'required',
                 'regex:/^01[0-2,5]{1}[0-9]{8}$/'
@@ -101,10 +101,11 @@ class ComplaintController extends Controller
             'ComplaintDate' => 'required|date|before_or_equal:today',
             'sector_id' => 'required|integer',
             'office' => 'required|integer',
-            'comsource_id' => 'required|integer',
+            'comsource_ids' => 'required|array|min:1',
+            'comsource_ids.*' => 'integer|exists:comsources,comsourcesid',
             'ComplainerGender' => 'required|string|max:10',
 
-            'ComplaintNationalID' => 'nullable|required_if:requesttypeid,2|digits:14',
+            'ComplaintNationalID' => 'nullable|required_if:requesttypeid,2,3|digits:14',
             'ComplaintText'    => 'required|string',
 
         ], [
@@ -113,6 +114,7 @@ class ComplaintController extends Controller
             'ComplainerName.required' => 'يرجى إدخال اسم العميل',
 
             'ComplainerEmail.email' => 'البريد الإلكتروني غير صحيح',
+            'ComplainerEmail.required_if' => 'البريد الإلكتروني مطلوب',
 
             'ComplainerPhone.required' => 'يرجى إدخال رقم الهاتف المحمول',
             'ComplainerPhone.regex' => 'رقم الهاتف المحمول غير صحيح',
@@ -129,30 +131,32 @@ class ComplaintController extends Controller
 
             'office.required' => 'يرجى اختيار المكتب',
 
-            'comsource_id.required' => 'يرجى اختيار مصدر الشكوى',
+            'comsource_ids.required' => 'يرجى اختيار مصدر الشكوى',
+            'comsource_ids.min' => 'يرجى اختيار مصدر شكوى واحد على الأقل',
             'ComplaintText.required' => 'يرجى إدخال نص البيان',
 
 
         ]);
 
 
-        Complaint::create([
+        $complaint = Complaint::create([
             'RequestType' => $data['requesttypeid'],
             'ComplainerName' => $data['ComplainerName'],
             'ComplainerEmail' => $data['ComplainerEmail'],
             'ComplainerPhone' => $data['ComplainerPhone'],
             'ComplaintGovernorate' => $data['ComplaintGovernorate'],
             'ComplaintDate' => $data['ComplaintDate'],
-             'department' => $data['sector_id'],
+            'department' => $data['sector_id'],
             // 'ComplaintProjectType' => $data['sector_id'],
             'ComplaintText' => $data['ComplaintText'],
             'office' => $data['office'],
-            'ComplaintSources' => $data['comsource_id'],
+            // 'ComplaintSources' => $data['comsource_id'],
             'ComplaintNationalID' => $data['ComplaintNationalID'] ?? null,
             'ComplainerGender' => $data['ComplainerGender'] ?? null,
             'username' => auth()->user()->userID,
             
         ]);
+        $complaint->sources()->sync($data['comsource_ids']);
 
 
         alert()->success('تم بنجاح', 'تم إضافة الشكوى بنجاح');
@@ -213,7 +217,7 @@ class ComplaintController extends Controller
 
             'requesttypeid' => 'required|integer',
             'ComplainerName' => 'required|string',
-            'ComplainerEmail' => 'nullable|email',
+            'ComplainerEmail' => 'nullable|required_if:requesttypeid,5|email',
             'ComplainerPhone' => [
                 'required',
                 'regex:/^01[0-2,5]{1}[0-9]{8}$/'
@@ -222,8 +226,9 @@ class ComplaintController extends Controller
             'ComplaintGovernorate' => 'required|integer',
             'ComplaintDate' => 'required|date|before_or_equal:today',
             'office' => 'required|integer',
-            'comsource_id' => 'required|integer',
-            'ComplaintNationalID' => 'nullable|required_if:requesttypeid,2|digits:14',
+            'comsource_ids' => 'required|array|min:1',
+            'comsource_ids.*' => 'integer|exists:comsources,comsourcesid',
+            'ComplaintNationalID' => 'nullable|required_if:requesttypeid,2,3|digits:14',
             'ComplainerGender' => 'required|string|max:10',
             'sector_id' => 'required|integer',
             'ComplaintText'    => 'required|string',
@@ -234,6 +239,7 @@ class ComplaintController extends Controller
             'ComplainerName.required' => 'يرجى إدخال اسم العميل',
 
             'ComplainerEmail.email' => 'البريد الإلكتروني غير صحيح',
+            'ComplainerEmail.required_if' => 'البريد الإلكتروني مطلوب',
 
             'ComplainerPhone.required' => 'يرجى إدخال رقم الهاتف المحمول',
             'ComplainerPhone.regex' => 'رقم الهاتف المحمول غير صحيح',
@@ -250,7 +256,8 @@ class ComplaintController extends Controller
 
             'office.required' => 'يرجى اختيار المكتب',
 
-            'comsource_id.required' => 'يرجى اختيار مصدر الشكوى',
+            'comsource_ids.required' => 'يرجى اختيار مصدر الشكوى',
+            'comsource_ids.min' => 'يرجى اختيار مصدر شكوى واحد على الأقل',
             'ComplaintText.required' => 'يرجى إدخال نص البيان',
 
         ]);
@@ -268,14 +275,14 @@ class ComplaintController extends Controller
             'office' => $data['office'],
             'ComplaintText' => $data['ComplaintText'],
 
-            'ComplaintSources' => $data['comsource_id'],
+            // 'ComplaintSources' => $data['comsource_id'],
             'ComplaintNationalID' => $data['ComplaintNationalID'] ?? null,
             'ComplainerGender' => $data['ComplainerGender'],
            
             'UpdateUser' => auth()->user()->userID,
         ]);
 
-
+        $complaint->sources()->sync($data['comsource_ids']);
         alert()->success('تم بنجاح', 'تم تعديل الشكوى بنجاح');
 
         return redirect()->route('complaints.index');

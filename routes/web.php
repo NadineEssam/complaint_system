@@ -97,6 +97,42 @@ Route::get('/dashboard', [\App\Http\Controllers\Dashboard\DashboardController::c
     });
 
 
+    Route::group(['prefix' => 'services'], function () {
+        Route::resource('/', \App\Http\Controllers\Dashboard\ServiceTypeController::class)->names([
+            'index' => 'services.index',
+            'create' => 'services.create',
+            'store' => 'services.store',
+            'update' => 'services.update',
+            'edit' => 'services.edit',
+            'destroy' => 'services.destroy',
+            'show' => 'services.show',
+        ])->parameter('', 'services');
+    });
+
+    Route::group(['prefix' => 'ComSource'], function () {
+        Route::resource('/', \App\Http\Controllers\Dashboard\ComSourceController::class)->names([
+            'index' => 'ComSource.index',
+            'create' => 'ComSource.create',
+            'store' => 'ComSource.store',
+            'update' => 'ComSource.update',
+            'edit' => 'ComSource.edit',
+            'destroy' => 'ComSource.destroy',
+            'show' => 'ComSource.show',
+        ])->parameter('', 'ComSource');
+    });
+
+    Route::group(['prefix' => 'CompCloseReasoncClassify'], function () {
+        Route::resource('/', \App\Http\Controllers\Dashboard\CompCloseReasoncClassifyController::class)->names([
+            'index' => 'CompCloseReasoncClassify.index',
+            'create' => 'CompCloseReasoncClassify.create',
+            'store' => 'CompCloseReasoncClassify.store',
+            'update' => 'CompCloseReasoncClassify.update',
+            'edit' => 'CompCloseReasoncClassify.edit',
+            'destroy' => 'CompCloseReasoncClassify.destroy',
+            'show' => 'CompCloseReasoncClassify.show',
+        ])->parameter('', 'CompCloseReasoncClassify');
+    });
+
     
 
 });
