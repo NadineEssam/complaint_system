@@ -97,41 +97,44 @@ Route::get('/dashboard', [\App\Http\Controllers\Dashboard\DashboardController::c
     });
 
 
-    Route::group(['prefix' => 'services'], function () {
-        Route::resource('/', \App\Http\Controllers\Dashboard\ServiceTypeController::class)->names([
-            'index' => 'services.index',
-            'create' => 'services.create',
-            'store' => 'services.store',
-            'update' => 'services.update',
-            'edit' => 'services.edit',
-            'destroy' => 'services.destroy',
-            'show' => 'services.show',
-        ])->parameter('', 'services');
-    });
+    // ✅ SERVICES ROUTES
+Route::group(['prefix' => 'services'], function () {
+    Route::resource('/', \App\Http\Controllers\Dashboard\ServiceTypeController::class)->names([
+        'index' => 'services.index',
+        'create' => 'services.create',
+        'store' => 'services.store',
+        'update' => 'services.update',
+        'edit' => 'services.edit',
+        'destroy' => 'services.destroy',
+        'show' => 'services.show'
+    ])->parameter('', 'service');
+});
 
-    Route::group(['prefix' => 'ComSource'], function () {
-        Route::resource('/', \App\Http\Controllers\Dashboard\ComSourceController::class)->names([
-            'index' => 'ComSource.index',
-            'create' => 'ComSource.create',
-            'store' => 'ComSource.store',
-            'update' => 'ComSource.update',
-            'edit' => 'ComSource.edit',
-            'destroy' => 'ComSource.destroy',
-            'show' => 'ComSource.show',
-        ])->parameter('', 'ComSource');
-    });
-
-    Route::group(['prefix' => 'CompCloseReasoncClassify'], function () {
-        Route::resource('/', \App\Http\Controllers\Dashboard\CompCloseReasoncClassifyController::class)->names([
-            'index' => 'CompCloseReasoncClassify.index',
-            'create' => 'CompCloseReasoncClassify.create',
-            'store' => 'CompCloseReasoncClassify.store',
-            'update' => 'CompCloseReasoncClassify.update',
-            'edit' => 'CompCloseReasoncClassify.edit',
-            'destroy' => 'CompCloseReasoncClassify.destroy',
-            'show' => 'CompCloseReasoncClassify.show',
-        ])->parameter('', 'CompCloseReasoncClassify');
-    });
+// ✅ ComSources Routes
+Route::group(['prefix' => 'sources'], function () {
+    Route::resource('/', \App\Http\Controllers\Dashboard\ComSourceController::class)->names([
+        'index' => 'sources.index',
+        'create' => 'sources.create',
+        'store' => 'sources.store',
+        'update' => 'sources.update',
+        'edit' => 'sources.edit',
+        'destroy' => 'sources.destroy',
+        'show' => 'sources.show'
+    ])->parameter('', 'source');
+});
+ 
+// ✅ Close Reason Classifications Routes
+Route::group(['prefix' => 'close-reason-classify'], function () {
+    Route::resource('/', \App\Http\Controllers\Dashboard\CompCloseReasonClassifyController::class)->names([
+        'index' => 'close-reason-classify.index',
+        'create' => 'close-reason-classify.create',
+        'store' => 'close-reason-classify.store',
+        'update' => 'close-reason-classify.update',
+        'edit' => 'close-reason-classify.edit',
+        'destroy' => 'close-reason-classify.destroy',
+        'show' => 'close-reason-classify.show'
+    ])->parameter('', 'classification');
+});
 
     
 

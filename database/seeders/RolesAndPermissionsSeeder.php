@@ -20,6 +20,11 @@ class RolesAndPermissionsSeeder extends Seeder
             'reports' => 'التقارير',
             'complaints' => 'الشكاوى',
             'responses' => 'الردود',
+            'services' => 'الخدمات',
+            'ComSource' => 'مصدر الشكوى',
+            'CompCloseReasoncClassify' => 'سبب إغلاق الشكوى',
+
+            
         ];
 
         $permissionsByRole = [
@@ -80,23 +85,23 @@ class RolesAndPermissionsSeeder extends Seeder
                 "services.show" => "عرض الخدمة",
                 "services.data" => "بيانات الخدمات",
 
-                "ComSource.index" => "عرض مصادر الشكاوي",
-                "ComSource.create" => "إضافة مصدر شكوى",
-                "ComSource.store" => "حفظ مصدر شكوى",
-                "ComSource.update" => "تحديث مصدر شكوى",
-                "ComSource.edit" => "تعديل مصدر شكوى",
-                "ComSource.destroy" => "حذف مصدر شكوى",
-                "ComSource.show" => "عرض مصدر شكوى",
-                "ComSource.data" => "بيانات مصادر الشكاوي",
+                "sources.index" => "عرض مصادر الشكاوي",
+                "sources.create" => "إضافة مصدر شكوى",
+                "sources.store" => "حفظ مصدر شكوى",
+                "sources.update" => "تحديث مصدر شكوى",
+                "sources.edit" => "تعديل مصدر شكوى",
+                "sources.destroy" => "حذف مصدر شكوى",
+                "sources.show" => "عرض مصدر شكوى",
+                "sources.data" => "بيانات مصادر الشكاوي",
 
-                "CompCloseReasoncClassify.index" => "عرض أسباب إغلاق الشكاوي",
-                "CompCloseReasoncClassify.create" => "إضافة سبب إغلاق شكوى",
-                "CompCloseReasoncClassify.store" => "حفظ سبب إغلاق شكوى",
-                "CompCloseReasoncClassify.update" => "تحديث سبب إغلاق شكوى",
-                "CompCloseReasoncClassify.edit" => "تعديل سبب إغلاق شكوى",
-                "CompCloseReasoncClassify.destroy" => "حذف سبب إغلاق شكوى",
-                "CompCloseReasoncClassify.show" => "عرض سبب إغلاق شكوى",
-                "CompCloseReasoncClassify.data" => "بيانات أسباب إغلاق الشكاوي",
+                "close-reason-classify.index" => "عرض أسباب إغلاق الشكاوي",
+                "close-reason-classify.create" => "إضافة سبب إغلاق شكوى",
+                "close-reason-classify.store" => "حفظ سبب إغلاق شكوى",
+                "close-reason-classify.update" => "تحديث سبب إغلاق شكوى",
+                "close-reason-classify.edit" => "تعديل سبب إغلاق شكوى",
+                "close-reason-classify.destroy" => "حذف سبب إغلاق شكوى",
+                "close-reason-classify.show" => "عرض سبب إغلاق شكوى",
+                "close-reason-classify.data" => "بيانات أسباب إغلاق الشكاوي",
 
               
 
@@ -142,7 +147,7 @@ class RolesAndPermissionsSeeder extends Seeder
             $role->syncPermissions($permissionIds);
 
             if ($roleName === 'admin') {
-                $adminUser = User::where('userID' , 'amjad.anwar' )->first();
+                $adminUser = User::where('userID' , 'nadine.essam' )->first();
                 if ($adminUser) {
                     $adminUser->assignRole($role);
                 }

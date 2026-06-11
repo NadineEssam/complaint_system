@@ -1,6 +1,6 @@
 @extends('dashboard.layouts.app')
 
-@section('title', isset($service) ? 'تعديل الخدمة' : 'إضافة خدمة جديدة')
+@section('title', isset($classification) ? 'تعديل التصنيف' : 'إضافة تصنيف جديد')
 
 @push('headScripts')
 <style>
@@ -133,13 +133,13 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0 p-0 shadow-none">
                         <li class="breadcrumb-item active text-primary font-weight-bold">
-                            {{ isset($service) ? 'تعديل الخدمة' : 'إضافة خدمة جديدة' }}
+                            {{ isset($classification) ? 'تعديل التصنيف' : 'إضافة تصنيف جديد' }}
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="{{ route('services.index') }}"
+                            <a href="{{ route('close-reason-classify.index') }}"
                                 class="text-secondary">
-                                <i class="bx bx-server"></i>
-                                الخدمات
+                                <i class="bx bx-category-alt"></i>
+                                التصنيفات
                             </a>
                         </li>
                         <li class="breadcrumb-item">
@@ -158,22 +158,22 @@
             {{-- Header --}}
             <div class="custom-card-header">
                 <h4>
-                    <i class="bx bx-server"></i>
-                    {{ isset($service) ? 'تعديل الخدمة' : 'إضافة خدمة جديدة' }}
+                    <i class="bx bx-category-alt"></i>
+                    {{ isset($classification) ? 'تعديل التصنيف' : 'إضافة تصنيف جديد' }}
                 </h4>
                 <p>
-                    يمكنك {{ isset($service) ? 'تحديث' : 'إضافة' }} بيانات الخدمة بسهولة.
+                    يمكنك {{ isset($classification) ? 'تحديث' : 'إضافة' }} بيانات التصنيف بسهولة.
                 </p>
             </div>
 
             <div class="card-body p-lg-4 p-3">
 
                 <form method="POST"
-                    action="{{ isset($service) ? route('services.update', $service->srevicetyptid) : route('services.store') }}">
+                    action="{{ isset($classification) ? route('close-reason-classify.update', $classification->close_reason_classify_id) : route('close-reason-classify.store') }}">
 
                     @csrf
 
-                    @if(isset($service))
+                    @if(isset($classification))
                     @method('PUT')
                     @endif
 
@@ -187,22 +187,53 @@
 
                         <div class="row">
 
-                            {{-- اسم الخدمة --}}
-                            <div class="col-12 mb-4">
+                            {{-- السبب الرئيسي --}}
+                            <div class="col-md-6 mb-4">
 
                                 <label class="form-label">
-                                    اسم الخدمة
+                                    السبب الرئيسي
+                                    <span class="required-star">*</span>
+                                </label>
+
+                                <select class="form-control @error('fk_close_reason_id') is-invalid @enderror"
+                                    name="fk_close_reason_id"
+                                    required>
+
+                                    <option value="">اختر السبب الرئيسي</option>
+
+                                    @foreach ($closeReasons as $reason)
+                                    <option value="{{ $reason->close_reason_ID }}"
+                                        {{ old('fk_close_reason_id', $classification->fk_close_reason_id ?? '') == $reason->close_reason_ID ? 'selected' : '' }}>
+                                        {{ $reason->close_reason_Name }}
+                                    </option>
+                                    @endforeach
+
+                                </select>
+
+                                @error('fk_close_reason_id')
+                                <span class="invalid-feedback d-block">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+
+                            </div>
+
+                            {{-- اسم التصنيف --}}
+                            <div class="col-md-6 mb-4">
+
+                                <label class="form-label">
+                                    اسم التصنيف
                                     <span class="required-star">*</span>
                                 </label>
 
                                 <input type="text"
-                                    class="form-control @error('srevicetyptname') is-invalid @enderror"
-                                    name="srevicetyptname"
-                                    placeholder="أدخل اسم الخدمة..."
-                                    value="{{ old('srevicetyptname', $service->srevicetyptname ?? '') }}"
+                                    class="form-control @error('close_reason_classify_Name') is-invalid @enderror"
+                                    name="close_reason_classify_Name"
+                                    placeholder="أدخل اسم التصنيف..."
+                                    value="{{ old('close_reason_classify_Name', $classification->close_reason_classify_Name ?? '') }}"
                                     required>
 
-                                @error('srevicetyptname')
+                                @error('close_reason_classify_Name')
                                 <span class="invalid-feedback d-block">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -221,7 +252,7 @@
 
                             <i class="bx bx-save ml-1"></i>
 
-                            {{ isset($service) ? 'تحديث الخدمة' : 'حفظ الخدمة' }}
+                            {{ isset($classification) ? 'تحديث التصنيف' : 'حفظ التصنيف' }}
 
                         </button>
 

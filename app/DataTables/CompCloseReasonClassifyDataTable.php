@@ -2,19 +2,19 @@
 
 namespace App\DataTables;
 
-use App\Models\ServiceType;
+use App\Models\CompCloseReasonClassify;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 
-class ServiceTypeDataTable extends DataTable
+class CompCloseReasonClassifyDataTable extends DataTable
 {
-    public function query(ServiceType $model): QueryBuilder
+    public function query(CompCloseReasonClassify $model): QueryBuilder
     {
         return $model->newQuery()
-            ->with(['createdBy', 'updatedBy']);
+            ->with(['closeReason', 'createdBy', 'updatedBy']);
     }
 
     public function dataTable(QueryBuilder $query): EloquentDataTable
@@ -25,33 +25,33 @@ class ServiceTypeDataTable extends DataTable
 
                 $html = '<div class="d-flex align-items-center gap-2 justify-content-end">';
 
-                if (PerUser('services.show')) {
-                    $html .= ' <a href="' . route('services.show', $model->srevicetyptid) . '" 
+                if (PerUser('close-reason-classify.show')) {
+                    $html .= ' <a href="' . route('close-reason-classify.show', $model->close_reason_classify_id) . '" 
                             class="btn btn-sm btn-outline-info action-btn"
                             data-bs-toggle="tooltip" 
-                            title="عرض الخدمة">
+                            title="عرض التصنيف">
                                 <i class="bx bx-show"></i>
                             </a>';
                 }
 
-                if (PerUser('services.edit')) {
+                if (PerUser('close-reason-classify.edit')) {
                     $html .= '
-                        <a href="' . route('services.edit', $model->srevicetyptid) . '" 
+                        <a href="' . route('close-reason-classify.edit', $model->close_reason_classify_id) . '" 
                         class="btn btn-sm btn-outline-primary action-btn"
                         data-bs-toggle="tooltip" 
-                        title="تعديل الخدمة">
+                        title="تعديل التصنيف">
                             <i class="bx bx-edit-alt"></i>
                         </a>';
                 }
 
-                if (PerUser('services.destroy')) {
+                if (PerUser('close-reason-classify.destroy')) {
                     $html .= '
                         <button 
                             class="btn btn-sm btn-outline-danger action-btn delete-this"
-                            data-id="' . $model->srevicetyptid . '"
-                            data-url="' . route('services.destroy', $model->srevicetyptid) . '"
+                            data-id="' . $model->close_reason_classify_id . '"
+                            data-url="' . route('close-reason-classify.destroy', $model->close_reason_classify_id) . '"
                             data-bs-toggle="tooltip" 
-                            title="حذف الخدمة">
+                            title="حذف التصنيف">
                             <i class="bx bx-trash"></i>
                         </button>';
                 }
@@ -59,6 +59,10 @@ class ServiceTypeDataTable extends DataTable
                 $html .= '</div>';
 
                 return $html;
+            })
+
+            ->editColumn('closeReason.close_reason_Name', function ($row) {
+                return $row->closeReason->close_reason_Name ?? '-';
             })
 
             ->editColumn('created_at', function ($row) {
@@ -72,13 +76,13 @@ class ServiceTypeDataTable extends DataTable
             })
 
             ->rawColumns(['action'])
-            ->setRowId('srevicetyptid');
+            ->setRowId('close_reason_classify_id');
     }
 
     public function html(): HtmlBuilder
     {
         return $this->builder()
-            ->setTableId('service_types')
+            ->setTableId('close_reason_classify')
             ->columns($this->getColumns())
             ->minifiedAjax()
             ->orderBy(0)
@@ -91,8 +95,9 @@ class ServiceTypeDataTable extends DataTable
     protected function getColumns(): array
     {
         return [
-            Column::make('srevicetyptid')->title('الرقم'),
-            Column::make('srevicetyptname')->title('اسم الخدمة'),
+            Column::make('close_reason_classify_id')->title('الرقم'),
+            Column::make('close_reason_classify_Name')->title('اسم التصنيف'),
+            Column::make('closeReason.close_reason_Name')->title('السبب الرئيسي'),
             Column::make('created_at')->title('تاريخ الإنشاء'),
             Column::make('createdBy.userID')->title('أنشأ بواسطة'),
 
@@ -107,6 +112,6 @@ class ServiceTypeDataTable extends DataTable
 
     protected function filename(): string
     {
-        return 'ServiceTypes_' . date('YmdHis');
+        return 'CompCloseReasonClassify_' . date('YmdHis');
     }
 }

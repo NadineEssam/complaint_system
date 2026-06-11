@@ -1,6 +1,6 @@
 @extends('dashboard.layouts.app')
 
-@section('title', isset($service) ? 'تعديل الخدمة' : 'إضافة خدمة جديدة')
+@section('title', isset($source) ? 'تعديل المصدر' : 'إضافة مصدر جديد')
 
 @push('headScripts')
 <style>
@@ -133,13 +133,13 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0 p-0 shadow-none">
                         <li class="breadcrumb-item active text-primary font-weight-bold">
-                            {{ isset($service) ? 'تعديل الخدمة' : 'إضافة خدمة جديدة' }}
+                            {{ isset($source) ? 'تعديل المصدر' : 'إضافة مصدر جديد' }}
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="{{ route('services.index') }}"
+                            <a href="{{ route('sources.index') }}"
                                 class="text-secondary">
-                                <i class="bx bx-server"></i>
-                                الخدمات
+                                <i class="bx bx-git-branch"></i>
+                                المصادر
                             </a>
                         </li>
                         <li class="breadcrumb-item">
@@ -158,22 +158,22 @@
             {{-- Header --}}
             <div class="custom-card-header">
                 <h4>
-                    <i class="bx bx-server"></i>
-                    {{ isset($service) ? 'تعديل الخدمة' : 'إضافة خدمة جديدة' }}
+                    <i class="bx bx-git-branch"></i>
+                    {{ isset($source) ? 'تعديل المصدر' : 'إضافة مصدر جديد' }}
                 </h4>
                 <p>
-                    يمكنك {{ isset($service) ? 'تحديث' : 'إضافة' }} بيانات الخدمة بسهولة.
+                    يمكنك {{ isset($source) ? 'تحديث' : 'إضافة' }} بيانات مصدر الشكوى بسهولة.
                 </p>
             </div>
 
             <div class="card-body p-lg-4 p-3">
 
                 <form method="POST"
-                    action="{{ isset($service) ? route('services.update', $service->srevicetyptid) : route('services.store') }}">
+                    action="{{ isset($source) ? route('sources.update', $source->comsourcesid) : route('sources.store') }}">
 
                     @csrf
 
-                    @if(isset($service))
+                    @if(isset($source))
                     @method('PUT')
                     @endif
 
@@ -187,22 +187,22 @@
 
                         <div class="row">
 
-                            {{-- اسم الخدمة --}}
+                            {{-- اسم المصدر --}}
                             <div class="col-12 mb-4">
 
                                 <label class="form-label">
-                                    اسم الخدمة
+                                    اسم المصدر
                                     <span class="required-star">*</span>
                                 </label>
 
                                 <input type="text"
-                                    class="form-control @error('srevicetyptname') is-invalid @enderror"
-                                    name="srevicetyptname"
-                                    placeholder="أدخل اسم الخدمة..."
-                                    value="{{ old('srevicetyptname', $service->srevicetyptname ?? '') }}"
+                                    class="form-control @error('comsourcesname') is-invalid @enderror"
+                                    name="comsourcesname"
+                                    placeholder="أدخل اسم المصدر (مثال: البريد الإلكتروني، الهاتف)..."
+                                    value="{{ old('comsourcesname', $source->comsourcesname ?? '') }}"
                                     required>
 
-                                @error('srevicetyptname')
+                                @error('comsourcesname')
                                 <span class="invalid-feedback d-block">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -221,7 +221,7 @@
 
                             <i class="bx bx-save ml-1"></i>
 
-                            {{ isset($service) ? 'تحديث الخدمة' : 'حفظ الخدمة' }}
+                            {{ isset($source) ? 'تحديث المصدر' : 'حفظ المصدر' }}
 
                         </button>
 

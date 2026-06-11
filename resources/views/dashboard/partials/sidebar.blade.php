@@ -22,15 +22,39 @@
        </a>
      </li>
      @endif
+     <!-- UPDATE HEADING -->
+     <li class="nav-heading"> ادارة الطلبات والخدمات </li>
 
-     @if (PerUser('service.index'))
-     <li class="nav-item {{ request()->segment(1) == 'service' ? 'mm-active' : '' }}">
-       <a class="nav-link collapsed" href="{{ route('service.index') }}">
-         <i class="bi bi-card-list"></i>
-         <span> انواع الخدمات </span>
+     <!-- SERVICES (You already added this) -->
+     @if (PerUser('services.index'))
+     <li class="nav-item {{ request()->segment(1) == 'services' ? 'mm-active' : '' }}">
+       <a class="nav-link collapsed" href="{{ route('services.index') }}">
+         <i class="bi bi-gear"></i>
+         <span> أنواع الخدمات </span>
        </a>
      </li>
      @endif
+
+     <!-- SOURCES (NEW - Add this) -->
+     @if (PerUser('sources.index'))
+     <li class="nav-item {{ request()->segment(1) == 'sources' ? 'mm-active' : '' }}">
+       <a class="nav-link collapsed" href="{{ route('sources.index') }}">
+         <i class="bi bi-diagram-3"></i>
+         <span> مصادر الشكاوى </span>
+       </a>
+     </li>
+     @endif
+
+     <!-- CLASSIFICATIONS (NEW - Add this) -->
+     @if (PerUser('close-reason-classify.index'))
+     <li class="nav-item {{ request()->segment(1) == 'close-reason-classify' ? 'mm-active' : '' }}">
+       <a class="nav-link collapsed" href="{{ route('close-reason-classify.index') }}">
+         <i class="bi bi-tag"></i>
+         <span> تصنيفات الأسباب </span>
+       </a>
+     </li>
+     @endif
+
 
 
 

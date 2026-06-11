@@ -28,6 +28,8 @@ class CheckRoutePermission
               
                 "reports.filters"   ,
                 "reports.generate"   ,
+
+                
         ];
 
         if (in_array($routeName, $exceptRoutes)) {

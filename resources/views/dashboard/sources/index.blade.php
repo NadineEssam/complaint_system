@@ -1,6 +1,6 @@
 @extends('dashboard.layouts.app')
 
-@section('title', 'الخدمات')
+@section('title', 'مصادر الشكاوى')
 
 @push('headScripts')
 <link href="{{ asset('assets/datatable/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
@@ -18,7 +18,7 @@
                 <nav>
                     <ol class="breadcrumb mb-0 p-0 shadow-none">
                         <li class="breadcrumb-item active text-primary font-weight-bold">
-                            الخدمات
+                            مصادر الشكاوى
                         </li>
                         <li class="breadcrumb-item">
                             <a href="{{ route('dashboard') }}" class="text-secondary">
@@ -37,15 +37,15 @@
                 <!-- 🔹 Header -->
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h4 class="mb-0 text-primary">
-                        <i class="bx bx-server ml-2"></i>
-                        قائمة الخدمات
+                        <i class="bx bx-git-branch ml-2"></i>
+                        قائمة مصادر الشكاوى
                     </h4>
 
-                    @if (PerUser('services.create'))
-                    <a href="{{ route('services.create') }}"
+                    @if (PerUser('sources.create'))
+                    <a href="{{ route('sources.create') }}"
                         class="btn btn-sm btn-success">
                         <i class="bx bx-plus"></i>
-                        إضافة خدمة
+                        إضافة مصدر
                     </a>
                     @endif
                 </div>
@@ -95,7 +95,7 @@
                     },
                     url: url,
                     success: function(msg) {
-                        window.LaravelDataTables["service_types"].draw();
+                        window.LaravelDataTables["com_sources"].draw();
                         Swal.fire(
                             'تم الحذف!',
                             msg.message,
