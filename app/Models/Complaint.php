@@ -97,4 +97,48 @@ class Complaint extends Model
         'comsource_id'
     );
 }
+public function requestType()
+{
+    return $this->belongsTo(
+        RequestType::class,
+        'RequestType',
+        'requesttypeid'
+    );
+}
+
+public function complaintType()
+{
+    return $this->belongsTo(
+        ComplaintType::class,
+        'ComplaintType',
+        'comtypeid'
+    );
+}
+
+public function sector()
+{
+    return $this->belongsTo(
+        Sector::class,
+        'department',
+        'sector_id'
+    );
+}
+
+public function gov()
+{
+    return $this->belongsTo(
+        Gov::class,
+        'ComplaintGovernorate',
+        'govsid'
+    );
+}
+
+public function office_info()
+{
+    return $this->belongsTo(
+        Office::class,
+        'office',
+        'ID'
+    );
+}
 }

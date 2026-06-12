@@ -45,6 +45,16 @@ class ComplaintDataTable extends DataTable
             ->addColumn('action', function ($model) {
 
                 $html = '<div class="d-flex align-items-center gap-2 justify-content-end">';
+                // Add this to the action column (optional - you can also click the ID)
+                if (PerUser('complaints.show')) {
+                    $html .= '
+                                <a href="' . route('complaints.show', ['complaint' => $model]) . '" 
+                                class="btn btn-sm btn-outline-info action-btn"
+                                data-bs-toggle="tooltip" 
+                                title="عرض الشكوى">
+                                    <i class="bx bx-show"></i>
+                                </a>';
+                }
                 if (PerUser('responses.index')) {
                     $html .= '
                          <a href="' . route('responses.index', ['complaint_id' => $model]) . '" 

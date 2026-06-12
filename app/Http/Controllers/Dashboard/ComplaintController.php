@@ -154,7 +154,7 @@ class ComplaintController extends Controller
             'ComplaintNationalID' => $data['ComplaintNationalID'] ?? null,
             'ComplainerGender' => $data['ComplainerGender'] ?? null,
             'username' => auth()->user()->userID,
-            
+
         ]);
         $complaint->sources()->sync($data['comsource_ids']);
 
@@ -169,11 +169,11 @@ class ComplaintController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Complaint $complaint)
     {
-        //
-        return abort(404);
+        return view('dashboard.complaints.show', compact('complaint'));
     }
+    
 
     /**
      * Show the form for editing the specified resource.
@@ -212,7 +212,7 @@ class ComplaintController extends Controller
 
     public function update(Request $request, Complaint $complaint)
     {
-        
+
         $data = $request->validate([
 
             'requesttypeid' => 'required|integer',
@@ -278,7 +278,7 @@ class ComplaintController extends Controller
             // 'ComplaintSources' => $data['comsource_id'],
             'ComplaintNationalID' => $data['ComplaintNationalID'] ?? null,
             'ComplainerGender' => $data['ComplainerGender'],
-           
+
             'UpdateUser' => auth()->user()->userID,
         ]);
 
