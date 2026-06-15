@@ -18,7 +18,22 @@
     --card: #ffffff;
     --bg: #f4f7fc;
   }
+  /* ================= FROM ================= */
 
+  .form-label{
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.form-control-lg{
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.form-control-lg:focus{
+  border-color: #5b8cff;
+  box-shadow: 0 0 0 0.2rem rgba(91,140,255,.15);
+}
   /* ================= GLOBAL ================= */
   .section.dashboard {
     background: var(--bg);
@@ -224,6 +239,51 @@
 
   </div>
 
+<div class="card mb-4">
+  <div class="card-body">
+
+    <form method="GET" class="row g-3 align-items-end">
+
+      {{-- FROM --}}
+      <div class="col-md-4">
+        <label class="form-label fw-bold">من تاريخ</label>
+       <input type="date"
+       name="from"
+       class="form-control form-control-lg"
+       value="{{ request('from') }}"
+       max="{{ date('Y-m-d') }}">
+      </div>
+
+      {{-- TO --}}
+      <div class="col-md-4">
+        <label class="form-label fw-bold">إلى تاريخ</label>
+        <input type="date"
+       name="to"
+       class="form-control form-control-lg"
+       value="{{ request('to') }}"
+       max="{{ date('Y-m-d') }}">
+      </div>
+
+      {{-- BUTTONS --}}
+      <div class="col-md-4 d-flex gap-2">
+
+        <button class="btn btn-primary btn-lg w-100">
+          <i class="bi bi-funnel"></i>
+          فلترة
+        </button>
+
+        <a href="{{ route('home') }}"
+           class="btn btn-outline-secondary btn-lg w-100">
+          إعادة ضبط
+        </a>
+
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
   {{-- ================= KPI ================= --}}
   <div class="row g-4 mb-4 kpi-row">
 
@@ -357,38 +417,7 @@
       </div>
     </div>
 
-    {{-- GOV --}}
-    <!-- <div class="col-xxl-3 col-md-6">
-    <div class="card kpi-card">
 
-      <div class="card-body">
-
-        <div class="d-flex align-items-center justify-content-between">
-
-          <div>
-            <div class="card-title mb-2">
-              المحافظات
-            </div>
-
-            <h2 class="counter">
-              {{ $govStats->count() }}
-            </h2>
-
-            <div class="counter-label">
-              عدد المحافظات
-            </div>
-          </div>
-
-          <div class="card-icon bg-danger-gradient">
-            <i class="bi bi-geo-alt"></i>
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-  </div> -->
 
 
 
@@ -429,6 +458,8 @@
         </div>
 
       </div>
+
+
 
     </div>
 
@@ -490,50 +521,63 @@
     </div>
 
   </div> -->
+  <div class="row mt-2">
+    <div class="card mb-12">
 
-  {{-- ================= GOVERNORATES ================= --}}
-  <div class="row mt-4">
+      <div class="custom-header">
+        <span>📡 مصادر الشكاوى</span>
+        <i class="bi bi-broadcast"></i>
+      </div>
 
-    <div class="col-12">
+      <div class="card-body chart-box">
+        <div id="sourceChart"></div>
+      </div>
 
-      <div class="card border-0 shadow-sm overflow-hidden">
+    </div>
+  </div> 
+    {{-- ================= GOVERNORATES ================= --}}
+    <div class="row mt-4">
 
-        <div class="card-body p-4">
+      <div class="col-12">
 
-          <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="card border-0 shadow-sm overflow-hidden">
 
-            <div>
-              <h4 class="mb-1 fw-bold">
-                🗺️ الشكاوى حسب المحافظات
-              </h4>
+          <div class="card-body p-4">
 
-              <p class="text-muted mb-0 small">
-                توزيع عدد الشكاوى على المحافظات
-              </p>
-            </div>
+            <div class="d-flex justify-content-between align-items-center mb-4">
 
-            <div class="rounded-circle d-flex align-items-center justify-content-center"
-              style="
+              <div>
+                <h4 class="mb-1 fw-bold">
+                  🗺️ الشكاوى حسب المكاتب
+                </h4>
+
+                <p class="text-muted mb-0 small">
+                  توزيع عدد الشكاوى على المكاتب
+                </p>
+              </div>
+
+              <div class="rounded-circle d-flex align-items-center justify-content-center"
+                style="
                  width:55px;
                  height:55px;
                  background:#eef4ff;
                  color:#5b8cff;
                  font-size:22px;
                ">
-              <i class="bi bi-map"></i>
+                <i class="bi bi-map"></i>
+              </div>
+
             </div>
 
-          </div>
+            <div id="offChart"></div>
 
-          <div id="govChart"></div>
+          </div>
 
         </div>
 
       </div>
 
     </div>
-
-  </div>
 
 </section>
 
@@ -576,8 +620,11 @@
     const deptLabels = @json($departmentsStats -> pluck('department_name'));
     const deptCounts = @json($departmentsStats -> pluck('complaints_count'));
 
-    const govLabels = @json(collect($govStats) -> pluck('name'));
-    const govData = @json(collect($govStats) -> pluck('total'));
+    const officeLabels = @json(collect($officeStats) -> pluck('name'));
+    const officeData = @json(collect($officeStats) -> pluck('total'));
+
+    const sourceLabels = @json($sourceStats -> pluck('comsourcesname'));
+    const sourceData = @json($sourceStats -> pluck('total'));
 
     const closeData = @json($closeReasonStats);
 
@@ -706,113 +753,155 @@
 
     }).render();
 
-   // ================= DEPARTMENT =================
+    // ================= DEPARTMENT =================
 
-// new ApexCharts(document.querySelector("#departmentChart"), {
+    // new ApexCharts(document.querySelector("#departmentChart"), {
 
-//   series: [{
-//     name: 'عدد الشكاوى',
-//     data: deptCounts
-//   }],
+    //   series: [{
+    //     name: 'عدد الشكاوى',
+    //     data: deptCounts
+    //   }],
 
-//   chart: {
-//     type: 'bar',
-//     height: 500,
-//     toolbar: {
-//       show: false
-//     },
-//     fontFamily: 'Cairo, sans-serif'
-//   },
+    //   chart: {
+    //     type: 'bar',
+    //     height: 500,
+    //     toolbar: {
+    //       show: false
+    //     },
+    //     fontFamily: 'Cairo, sans-serif'
+    //   },
 
-//   colors: ['#7c4dff'],
+    //   colors: ['#7c4dff'],
 
-//   plotOptions: {
-//     bar: {
-//       borderRadius: 8,
-//       columnWidth: '45%',
-//       distributed: true
-//     }
-//   },
+    //   plotOptions: {
+    //     bar: {
+    //       borderRadius: 8,
+    //       columnWidth: '45%',
+    //       distributed: true
+    //     }
+    //   },
 
-//   dataLabels: {
-//     enabled: false
-//   },
+    //   dataLabels: {
+    //     enabled: false
+    //   },
 
-//   stroke: {
-//     show: true,
-//     width: 2,
-//     colors: ['transparent']
-//   },
+    //   stroke: {
+    //     show: true,
+    //     width: 2,
+    //     colors: ['transparent']
+    //   },
 
-//   grid: {
-//     borderColor: '#f1f1f1',
-//     strokeDashArray: 4
-//   },
+    //   grid: {
+    //     borderColor: '#f1f1f1',
+    //     strokeDashArray: 4
+    //   },
 
-//   xaxis: {
-//     categories: deptLabels,
+    //   xaxis: {
+    //     categories: deptLabels,
 
-//     labels: {
-//       rotate: -45,
-//       rotateAlways: true,
-//       trim: true,
-//       maxHeight: 120,
+    //     labels: {
+    //       rotate: -45,
+    //       rotateAlways: true,
+    //       trim: true,
+    //       maxHeight: 120,
 
-//       style: {
-//         fontSize: '12px',
-//         fontWeight: 600,
-//         colors: '#374151'
-//       },
+    //       style: {
+    //         fontSize: '12px',
+    //         fontWeight: 600,
+    //         colors: '#374151'
+    //       },
 
-//       formatter: function(value) {
+    //       formatter: function(value) {
 
-//         if(value.length > 18){
-//           return value.substring(0,18) + '...';
-//         }
+    //         if(value.length > 18){
+    //           return value.substring(0,18) + '...';
+    //         }
 
-//         return value;
-//       }
-//     }
-//   },
+    //         return value;
+    //       }
+    //     }
+    //   },
 
-//   yaxis: {
-//     labels: {
-//       style: {
-//         colors: '#6b7280'
-//       }
-//     }
-//   },
+    //   yaxis: {
+    //     labels: {
+    //       style: {
+    //         colors: '#6b7280'
+    //       }
+    //     }
+    //   },
 
-//   tooltip: {
-//     theme: 'light'
-//   },
+    //   tooltip: {
+    //     theme: 'light'
+    //   },
 
-//   responsive: [{
-//     breakpoint: 768,
-//     options: {
+    //   responsive: [{
+    //     breakpoint: 768,
+    //     options: {
 
-//       chart: {
-//         height: 420
-//       },
+    //       chart: {
+    //         height: 420
+    //       },
 
-//       xaxis: {
-//         labels: {
-//           rotate: -60,
-//           style: {
-//             fontSize: '10px'
-//           }
-//         }
-//       }
-//     }
-//   }]
+    //       xaxis: {
+    //         labels: {
+    //           rotate: -60,
+    //           style: {
+    //             fontSize: '10px'
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }]
 
-// }).render();
+    // }).render();
+    new ApexCharts(document.querySelector("#sourceChart"), {
 
+      series: sourceData,
+
+      chart: {
+        type: 'donut',
+        height: 340
+      },
+
+      labels: sourceLabels,
+
+      colors: [
+        '#14b8a6',
+        '#5b8cff',
+        '#ffb547',
+        '#ff5d73',
+        '#7c4dff',
+        '#00d4ff'
+      ],
+
+      legend: {
+        position: 'bottom'
+      },
+
+      plotOptions: {
+        pie: {
+          donut: {
+            size: '72%',
+            labels: {
+              show: true,
+              total: {
+                show: true,
+                label: 'الإجمالي',
+                formatter: function(w) {
+                  return w.globals.seriesTotals.reduce((a, b) => a + b, 0)
+                }
+              }
+            }
+          }
+        }
+      }
+
+    }).render();
     // ================= GOVERNORATE =================
-    new ApexCharts(document.querySelector("#govChart"), {
+    new ApexCharts(document.querySelector("#offChart"), {
       series: [{
         name: "عدد الشكاوى",
-        data: govData,
+        data: officeData,
       }, ],
 
       chart: {
@@ -885,7 +974,7 @@
       },
 
       xaxis: {
-        categories: govLabels,
+        categories: officeLabels,
 
         axisBorder: {
           show: false,
@@ -908,7 +997,7 @@
         labels: {
           align: "left",
 
-          offsetX: 85,
+          offsetX: 125,
           style: {
             fontSize: "16px",
             fontWeight: 600,
