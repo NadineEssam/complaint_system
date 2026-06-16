@@ -21,8 +21,8 @@ class RolesAndPermissionsSeeder extends Seeder
             'complaints' => 'الشكاوى',
             'responses' => 'الردود',
             'services' => 'الخدمات',
-            'ComSource' => 'مصدر الشكوى',
-            'CompCloseReasoncClassify' => 'سبب إغلاق الشكوى',
+            'sources' => 'مصدر الشكوى',
+            'close-reason-classify' => 'سبب إغلاق الشكوى',
 
             
         ];
@@ -65,6 +65,8 @@ class RolesAndPermissionsSeeder extends Seeder
                 "complaints.reply" => "الرد على البيان",
                 "complaints.destroy" => "حذف الشكوى",
                 "complaints.show" => "عرض الشكوى",
+                "complaints.duplicate.form"  => "عرض فورم التكرار",   
+                "complaints.duplicate.store" => "حفظ التكرار", 
 
                 "responses.index" => "عرض الردود",
                 "responses.create" => "إضافة رد",
