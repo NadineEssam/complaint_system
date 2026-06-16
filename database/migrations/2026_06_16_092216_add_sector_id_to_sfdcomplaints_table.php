@@ -8,14 +8,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('sfdcomplaints', function (Blueprint $table) {
-            $table->unsignedBigInteger('sector_id')->nullable()->after('StatusDetails');
+            // $table->unsignedBigInteger('sector_id')->nullable()->after('StatusDetails');
 
             // لو عندك جدول sectors وعايز foreign key
-            $table->foreign('sector_id')
-                ->references('sector_id')
-                ->on('sectors')
-                ->nullOnDelete();
+            $table->unsignedBigInteger('sector_id')->nullable()->after('StatusDetails');
         });
+
     }
 
     public function down(): void

@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Str;
 use Pdo\Mysql;
-use PDO;
+
 
 return [
 
@@ -115,35 +115,35 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
-        'po' => [
-            'driver' => 'mysql',
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE_PO', 'new_po'),
-            'username' => env('DB_USERNAME', 'root'),
-            'password' => env('DB_PASSWORD', ''),
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => '',
-            'strict' => true,
-            'prefix_indexes' => true,
-            'engine' => null,
-        ],
+        // 'po' => [
+        //     'driver' => 'mysql',
+        //     'host' => env('DB_HOST', '127.0.0.1'),
+        //     'port' => env('DB_PORT', '3306'),
+        //     'database' => env('DB_DATABASE_PO', 'new_po'),
+        //     'username' => env('DB_USERNAME', 'root'),
+        //     'password' => env('DB_PASSWORD', ''),
+        //     'charset' => 'utf8mb4',
+        //     'collation' => 'utf8mb4_unicode_ci',
+        //     'prefix' => '',
+        //     'strict' => true,
+        //     'prefix_indexes' => true,
+        //     'engine' => null,
+        // ],
 
-        'ben' => [
-            'driver' => 'mysql',
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE_BEN', 'ben'),
-            'username' => env('DB_USERNAME', 'root'),
-            'password' => env('DB_PASSWORD', ''),
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => '',
-            'strict' => true,
-            'prefix_indexes' => true,
-            'engine' => null,
-        ],
+        // 'ben' => [
+        //     'driver' => 'mysql',
+        //     'host' => env('DB_HOST', '127.0.0.1'),
+        //     'port' => env('DB_PORT', '3306'),
+        //     'database' => env('DB_DATABASE_BEN', 'ben'),
+        //     'username' => env('DB_USERNAME', 'root'),
+        //     'password' => env('DB_PASSWORD', ''),
+        //     'charset' => 'utf8mb4',
+        //     'collation' => 'utf8mb4_unicode_ci',
+        //     'prefix' => '',
+        //     'strict' => true,
+        //     'prefix_indexes' => true,
+        //     'engine' => null,
+        // ],
 
     ],
 
