@@ -17,7 +17,7 @@ return [
         'ComplainerPhone' => 'رقم الهاتف المحمول',
         'ComplaintGovernorate' => 'المحافظة',
         'ComplaintDate' => 'تاريخ الشكوى',
-        'sector_id' => 'نوع النشاط',
+        'sector_id' => 'القطاع',
         'office' => 'المكتب',
         'comsource_id' => 'مصدر الشكوى',
         'ComplaintNationalID' => 'الرقم القومي',

@@ -20,6 +20,7 @@ class Complaint extends Model
         'ComplainerName',
         'ComplainerEmail',
         'ComplainerPhone',
+        'ComplainerGovernorate',
         'ComplaintDate',
         'ComplaintStatus',
         'ComplaintNationalID',
@@ -131,6 +132,11 @@ public function gov()
         'ComplaintGovernorate',
         'govsid'
     );
+}
+
+public function complainerGov()
+{
+    return $this->belongsTo(Gov::class, 'ComplainerGovernorate', 'govsid');
 }
 
 public function office_info()

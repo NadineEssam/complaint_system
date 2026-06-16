@@ -249,7 +249,7 @@
 
                 {{-- Action Buttons --}}
                 <div class="action-buttons mb-4">
-                    
+
 
                     <!-- @if (PerUser('complaints.edit'))
                     <a href="{{ route('complaints.edit', $complaint) }}" 
@@ -318,6 +318,12 @@
                             <span class="detail-value">{{ $complaint->ComplainerGender ?? 'غير محدد' }}</span>
                         </div>
                         <div class="detail-item">
+                            <span class="detail-label">محافظة مقدم الشكوى</span>
+                            <span class="detail-value">
+                                {{ $complaint->complainerGov->govname ?? 'غير محدد' }}
+                            </span>
+                        </div>
+                        <div class="detail-item">
                             <span class="detail-label">رقم الهاتف</span>
                             <span class="detail-value">{{ $complaint->ComplainerPhone }}</span>
                         </div>
@@ -344,7 +350,7 @@
                             <span class="detail-value">{{ $complaint->complaintType->comtypename ?? 'غير محدد' }}</span>
                         </div>
                         <div class="detail-item">
-                            <span class="detail-label">نوع النشاط</span>
+                            <span class="detail-label">القطاع</span>
                             <span class="detail-value">{{ $complaint->sector->sector_name ?? 'غير محدد' }}</span>
                         </div>
                         <div class="detail-item">
@@ -426,7 +432,7 @@
         $('.delete-complaint').on('click', function(e) {
             e.preventDefault();
             let url = $(this).attr('data-url');
-            
+
             Swal.fire({
                 title: 'هل أنت متأكد من عملية الحذف؟',
                 text: "لن تتمكن من التراجع عن هذا الإجراء!",

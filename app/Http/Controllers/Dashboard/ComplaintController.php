@@ -98,6 +98,7 @@ class ComplaintController extends Controller
             ],
 
             'ComplaintGovernorate' => 'required|integer',
+            'ComplainerGovernorate' => 'required|integer',
             'ComplaintDate' => 'required|date|before_or_equal:today',
             'sector_id' => 'required|integer',
             'office' => 'required|integer',
@@ -127,7 +128,7 @@ class ComplaintController extends Controller
 
             'ComplaintGovernorate.required' => 'يرجى اختيار المحافظة',
 
-            'sector_id.required' => 'يرجى اختيار نوع النشاط',
+            'sector_id.required' => 'يرجى اختيار القطاع',
 
             'office.required' => 'يرجى اختيار المكتب',
 
@@ -147,6 +148,7 @@ class ComplaintController extends Controller
             'ComplaintGovernorate' => $data['ComplaintGovernorate'],
             'ComplaintDate' => $data['ComplaintDate'],
             'department' => $data['sector_id'],
+            'ComplainerGovernorate' => $data['ComplainerGovernorate'],
             // 'ComplaintProjectType' => $data['sector_id'],
             'ComplaintText' => $data['ComplaintText'],
             'office' => $data['office'],
@@ -217,13 +219,14 @@ class ComplaintController extends Controller
 
             'requesttypeid' => 'required|integer',
             'ComplainerName' => 'required|string',
-            'ComplainerEmail' => 'nullable|required_if:requesttypeid,5|email',
+            'ComplainerEmail' => 'nullable|required_if:requesttypeid,4|email',
             'ComplainerPhone' => [
                 'required',
                 'regex:/^01[0-2,5]{1}[0-9]{8}$/'
             ],
 
             'ComplaintGovernorate' => 'required|integer',
+            'ComplainerGovernorate' => 'required|integer',
             'ComplaintDate' => 'required|date|before_or_equal:today',
             'office' => 'required|integer',
             'comsource_ids' => 'required|array|min:1',
@@ -252,7 +255,7 @@ class ComplaintController extends Controller
 
             'ComplaintGovernorate.required' => 'يرجى اختيار المحافظة',
 
-            'sector_id.required' => 'يرجى اختيار نوع النشاط',
+            'sector_id.required' => 'يرجى اختيار القطاع',
 
             'office.required' => 'يرجى اختيار المكتب',
 
@@ -274,7 +277,7 @@ class ComplaintController extends Controller
             'department' => $data['sector_id'],
             'office' => $data['office'],
             'ComplaintText' => $data['ComplaintText'],
-
+             'ComplainerGovernorate' => $data['ComplainerGovernorate'],
             // 'ComplaintSources' => $data['comsource_id'],
             'ComplaintNationalID' => $data['ComplaintNationalID'] ?? null,
             'ComplainerGender' => $data['ComplainerGender'],

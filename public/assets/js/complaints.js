@@ -70,12 +70,12 @@ function validateStep1() {
     let nationalId = $("input[name='ComplaintNationalID']").val().trim();
 
     const requiredFields = [
-    'requesttypeid',
-    'ComplainerName',
-    'ComplainerPhone'
-];
+        'requesttypeid',
+        'ComplainerName',
+        'ComplainerPhone',
+        'ComplainerGovernorate'
+    ];
 
-    // البريد الإلكتروني مطلوب فقط عند نوع الطلب = 5
     if (requestType == 5) {
         requiredFields.push('ComplainerEmail');
     }
@@ -90,39 +90,32 @@ function validateStep1() {
         }
     });
 
-      if (requestType == 5) {
+    // email validation
+    if (requestType == 5) {
 
         let emailField = $('[name="ComplainerEmail"]');
         let email = emailField.val().trim();
         let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        if (email === '') {
-
-            emailField.addClass('is-invalid');
-            isValid = false;
-
-        } else if (!emailRegex.test(email)) {
-
+        if (!emailRegex.test(email)) {
             emailField.addClass('is-invalid');
             isValid = false;
         }
     }
 
+    // national ID
+    if ((requestType == 2 || requestType == 3) && nationalId === '') {
 
-   // الرقم القومي مطلوب
-    if (requestType == 2 && requestType == 3 && nationalId === '') {
-
-        $("input[name='ComplaintNationalID']")
-            .addClass('is-invalid');
-
+        $("input[name='ComplaintNationalID']").addClass('is-invalid');
         $("#nidError").text("الرقم القومي مطلوب");
-
         isValid = false;
     }
 
-    // النوع مطلوب للنوع 1
-    if (requestType == 1 && requestType == 4 && requestType == 5) {
+    // gender
+    if (requestType == 1 || requestType == 4 || requestType == 5) {
+
         let genderVal = $("#ComplainerGenderSelect").val();
+
         if (!genderVal || genderVal === '') {
             $("#ComplainerGenderSelect").addClass('is-invalid');
             $("#genderError").text("يرجى اختيار النوع.");
@@ -434,6 +427,12 @@ $('.prevBtn').on('click', function () {
 
         $("#officeSelect").val("");
     });
+    $(document).on("change", "[name='ComplainerGovernorate']", function () {
+    if ($(this).val() !== '') {
+        $(this).removeClass('is-invalid');
+        $("#complainerGovError").text('');
+    }
+});
 
 
 
