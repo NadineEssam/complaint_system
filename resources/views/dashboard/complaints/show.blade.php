@@ -219,7 +219,7 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0 p-0 shadow-none">
                         <li class="breadcrumb-item active text-primary font-weight-bold">
-                            عرض الشكوى #{{ $complaint->ComplaintID }}
+                            عرض الشكوى {{ $complaint->ComplaintID }}#
                         </li>
                         <li class="breadcrumb-item">
                             <a href="{{ route('complaints.index') }}">الشكاوى</a>
@@ -240,7 +240,7 @@
             <div class="custom-header">
                 <h4>
                     <i class="bx bx-file-blank"></i>
-                    تفاصيل الشكوى #{{ $complaint->ComplaintID }}
+                    تفاصيل الشكوى {{ $complaint->ComplaintID }}#
                 </h4>
                 <p>بيانات شاملة للشكوى والمتقدم بها</p>
             </div>
