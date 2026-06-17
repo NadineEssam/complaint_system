@@ -18,7 +18,7 @@ return [
         'ComplaintGovernorate' => 'المحافظة',
         'ComplaintDate' => 'تاريخ الشكوى',
         'sec_id' => 'القطاع',
-        'office' => 'المكتب',
+        'office' => 'الفرع',
         'comsource_id' => 'مصدر الشكوى',
         'ComplaintNationalID' => 'الرقم القومي',
         

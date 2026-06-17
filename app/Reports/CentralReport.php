@@ -101,7 +101,7 @@ class CentralReport implements ReportInterface
                 ],
                 [
                     'name'        => 'request_office',
-                    'label'       => 'المكتب',
+                    'label'       => 'الفرع',
                     'type'        => 'select',
                     'options'     =>  $request_office,
                     'required'    => false,
@@ -179,7 +179,7 @@ class CentralReport implements ReportInterface
             'حالة الطلب',
             'نوع الطلب',
             'المصدر ',
-            ' المكتب ',
+            ' الفرع ',
             'هاتف المشتكي',
             'اسم المشتكي',
         ];

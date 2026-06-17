@@ -453,10 +453,10 @@ $('.prevBtn').on('click', function () {
 //             $("#governorateError").text('');
 //         }
 
-//         // المكتب required
+//         // الفرع required
 //         if (!$('[name="office"]').val()) {
 //             $('[name="office"]').addClass('is-invalid');
-//             $("#officeError").text("يرجى اختيار المكتب.");
+//             $("#officeError").text("يرجى اختيار الفرع.");
 //             isValid = false;
 //         } else {
 //             $("#officeError").text('');
@@ -522,7 +522,7 @@ $('.prevBtn').on('click', function () {
 //         }
 //         if (!$('[name="office"]').val()) {
 //             $('[name="office"]').addClass('is-invalid');
-//             $("#officeError").text("يرجى اختيار المكتب.");
+//             $("#officeError").text("يرجى اختيار الفرع.");
 //             isValid = false;
 //         }
 //     }
@@ -558,14 +558,14 @@ function validateStep2() {
         isValid = false;
     }
 
-    // المحافظة + المكتب — only required when داخلي
+    // المحافظة + الفرع — only required when داخلي
     if (cType === 'internal') {
         if (!$('[name="ComplaintGovernorate"]').val()) {
             $('[name="ComplaintGovernorate"]').addClass('is-invalid');
             $("#governorateError").text("يرجى اختيار المحافظة.");
             isValid = false;
         }
-        // المكتب nullable — no validation
+        // الفرع nullable — no validation
     }
 
     // القطاع + الإدارة — only required when خارجي

@@ -124,7 +124,7 @@ class OfficesComplaintsAndInquiriesSummaryReport implements ReportInterface
        
             'عدد الإستفسارات',
             'عدد الشكاوى',
-            'المكتب ',
+            'الفرع ',
         ];
     }
 

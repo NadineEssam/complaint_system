@@ -376,7 +376,7 @@
                             <span class="detail-value">{{ $complaint->gov->GOVT_NAMA ?? 'غير محدد' }}</span>
                         </div>
                         <div class="detail-item">
-                            <span class="detail-label">المكتب</span>
+                            <span class="detail-label">الفرع</span>
                             <span class="detail-value">{{ $complaint->office_info->REG_OFFIC_NAMA ?? 'غير محدد' }}</span>
                         </div>
                         @endif

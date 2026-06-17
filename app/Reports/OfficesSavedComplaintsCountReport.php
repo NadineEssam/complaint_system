@@ -127,7 +127,7 @@ class OfficesSavedComplaintsCountReport implements ReportInterface
        
             'بسبب الجهاز ',
             'بسبب عميل',
-            'المكتب ',
+            'الفرع ',
         ];
     }
 

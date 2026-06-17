@@ -130,7 +130,7 @@ class ComplaintController extends Controller
 
             'sec_id.required' => 'يرجى اختيار القطاع',
             'department.required' => 'يرجى اختيار الإدارة',
-            'office.required' => 'يرجى اختيار المكتب',
+            'office.required' => 'يرجى اختيار الفرع',
 
             'comsource_ids.required' => 'يرجى اختيار مصدر الشكوى',
             'comsource_ids.min' => 'يرجى اختيار مصدر شكوى واحد على الأقل',
@@ -270,7 +270,7 @@ class ComplaintController extends Controller
 
             'sec_id.required' => 'يرجى اختيار القطاع',
             'department.required' => 'يرجى اختيار الإدارة',
-            'office.required' => 'يرجى اختيار المكتب',
+            'office.required' => 'يرجى اختيار الفرع',
 
             'comsource_ids.required' => 'يرجى اختيار مصدر الشكوى',
             'comsource_ids.min' => 'يرجى اختيار مصدر شكوى واحد على الأقل',

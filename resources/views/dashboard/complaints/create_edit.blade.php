@@ -747,11 +747,11 @@ $errors->has('comsource_id')||
 
                                 </div>
 
-                                {{-- المكتب --}}
+                                {{-- الفرع --}}
                                 <div class="col-md-6 mb-4"  id="officeGroup" style="display:none;">
 
                                     <label class="form-label">
-                                        المكتب
+                                        الفرع
                                         <span class="required-star">*</span>
                                     </label>
 
@@ -759,7 +759,7 @@ $errors->has('comsource_id')||
                                         id="officeSelect"
                                         name="office">
 
-                                        <option value="">اختر المكتب</option>
+                                        <option value="">اختر الفرع</option>
 
                                         @foreach ($offices as $office)
 
@@ -783,7 +783,7 @@ $errors->has('comsource_id')||
                                 </div>
 
                                 {{-- مصدر الشكوى (MULTI-SELECT) --}}
-                                <div class="col-md-12 mb-4">
+                                <div class="col-md-6 mb-2">
 
                                     <label class="form-label">
                                         مصدر الشكوى
