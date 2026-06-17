@@ -535,6 +535,29 @@
 
     </div>
   </div> 
+
+  <div class="row mt-4">
+  <div class="col-12">
+    <div class="card border-0 shadow-sm overflow-hidden">
+      <div class="card-body p-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h4 class="mb-1 fw-bold">🏛️ الشكاوى حسب القطاعات</h4>
+            <p class="text-muted mb-0 small">توزيع عدد الشكاوى على القطاعات</p>
+          </div>
+          <div class="rounded-circle d-flex align-items-center justify-content-center"
+            style="width:55px;height:55px;background:#fce7f3;color:#ec4899;font-size:22px;">
+            <i class="bi bi-diagram-3"></i>
+          </div>
+        </div>
+
+        <div id="sectorChart"></div>
+
+      </div>
+    </div>
+  </div>
+</div>
     {{-- ================= GOVERNORATES ================= --}}
     <div class="row mt-4">
 
@@ -617,8 +640,8 @@
     const statusLabels = @json($statusStats -> map(fn($s) => $s -> status -> statusText ?? 'غير معروف') -> values());
     const statusData = @json($statusStats -> pluck('total'));
 
-    const deptLabels = @json($departmentsStats -> pluck('department_name'));
-    const deptCounts = @json($departmentsStats -> pluck('complaints_count'));
+    const sectorLabels = @json(collect($sectorStats)->pluck('name'));
+    const sectorData   = @json(collect($sectorStats)->pluck('total'));
 
     const officeLabels = @json(collect($officeStats) -> pluck('name'));
     const officeData = @json(collect($officeStats) -> pluck('total'));
@@ -754,106 +777,6 @@
     }).render();
 
     // ================= DEPARTMENT =================
-
-    // new ApexCharts(document.querySelector("#departmentChart"), {
-
-    //   series: [{
-    //     name: 'عدد الشكاوى',
-    //     data: deptCounts
-    //   }],
-
-    //   chart: {
-    //     type: 'bar',
-    //     height: 500,
-    //     toolbar: {
-    //       show: false
-    //     },
-    //     fontFamily: 'Cairo, sans-serif'
-    //   },
-
-    //   colors: ['#7c4dff'],
-
-    //   plotOptions: {
-    //     bar: {
-    //       borderRadius: 8,
-    //       columnWidth: '45%',
-    //       distributed: true
-    //     }
-    //   },
-
-    //   dataLabels: {
-    //     enabled: false
-    //   },
-
-    //   stroke: {
-    //     show: true,
-    //     width: 2,
-    //     colors: ['transparent']
-    //   },
-
-    //   grid: {
-    //     borderColor: '#f1f1f1',
-    //     strokeDashArray: 4
-    //   },
-
-    //   xaxis: {
-    //     categories: deptLabels,
-
-    //     labels: {
-    //       rotate: -45,
-    //       rotateAlways: true,
-    //       trim: true,
-    //       maxHeight: 120,
-
-    //       style: {
-    //         fontSize: '12px',
-    //         fontWeight: 600,
-    //         colors: '#374151'
-    //       },
-
-    //       formatter: function(value) {
-
-    //         if(value.length > 18){
-    //           return value.substring(0,18) + '...';
-    //         }
-
-    //         return value;
-    //       }
-    //     }
-    //   },
-
-    //   yaxis: {
-    //     labels: {
-    //       style: {
-    //         colors: '#6b7280'
-    //       }
-    //     }
-    //   },
-
-    //   tooltip: {
-    //     theme: 'light'
-    //   },
-
-    //   responsive: [{
-    //     breakpoint: 768,
-    //     options: {
-
-    //       chart: {
-    //         height: 420
-    //       },
-
-    //       xaxis: {
-    //         labels: {
-    //           rotate: -60,
-    //           style: {
-    //             fontSize: '10px'
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }]
-
-    // }).render();
     new ApexCharts(document.querySelector("#sourceChart"), {
 
       series: sourceData,
@@ -897,6 +820,113 @@
       }
 
     }).render();
+
+new ApexCharts(document.querySelector("#sectorChart"), {
+  series: [{ name: "عدد الشكاوى", data: sectorData }],
+
+  chart: {
+    type: "bar",
+    height: 620,
+    background: "transparent",
+    toolbar: { show: false },
+    fontFamily: "Cairo, sans-serif",
+  },
+
+  colors: ["#14b8a6"],
+
+  theme: { mode: "light" },
+
+  grid: {
+    borderColor: "#e5e7eb",
+    strokeDashArray: 4,
+    xaxis: { lines: { show: true } },
+    yaxis: { lines: { show: false } },
+    padding: {
+      left: 100,
+      right: 40,
+      top: 10,
+      bottom: 10,
+    },
+  },
+
+  plotOptions: {
+    bar: {
+      horizontal: true,
+      borderRadius: 14,
+      borderRadiusApplication: "end",
+      barHeight: "58%",
+      distributed: true,
+      dataLabels: { position: "top" },
+    },
+  },
+
+  dataLabels: {
+    enabled: true,
+    offsetX: 50,
+    style: {
+      fontSize: "13px",
+      fontWeight: "700",
+      colors: ["#111827"],
+    },
+    formatter: function(val) { return val; },
+  },
+
+  stroke: {
+    show: true,
+    width: 1,
+    colors: ["#ffffff"],
+  },
+
+  xaxis: {
+    categories: sectorLabels,
+    axisBorder: { show: false },
+    axisTicks: { show: false },
+    labels: {
+      style: {
+        colors: "#6b7280",
+        fontSize: "12px",
+        fontWeight: 500,
+      },
+    },
+  },
+
+  // ✅ Only ONE yaxis here
+  yaxis: {
+    labels: {
+      maxWidth: 400,
+      offsetX: -200,
+      style: {
+        fontSize: "14px",
+        fontWeight: 600,
+        colors: "#0f172a",
+      },
+    },
+  },
+
+  tooltip: {
+    theme: "light",
+    style: { fontSize: "13px", fontFamily: "Cairo, sans-serif" },
+  },
+
+  legend: { show: false },
+
+  states: {
+    hover: {
+      filter: { type: "lighten", value: 0.08 },
+    },
+  },
+
+  responsive: [{
+    breakpoint: 768,
+    options: {
+      chart: { height: 420 },
+      yaxis: {
+        labels: { style: { fontSize: "12px" } },
+      },
+    },
+  }],
+
+}).render();
     // ================= GOVERNORATE =================
     new ApexCharts(document.querySelector("#offChart"), {
       series: [{

@@ -50,11 +50,9 @@ class DashboardController extends Controller
                     $q->whereDate('ComplaintDate', '<=', $to);
                 });
 
-            // $total = Complaint::count();
+
             $total = (clone $complaintsQuery)->count();
-            // $statuses = Complaint::select('ComplaintStatus', DB::raw('COUNT(*) as total'))
-            //     ->groupBy('ComplaintStatus')
-            //     ->pluck('total', 'ComplaintStatus');
+            
             $statuses = (clone $complaintsQuery)
                 ->select('ComplaintStatus', DB::raw('COUNT(*) as total'))
                 ->groupBy('ComplaintStatus')
@@ -65,8 +63,6 @@ class DashboardController extends Controller
             $statusNew = $statuses[3] ?? 0;
             $statusSaved = $statuses[4] ?? 0;
 
-
-            // $requestTypesStats = RequestType::withCount('complaints')->get();
 
             $requestTypesStats = RequestType::withCount([
                 'complaints' => function ($q) use ($from, $to) {
@@ -95,39 +91,16 @@ class DashboardController extends Controller
             }
 
 
-            // $statusStats = Complaint::select('ComplaintStatus', DB::raw('COUNT(*) as total'))
-            //     ->groupBy('ComplaintStatus')
-            //     ->with('status')
-            //     ->get();
-
             $statusStats = (clone $complaintsQuery)
                 ->select('ComplaintStatus', DB::raw('COUNT(*) as total'))
                 ->groupBy('ComplaintStatus')
                 ->with('status')
                 ->get();
 
-
-            // $status24Total = Complaint::whereIn('ComplaintStatus', [2, 4])->count();
             $status24Total = (clone $complaintsQuery)
                 ->whereIn('ComplaintStatus', [2, 4])
                 ->count();
 
-
-            // $closeReasonStats = Complaint::select(
-            //     'fk_close_reason_id',
-            //     DB::raw('COUNT(*) as total')
-            // )
-            //     ->whereIn('ComplaintStatus', [2, 4])
-            //     ->whereNotNull('fk_close_reason_id')
-            //     ->groupBy('fk_close_reason_id')
-            //     ->with('closeReason')
-            //     ->get()
-            //     ->map(function ($item) {
-            //         return [
-            //             'name' => $item->closeReason->close_reason_Name ?? 'غير معروف',
-            //             'total' => $item->total
-            //         ];
-            //     });
 
 
             $closeReasonStats = (clone $complaintsQuery)
@@ -142,46 +115,17 @@ class DashboardController extends Controller
                     'total' => $item->total
                 ]);
 
-
-            // $departmentsStats = Department::select(
-            //     'department.department_id',
-            //     'department.department_name',
-            //     DB::raw('COUNT(sfdcomplaints.ComplaintID) as complaints_count')
-            // )
-            //     ->leftJoin('sfdcomplaints', 'sfdcomplaints.department', '=', 'department.department_id')
-            //     ->groupBy('department.department_id', 'department.department_name')
-            //     ->get()
-
-            $departmentsStats = Department::select(
-                'department.department_id',
-                'department.department_name',
-                DB::raw('COUNT(sfdcomplaints.ComplaintID) as complaints_count')
-            )
-                ->leftJoin('sfdcomplaints', 'sfdcomplaints.department', '=', 'department.department_id')
-                ->when($from && $to, function ($q) use ($from, $to) {
-                    $q->whereBetween('sfdcomplaints.ComplaintDate', [$from, $to]);
-                })
-                ->when($from && !$to, function ($q) use ($from) {
-                    $q->whereDate('sfdcomplaints.ComplaintDate', '>=', $from);
-                })
-                ->when(!$from && $to, function ($q) use ($to) {
-                    $q->whereDate('sfdcomplaints.ComplaintDate', '<=', $to);
-                })
-                ->groupBy('department.department_id', 'department.department_name')
+                $sectorStats = (clone $complaintsQuery)
+                ->select('sector_id', DB::raw('COUNT(*) as total'))
+                ->groupBy('sector_id')
                 ->get()
-                ->filter(function ($dept) {
-                    return $dept->complaints_count > 0;
-                })
-                ->values();
-            foreach ($departmentsStats as $dept) {
-
-                $dept->complaints_count = $dept->complaints_count ?? 0;
-
-                $dept->percentage = $total > 0
-                    ? round(($dept->complaints_count / $total) * 100, 2)
-                    : 0;
-            }
-
+                ->map(function ($item) {
+                    $sector = \App\Models\Sector::where('sec_id', $item->sector_id)->first();
+                    return [
+                        'name'  => $sector->sector_ar ?? 'غير معروف',
+                        'total' => $item->total,
+                    ];
+                });
             $sourceStats = ComSource::select(
                 'comsources.comsourcesid',
                 'comsources.comsourcesname',
@@ -204,21 +148,8 @@ class DashboardController extends Controller
                 ->filter(fn($i) => $i->total > 0)
                 ->values();
 
-            // $govStats = Complaint::select(
-            //     'ComplaintGovernorate',
-            //     DB::raw('COUNT(*) as total')
-            // )
-            //     ->groupBy('ComplaintGovernorate')
-            //     ->get()
-            //     ->map(function ($item) {
-            //         $gov = \App\Models\Gov::where('govsid', $item->ComplaintGovernorate)->first();
-
-            //         return [
-            //             'name'  => $gov->govname ?? 'غير معروف',
-            //             'total' => $item->total
-            //         ];
-            //     });
-
+       
+            
 
             $officeStats = (clone $complaintsQuery)
                 ->select('office', DB::raw('COUNT(*) as total'))
@@ -242,7 +173,7 @@ class DashboardController extends Controller
                 'statusSaved',
                 'status24Total',
                 'closeReasonStats',
-                'departmentsStats',
+                'sectorStats',
                 // 'govStats',
                 'officeStats',
                 'sourceStats'
@@ -251,22 +182,30 @@ class DashboardController extends Controller
         } catch (\Exception $e) {
 
             Log::error('Dashboard Error: ' . $e->getMessage());
-return view('home', [
-    'total' => 0,
-    'requestTypesStats' => collect(),
-    'statusStats' => collect(),
+            return view('home', [
+                'total' => 0,
+                'requestTypesStats' => collect(),
+                'statusStats' => collect(),
 
-    'statusSolved' => 0,
-    'statusProcessing' => 0,
-    'statusNew' => 0,
-    'statusSaved' => 0,
-
-    'status24Total' => 0,
-    'closeReasonStats' => collect(),
-    'departmentsStats' => collect(),
-    'sourceStats' => collect(),
-    'officeStats' => collect(),
-]);
+                'statusSolved' => collect(),
+                'statusProcessing' => collect(),
+                'statusNew' => collect(),
+                'statusSaved' => collect(),
+                'sectorStats' => collect(),
+                'status24Total' => collect(),
+                'closeReasonStats' => collect(),
+                'sourceStats' => collect(),
+                'officeStats' => collect(),
+            ]);
         }
+        // Add right after $complaintsQuery is defined
+\Log::info('Total raw complaints: ' . \App\Models\Complaint::count());
+\Log::info('Statuses: ' . json_encode(
+    \App\Models\Complaint::select('ComplaintStatus', \DB::raw('COUNT(*) as c'))
+        ->groupBy('ComplaintStatus')->get()
+));
     }
+
+
+    
 }
