@@ -251,18 +251,22 @@ class DashboardController extends Controller
         } catch (\Exception $e) {
 
             Log::error('Dashboard Error: ' . $e->getMessage());
+return view('home', [
+    'total' => 0,
+    'requestTypesStats' => collect(),
+    'statusStats' => collect(),
 
-            return view('home', [
-                'total' => 0,
-                'requestTypesStats' => collect(),
-                'statusStats' => collect(),
-                'status24Total' => 0,
-                'closeReasonStats' => collect(),
-                'departmentsStats' => collect(),
-                'sourceStats' => collect(),
-                // 'govStats' => collect(),
-                'officeStats' => collect(),
-            ]);
+    'statusSolved' => 0,
+    'statusProcessing' => 0,
+    'statusNew' => 0,
+    'statusSaved' => 0,
+
+    'status24Total' => 0,
+    'closeReasonStats' => collect(),
+    'departmentsStats' => collect(),
+    'sourceStats' => collect(),
+    'officeStats' => collect(),
+]);
         }
     }
 }

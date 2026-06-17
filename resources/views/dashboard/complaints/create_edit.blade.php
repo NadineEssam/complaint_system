@@ -372,11 +372,11 @@ $errors->has('comsource_id')||
                 </div>
 
                 <form method="POST" novalidate
-                    action="{{ isset($complaint) ? route('complaints.update', $complaint) : route('complaints.store') }}">
-
+                    action="{{ ($isDuplicateMode ?? false) ? route('complaints.duplicate.store', $parentComplaint) : (isset($complaint) ? route('complaints.update', $complaint) : route('complaints.store')) }}">
+                
                     @csrf
-
-                    @if(isset($complaint))
+                
+                    @if(isset($complaint) && !($isDuplicateMode ?? false))
                     @method('PUT')
                     @endif
 

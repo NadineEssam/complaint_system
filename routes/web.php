@@ -80,6 +80,12 @@ Route::get('/dashboard', [\App\Http\Controllers\Dashboard\DashboardController::c
             'destroy' => 'complaints.destroy',
             'show' => 'complaints.show'
         ])->parameter('', 'complaint');
+        Route::get('/{complaint}/duplicate/create', [\App\Http\Controllers\Dashboard\ComplaintController::class, 'duplicateCreate'])
+            ->name('complaints.duplicate.create');
+        Route::post('/{complaint}/duplicate', [\App\Http\Controllers\Dashboard\ComplaintController::class, 'duplicateStore'])
+            ->name('complaints.duplicate.store');
+        Route::get('/{complaint}/duplicates', [\App\Http\Controllers\Dashboard\ComplaintController::class, 'duplicatesIndex'])
+            ->name('complaints.duplicates.index');
     });
     /*end complaints routes*/
 

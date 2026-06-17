@@ -23,6 +23,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'services' => 'الخدمات',
             'sources' => 'مصدر الشكوى',
             'close-reason-classify' => 'سبب إغلاق الشكوى',
+            
 
             
         ];
@@ -65,8 +66,12 @@ class RolesAndPermissionsSeeder extends Seeder
                 "complaints.reply" => "الرد على البيان",
                 "complaints.destroy" => "حذف الشكوى",
                 "complaints.show" => "عرض الشكوى",
-                "complaints.duplicate.form"  => "عرض فورم التكرار",   
-                "complaints.duplicate.store" => "حفظ التكرار", 
+                "complaints.duplicate" => " تكرار للشكوى",
+                "complaints.duplicate.create" => "إضافة تكرار للشكوى",
+                "complaints.duplicate.store" => "حفظ تكرار للشكوى",
+                "complaints.duplicates.index" => "عرض تكرارات الشكوى",
+
+                
 
                 "responses.index" => "عرض الردود",
                 "responses.create" => "إضافة رد",
@@ -149,7 +154,7 @@ class RolesAndPermissionsSeeder extends Seeder
             $role->syncPermissions($permissionIds);
 
             if ($roleName === 'admin') {
-                $adminUser = User::where('userID' , 'nadine.essam' )->first();
+                $adminUser = User::where('userID' , 'Nadine.essam' )->first();
                 if ($adminUser) {
                     $adminUser->assignRole($role);
                 }

@@ -19,6 +19,7 @@ class CheckRoutePermission
 
         // current route name
         $routeName = $request->route()->getName();
+        // print_r($routeName);
 
         // routes allowed without permission
         $exceptRoutes = [

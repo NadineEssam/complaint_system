@@ -241,7 +241,28 @@
                 <h4>
                     <i class="bx bx-file-blank"></i>
                     تفاصيل الشكوى {{ $complaint->ComplaintID }}#
+
                 </h4>
+                @php
+
+                $isDuplicated = $complaint->is_duplicated;
+                $duplicatesCount = $complaint->duplicates_count;
+                @endphp
+
+                <span class="badge {{ $isDuplicated ? 'bg-warning text-dark' : 'bg-light text-dark border' }}"
+                    style="cursor: {{ $isDuplicated ? 'pointer' : 'default' }};"
+                    @if($isDuplicated)
+                    data-bs-toggle="modal"
+                    data-bs-target="#duplicatesModal"
+                    id="duplicateChip"
+                    @endif>
+                    @if($isDuplicated)
+                    مكرر ({{ $duplicatesCount }})
+                    @else
+                    غير مكرر
+                    @endif
+                </span>
+
                 <p>بيانات شاملة للشكوى والمتقدم بها</p>
             </div>
 
@@ -267,11 +288,18 @@
                         حذف
                     </button>
                     @endif -->
+                    @if (in_array($complaint->ComplaintStatus, [2, 4]) && PerUser('complaints.duplicate'))
+                    <a href="{{ route('complaints.duplicate.create', $complaint) }}" class="btn btn-warning btn-custom">
+                        <i class="bx bx-copy-alt"></i>
+                        اضافه تكرار
+                    </a>
+                    @endif
 
                     <a href="{{ route('complaints.index') }}" class="btn btn-secondary btn-custom">
                         <i class="bx bx-arrow-back"></i>
                         رجوع
                     </a>
+
                 </div>
 
                 {{-- Complaint Status Section --}}
@@ -436,6 +464,23 @@
                     </div>
                 </div>
 
+
+                <div class="modal fade" id="duplicatesModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-lg" dir="rtl">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">تكرارات الشكوى #{{ $complaint->ComplaintID }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body" id="duplicatesModalBody">
+                                <div class="text-center py-4">
+                                    <i class="bx bx-loader-alt bx-spin fs-3"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
         </div>
@@ -482,6 +527,29 @@
                     });
                 }
             });
+        });
+
+        
+    });
+</script>
+<script>
+    $('#duplicatesModal').on('show.bs.modal', function () {
+        var body = $('#duplicatesModalBody');
+        body.html('<div class="text-center py-4"><i class="bx bx-loader-alt bx-spin fs-3"></i></div>');
+ 
+        $.get("{{ route('complaints.duplicates.index', $complaint) }}", function (html) {
+            // jQuery's .html() strips <script> tags and won't execute them,
+            // so the markup and the scripts are appended/run separately.
+            var temp = $('<div>').html(html);
+            var scripts = temp.find('script').remove();
+ 
+            body.empty().append(temp.contents());
+ 
+            scripts.each(function () {
+                $.globalEval($(this).text());
+            });
+        }).fail(function () {
+            body.html('<div class="text-center text-danger py-4">حدث خطأ أثناء تحميل البيانات</div>');
         });
     });
 </script>

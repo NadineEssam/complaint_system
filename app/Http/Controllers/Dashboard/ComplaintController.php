@@ -130,7 +130,7 @@ class ComplaintController extends Controller
 
             'sec_id.required' => 'يرجى اختيار القطاع',
             'department.required' => 'يرجى اختيار الإدارة',
-            'office.required' => 'يرجى اختيار الفرع',
+            'office.required' => 'يرجى اختيار المكتب',
 
             'comsource_ids.required' => 'يرجى اختيار مصدر الشكوى',
             'comsource_ids.min' => 'يرجى اختيار مصدر شكوى واحد على الأقل',
@@ -270,7 +270,7 @@ class ComplaintController extends Controller
 
             'sec_id.required' => 'يرجى اختيار القطاع',
             'department.required' => 'يرجى اختيار الإدارة',
-            'office.required' => 'يرجى اختيار الفرع',
+            'office.required' => 'يرجى اختيار المكتب',
 
             'comsource_ids.required' => 'يرجى اختيار مصدر الشكوى',
             'comsource_ids.min' => 'يرجى اختيار مصدر شكوى واحد على الأقل',
@@ -321,6 +321,139 @@ class ComplaintController extends Controller
         $complaint->delete();
 
         return response()->json(['success' => true, 'message' => __('Delete Successful')]);
+    }
+
+    /**
+     * Show the duplicate-creation ("تكرار") form for a given parent
+     * complaint. Reuses the same create_edit.blade.php view used for
+     * normal create/edit, flagged so personal-data fields render
+     * read-only and the form posts to the duplicate-store route.
+     *
+     * @param  \App\Models\Complaint  $complaint  The parent/original complaint.
+     * @return \Illuminate\Http\Response
+     */
+    public function duplicateCreate(Complaint $complaint)
+    {
+        // print_r($complaint);
+        $requestTypes = RequestType::all();
+        $govs = Gov::all();
+        $sectors = Sector::all();
+        $departments = Department::all();
+        $comsources = Comsource::all();
+        $offices = Office::all();
+        $projectTypes = ProjectType::all();
+
+        return view('dashboard.complaints.create_edit', compact(
+            'complaint',
+            'requestTypes',
+            'govs',
+            'sectors',
+            'comsources',
+            'offices',
+            'departments',
+            'projectTypes',
+        ))->with('isDuplicateMode', true)
+          ->with('parentComplaint', $complaint);
+    }
+
+    /**
+     * Store a new duplicate ("تكرار") complaint against the given parent.
+     *
+     * The parent complaint itself is NEVER modified here. Personal-data
+     * fields are not trusted from the request (since they're rendered
+     * read-only) — they're taken directly from the parent record so
+     * they cannot be tampered with client-side.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Complaint  $complaint  The parent/original complaint.
+     * @return \Illuminate\Http\Response
+     */
+    public function duplicateStore(Request $request, Complaint $complaint)
+    {
+        $data = $request->validate([
+
+            'ComplaintGovernorate' => 'nullable|integer',
+            'ComplaintDate' => 'required|date|before_or_equal:today',
+            'sec_id' => 'nullable|integer',
+            'department' => 'nullable|integer|exists:departments,dep_id',
+            'office' => 'nullable|integer',
+            'comsource_ids' => 'required|array|min:1',
+            'comsource_ids.*' => 'integer|exists:comsources,comsourcesid',
+            'complaint_type' => 'required|in:internal,external',
+            'ComplaintText'    => 'required|string',
+            'ComplaintProjectType' => 'required|exists:sectors_ben,ID',
+
+        ], [
+
+            'ComplaintDate.required' => 'يرجى إدخال تاريخ الشكوى',
+            'ComplaintDate.before_or_equal' => 'لا يمكن إدخال تاريخ مستقبلي',
+
+            'comsource_ids.required' => 'يرجى اختيار مصدر الشكوى',
+            'comsource_ids.min' => 'يرجى اختيار مصدر شكوى واحد على الأقل',
+            'ComplaintText.required' => 'يرجى إدخال نص البيان',
+            'complaint_type.required' => 'يرجى اختيار نوعية وتوجيه البيان',
+            'complaint_type.in'       => 'نوعية البيان غير صحيحة',
+            'ComplaintProjectType.required' => 'يرجى اختيار نوع النشاط',
+
+        ]);
+
+        $duplicate = Complaint::create([
+            // Personal data is copied as-is from the parent — never from
+            // the request — because these fields are read-only in the form.
+            'RequestType' => $complaint->RequestType,
+            'ComplainerName' => $complaint->ComplainerName,
+            'ComplainerEmail' => $complaint->ComplainerEmail,
+            'ComplainerPhone' => $complaint->ComplainerPhone,
+            'ComplainerGovernorate' => $complaint->ComplainerGovernorate,
+            'ComplaintNationalID' => $complaint->ComplaintNationalID,
+            'ComplainerGender' => $complaint->ComplainerGender,
+
+            // Editable fields come from the duplicate form itself.
+            'ComplaintGovernorate' => $data['ComplaintGovernorate'] ?? null,
+            'ComplaintDate' => $data['ComplaintDate'],
+            'sector_id' => $data['sec_id'] ?? 0,
+            'department'  => $data['department'] ?? 0,
+            'ComplaintText' => $data['ComplaintText'],
+            'office' => $data['office'] ?? 0,
+            'complaint_type' => $data['complaint_type'],
+            'ComplaintProjectType' => $data['ComplaintProjectType'],
+
+            // Linkage + initial status for every newly created duplicate.
+            'parent_id' => $complaint->ComplaintID,
+            'ComplaintStatus' => 3,
+
+            'username' => auth()->user()->userID,
+        ]);
+
+        $duplicate->sources()->sync($data['comsource_ids']);
+
+        alert()->success('تم بنجاح', 'تم إضافة تكرار الشكوى بنجاح');
+
+        return redirect()->route('complaints.show', $complaint);
+    }
+
+    /**
+     * Lightweight datatable feed (parent + all its children) shown inside
+     * the "مكرر" modal on the complaint show page.
+     *
+     * Same dual-purpose pattern already used by index(): on a normal GET
+     * this returns the Blade view (table shell + its own DataTable JS
+     * pointed back at this same route); on the AJAX call that the
+     * DataTable JS itself fires against this route, Yajra intercepts it
+     * and returns the JSON payload instead — render() handles both cases.
+     *
+     * @param  \App\Models\Complaint  $complaint
+     * @return \Illuminate\Http\Response
+     */
+    public function duplicatesIndex(Complaint $complaint)
+    {
+        // Always resolve to the root/original complaint, in case this is
+        // ever called with a child's id for any reason.
+        $root = $complaint->parent_id ? $complaint->parent : $complaint;
+
+        return app(\App\DataTables\ComplaintDuplicatesDataTable::class)
+            ->forComplaint($root)
+            ->render('dashboard.complaints.duplicates_modal', compact('root'));
     }
 
     public function validateRoles($request)

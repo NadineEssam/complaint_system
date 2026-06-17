@@ -39,7 +39,8 @@ class Complaint extends Model
         'username',
         'complaint_type',
         'ComplaintProjectType',
-        
+        'parent_id',
+
 
     ];
 
@@ -73,7 +74,7 @@ class Complaint extends Model
         );
     }
 
-    
+
 
 
     public function createdBy()
@@ -87,79 +88,119 @@ class Complaint extends Model
     }
 
     public function sources()
-{
-    return $this->belongsToMany(
-        ComSource::class,
-        'complaint_sources',
-        'complaint_id',
-        'comsource_id'
-    );
-}
-public function requestType()
-{
-    return $this->belongsTo(
-        RequestType::class,
-        'RequestType',
-        'requesttypeid'
-    );
-}
+    {
+        return $this->belongsToMany(
+            ComSource::class,
+            'complaint_sources',
+            'complaint_id',
+            'comsource_id'
+        );
+    }
+    public function requestType()
+    {
+        return $this->belongsTo(
+            RequestType::class,
+            'RequestType',
+            'requesttypeid'
+        );
+    }
 
-public function complaintType()
-{
-    return $this->belongsTo(
-        ComplaintType::class,
-        'ComplaintType',
-        'comtypeid'
-    );
-}
+    public function complaintType()
+    {
+        return $this->belongsTo(
+            ComplaintType::class,
+            'ComplaintType',
+            'comtypeid'
+        );
+    }
 
-public function sector()
-{
-    return $this->belongsTo(
-        Sector::class,
-        'sector_id',
-        'sec_id'
-    );
-}
+    public function sector()
+    {
+        return $this->belongsTo(
+            Sector::class,
+            'sector_id',
+            'sec_id'
+        );
+    }
 
 
-public function departmentInfo()
-{
-    return $this->belongsTo(
-        Department::class,
-        'department',
-        'dep_id'
-    );
-}
+    public function departmentInfo()
+    {
+        return $this->belongsTo(
+            Department::class,
+            'department',
+            'dep_id'
+        );
+    }
 
-public function gov()
-{
-    return $this->belongsTo(
-        Gov::class,
-        'ComplaintGovernorate',
-        'GOVT_CODE'
-    );
-}
+    public function gov()
+    {
+        return $this->belongsTo(
+            Gov::class,
+            'ComplaintGovernorate',
+            'GOVT_CODE'
+        );
+    }
 
-public function complainerGov()
-{
-    return $this->belongsTo(Gov::class, 'ComplainerGovernorate', 'GOVT_CODE');
-}
+    public function complainerGov()
+    {
+        return $this->belongsTo(Gov::class, 'ComplainerGovernorate', 'GOVT_CODE');
+    }
 
-public function office_info()
-{
-    return $this->belongsTo(
-        Office::class,
-        'office',
-        'ID'
-    );
-}
-public function projectTypes()
-{
-    return $this->belongsTo(
-        ProjectType::class,
-        'ComplaintProjectType',
-        'ID'
-    );
-}
+    public function office_info()
+    {
+        return $this->belongsTo(
+            Office::class,
+            'office',
+            'ID'
+        );
+    }
+    public function projectTypes()
+    {
+        return $this->belongsTo(
+            ProjectType::class,
+            'ComplaintProjectType',
+            'ID'
+        );
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(
+            Complaint::class,
+            'parent_id',
+            'ComplaintID'
+        );
+    }
+
+    public function children()
+    {
+        return $this->hasMany(
+            Complaint::class,
+            'parent_id',
+            'ComplaintID'
+        );
+    }
+
+    /**
+     * Whether this complaint has at least one duplicate registered against it.
+     * Only the parent (original) complaint can be "مكرر"; a child complaint
+     * is itself a duplicate, not something that gets duplicated again here.
+     */
+    public function getIsDuplicatedAttribute(): bool
+    {
+        return $this->parent_id === null && $this->children()->exists();
+    }
+
+    /**
+     * Count of duplicates (children) registered against this complaint.
+     */
+    public function getDuplicatesCountAttribute(): int
+    {
+        if ($this->parent_id !== null) {
+            return 0;
+        }
+
+        return $this->children()->count();
+    }
 }
