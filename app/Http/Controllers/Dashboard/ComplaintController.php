@@ -12,19 +12,13 @@ use App\Models\RequestType;
 use App\Models\Sector;
 use App\Models\Comsource;
 use App\Models\Office;
-use App\Models\ComplaintSource;
-use App\Models\CompStatus;
-use App\Models\ServiceType;
-use App\Models\CompCloseReason;
-use App\Models\CompCloseReasonClassify;
+use App\Models\Department;
 use App\Models\ProjectType;
 use Illuminate\Support\Facades\Http;
-use App\Models\ComplaintResponse;
-
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
-use Yajra\Datatables\Facades\Datatables;
+
 
 
 class ComplaintController extends Controller
@@ -43,7 +37,7 @@ class ComplaintController extends Controller
     public function index(ComplaintDataTable $dataTable)
     {
         $genders   = [['id' => 'ذكر', 'name' => 'ذكر'], ['id' => 'أنثى', 'name' => 'أنثى']];
-        $govs      = \App\Models\Gov::select('govsid as id', 'govname as name')->get();
+        $govs      = \App\Models\Gov::select('GOVT_CODE as id', 'GOVT_NAMA as name')->get();
         $statuses  = \App\Models\CompStatus::select('statusID as id', 'statusText as name')->get();
         $reqTypes  = \App\Models\RequestType::select('requesttypeid as id', 'requesttypename as name')->get();
 
@@ -64,9 +58,11 @@ class ComplaintController extends Controller
         $requestTypes = RequestType::all();
         $govs = Gov::all();
         $sectors = Sector::all();
-        $projectTypes = ProjectType::orderBy('projecttypename')->get();
+        $departments = Department::all();
+        // $projectTypes = ProjectType::orderBy('projecttypename')->get();
         $comsources = Comsource::all();
         $offices = Office::all();
+        $projectTypes = ProjectType::all();
 
         return view('dashboard.complaints.create_edit', compact(
             'requestTypes',
@@ -74,7 +70,9 @@ class ComplaintController extends Controller
             'sectors',
             'comsources',
             'offices',
-            'sectors'
+            'sectors',
+            'departments',
+            'projectTypes',
         ));
     }
 
@@ -97,17 +95,19 @@ class ComplaintController extends Controller
                 'regex:/^01[0-2,5]{1}[0-9]{8}$/'
             ],
 
-            'ComplaintGovernorate' => 'required|integer',
+            'ComplaintGovernorate' => 'nullable|integer',
             'ComplainerGovernorate' => 'required|integer',
             'ComplaintDate' => 'required|date|before_or_equal:today',
-            'sector_id' => 'required|integer',
-            'office' => 'required|integer',
+            'sec_id' => 'nullable|integer',
+            'department' => 'nullable|integer|exists:departments,dep_id',
+            'office' => 'nullable|integer',
             'comsource_ids' => 'required|array|min:1',
             'comsource_ids.*' => 'integer|exists:comsources,comsourcesid',
             'ComplainerGender' => 'required|string|max:10',
-
+            'complaint_type' => 'required|in:internal,external',
             'ComplaintNationalID' => 'nullable|required_if:requesttypeid,2,3|digits:14',
             'ComplaintText'    => 'required|string',
+            'ComplaintProjectType' => 'required|exists:sectors_ben,ID',
 
         ], [
 
@@ -128,13 +128,16 @@ class ComplaintController extends Controller
 
             'ComplaintGovernorate.required' => 'يرجى اختيار المحافظة',
 
-            'sector_id.required' => 'يرجى اختيار القطاع',
-
+            'sec_id.required' => 'يرجى اختيار القطاع',
+            'department.required' => 'يرجى اختيار الإدارة',
             'office.required' => 'يرجى اختيار المكتب',
 
             'comsource_ids.required' => 'يرجى اختيار مصدر الشكوى',
             'comsource_ids.min' => 'يرجى اختيار مصدر شكوى واحد على الأقل',
             'ComplaintText.required' => 'يرجى إدخال نص البيان',
+            'complaint_type.required' => 'يرجى اختيار نوعية وتوجيه البيان',
+            'complaint_type.in'       => 'نوعية البيان غير صحيحة',
+            'ComplaintProjectType.required' => 'يرجى اختيار نوع النشاط',
 
 
         ]);
@@ -147,11 +150,14 @@ class ComplaintController extends Controller
             'ComplainerPhone' => $data['ComplainerPhone'],
             'ComplaintGovernorate' => $data['ComplaintGovernorate'],
             'ComplaintDate' => $data['ComplaintDate'],
-            'department' => $data['sector_id'],
-            'ComplainerGovernorate' => $data['ComplainerGovernorate'],
-            // 'ComplaintProjectType' => $data['sector_id'],
+            'sector_id' => $data['sec_id'] ?? 0,
+            'department'  => $data['department'] ?? 0,
+            'ComplainerGovernorate' => $data['ComplainerGovernorate'] ?? 0,
+            // 'ComplaintProjectType' => $data['sec_id'],
             'ComplaintText' => $data['ComplaintText'],
-            'office' => $data['office'],
+            'office' => $data['office'] ?? 0,
+            'complaint_type' => $data['complaint_type'],
+            'ComplaintProjectType' => $data['ComplaintProjectType'],
             // 'ComplaintSources' => $data['comsource_id'],
             'ComplaintNationalID' => $data['ComplaintNationalID'] ?? null,
             'ComplainerGender' => $data['ComplainerGender'] ?? null,
@@ -188,9 +194,11 @@ class ComplaintController extends Controller
         $requestTypes = RequestType::all();
         $govs = Gov::all();
         $sectors = Sector::all();
+        $departments = Department::all();
         $comsources = Comsource::all();
-        $projectTypes = ProjectType::orderBy('projecttypename')->get();
+        // $projectTypes = ProjectType::orderBy('projecttypename')->get();
         $offices = Office::all();
+        $projectTypes = ProjectType::all();
 
         return view('dashboard.complaints.create_edit', compact(
             'complaint',
@@ -199,7 +207,9 @@ class ComplaintController extends Controller
             'sectors',
             'comsources',
             'offices',
-            'projectTypes'
+            // 'projectTypes',
+            'departments',
+            'projectTypes',
         ));
     }
 
@@ -225,16 +235,19 @@ class ComplaintController extends Controller
                 'regex:/^01[0-2,5]{1}[0-9]{8}$/'
             ],
 
-            'ComplaintGovernorate' => 'required|integer',
+            'ComplaintGovernorate' => 'nullable|integer',
             'ComplainerGovernorate' => 'required|integer',
             'ComplaintDate' => 'required|date|before_or_equal:today',
-            'office' => 'required|integer',
+            'office' => 'nullable|integer',
             'comsource_ids' => 'required|array|min:1',
             'comsource_ids.*' => 'integer|exists:comsources,comsourcesid',
             'ComplaintNationalID' => 'nullable|required_if:requesttypeid,2,3|digits:14',
             'ComplainerGender' => 'required|string|max:10',
-            'sector_id' => 'required|integer',
+            'sec_id' => 'nullable|integer',
+            'department' => 'nullable|integer|exists:departments,dep_id',
+            'complaint_type' => 'required|in:internal,external',
             'ComplaintText'    => 'required|string',
+            'ComplaintProjectType' => 'required|exists:sectors_ben,ID',
 
         ], [
 
@@ -255,13 +268,16 @@ class ComplaintController extends Controller
 
             'ComplaintGovernorate.required' => 'يرجى اختيار المحافظة',
 
-            'sector_id.required' => 'يرجى اختيار القطاع',
-
+            'sec_id.required' => 'يرجى اختيار القطاع',
+            'department.required' => 'يرجى اختيار الإدارة',
             'office.required' => 'يرجى اختيار المكتب',
 
             'comsource_ids.required' => 'يرجى اختيار مصدر الشكوى',
             'comsource_ids.min' => 'يرجى اختيار مصدر شكوى واحد على الأقل',
             'ComplaintText.required' => 'يرجى إدخال نص البيان',
+            'complaint_type.required' => 'يرجى اختيار نوعية وتوجيه البيان',
+            'complaint_type.in'       => 'نوعية البيان غير صحيحة',
+            'ComplaintProjectType.required' => 'يرجى اختيار نوع النشاط',
 
         ]);
 
@@ -274,11 +290,14 @@ class ComplaintController extends Controller
             'ComplainerPhone' => $data['ComplainerPhone'],
             'ComplaintGovernorate' => $data['ComplaintGovernorate'],
             'ComplaintDate' => $data['ComplaintDate'],
-            'department' => $data['sector_id'],
-            'office' => $data['office'],
+            'sector_id' => $data['sec_id'] ?? 0,
+            'department' => $data['department'] ?? 0,
+            'office' => $data['office'] ?? 0,
+            'complaint_type' => $data['complaint_type'],
             'ComplaintText' => $data['ComplaintText'],
-             'ComplainerGovernorate' => $data['ComplainerGovernorate'],
+             'ComplainerGovernorate' => $data['ComplainerGovernorate'] ?? 0,
             // 'ComplaintSources' => $data['comsource_id'],
+            'ComplaintProjectType' => $data['ComplaintProjectType'],
             'ComplaintNationalID' => $data['ComplaintNationalID'] ?? null,
             'ComplainerGender' => $data['ComplainerGender'],
 

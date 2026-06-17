@@ -32,7 +32,7 @@ function setActiveStep(stepId) {
 // لو فيه أخطاء في step 2
 let hasStep2Errors =
     $('[name="ComplaintDate"]').hasClass('is-invalid') ||
-    $('[name="sector_id"]').hasClass('is-invalid') ||
+    $('[name="sec_id"]').hasClass('is-invalid') ||
     $('[name="ComplaintGovernorate"]').hasClass('is-invalid') ||
     $('[name="office"]').hasClass('is-invalid') ||
     $('[name="comsource_id"]').hasClass('is-invalid') ||
@@ -439,68 +439,183 @@ $('.prevBtn').on('click', function () {
 // =========================
     // VALIDATE STEP 2
     // =========================
-    function validateStep2() {
-        let isValid = true;
-        $('#step-2 .form-control, #step-2 .form-select').removeClass('is-invalid');
-        $("#complaintTextError").text('');
+//     function validateStep2() {
+//         let isValid = true;
+//         $('#step-2 .form-control, #step-2 .form-select').removeClass('is-invalid');
+//         $("#complaintTextError").text('');
 
-        // المحافظة required
+//         // المحافظة required
+//         if (!$('[name="ComplaintGovernorate"]').val()) {
+//             $('[name="ComplaintGovernorate"]').addClass('is-invalid');
+//             $("#governorateError").text("يرجى اختيار المحافظة.");
+//             isValid = false;
+//         } else {
+//             $("#governorateError").text('');
+//         }
+
+//         // المكتب required
+//         if (!$('[name="office"]').val()) {
+//             $('[name="office"]').addClass('is-invalid');
+//             $("#officeError").text("يرجى اختيار المكتب.");
+//             isValid = false;
+//         } else {
+//             $("#officeError").text('');
+//         }
+
+//         // مصدر الشكوى required
+//         // if (!$('[name="comsource_id"]').val()) {
+//         //     $('[name="comsource_id"]').addClass('is-invalid');
+//         //     $("#comsourceError").text("يرجى اختيار مصدر الشكوى.");
+//         //     isValid = false;
+//         // } else {
+//         //     $("#comsourceError").text('');
+//         // }
+
+//         // مصدر الشكوى required (MULTI-SELECT)
+//        if (!$('#comsourceSelect').val() || $('#comsourceSelect').val().length === 0) {
+
+//         $('#comsourceSelect')
+//             .next('.select2-container')
+//             .find('.select2-selection')
+//             .addClass('is-invalid');
+
+//         $("#comsourceError").text("يرجى اختيار مصدر الشكوى.");
+//         isValid = false;
+
+//     } else {
+
+//         $('#comsourceSelect')
+//             .next('.select2-container')
+//             .find('.select2-selection')
+//             .removeClass('is-invalid');
+
+//         $("#comsourceError").text('');
+//     }
+
+//         // نص البيان required
+//         if ($("textarea[name='ComplaintText']").val().trim() === '') {
+//             $("textarea[name='ComplaintText']").addClass('is-invalid');
+//             $("#complaintTextError").text("يرجى إدخال نص البيان.");
+//             isValid = false;
+//         }
+
+
+
+//         // Replace the governorate and office validation inside validateStep2():
+
+//  $("#complaintTextError, #governorateError, #officeError").text('');
+
+//     let cType = $('#complaint_type').val();
+
+//     // complaint_type itself required
+//     if (!cType) {
+//         $('#complaint_type').addClass('is-invalid');
+//         isValid = false;
+//     }
+
+//     // المحافظة — only for internal
+//     if (cType === 'internal') {
+//         if (!$('[name="ComplaintGovernorate"]').val()) {
+//             $('[name="ComplaintGovernorate"]').addClass('is-invalid');
+//             $("#governorateError").text("يرجى اختيار المحافظة.");
+//             isValid = false;
+//         }
+//         if (!$('[name="office"]').val()) {
+//             $('[name="office"]').addClass('is-invalid');
+//             $("#officeError").text("يرجى اختيار المكتب.");
+//             isValid = false;
+//         }
+//     }
+
+//     // الإدارة — only required for external AND sector has departments
+//     if (cType === 'external') {
+//         if (!$('[name="sec_id"]').val()) {
+//             $('[name="sec_id"]').addClass('is-invalid');
+//             isValid = false;
+//         }
+
+//         // department required only if sector has departments
+//         let hasDeptsVisible = $('#department option[data-sector]:visible').length > 0;
+//         if (hasDeptsVisible && !$('[name="department"]').val()) {
+//             $('[name="department"]').addClass('is-invalid');
+//             isValid = false;
+//         }
+//     }
+
+//         return isValid;
+//     }
+
+function validateStep2() {
+    let isValid = true;
+    $('#step-2 .form-control, #step-2 .form-select').removeClass('is-invalid');
+    $("#complaintTextError, #governorateError, #officeError").text('');
+
+    let cType = $('#complaint_type').val();
+
+    // نوعية وتوجيه البيان required
+    if (!cType) {
+        $('#complaint_type').addClass('is-invalid');
+        isValid = false;
+    }
+
+    // المحافظة + المكتب — only required when داخلي
+    if (cType === 'internal') {
         if (!$('[name="ComplaintGovernorate"]').val()) {
             $('[name="ComplaintGovernorate"]').addClass('is-invalid');
             $("#governorateError").text("يرجى اختيار المحافظة.");
             isValid = false;
-        } else {
-            $("#governorateError").text('');
+        }
+        // المكتب nullable — no validation
+    }
+
+    // القطاع + الإدارة — only required when خارجي
+    if (cType === 'external') {
+        if (!$('[name="sec_id"]').val()) {
+            $('[name="sec_id"]').addClass('is-invalid');
+            isValid = false;
         }
 
-        // المكتب required
-        if (!$('[name="office"]').val()) {
-            $('[name="office"]').addClass('is-invalid');
-            $("#officeError").text("يرجى اختيار المكتب.");
+        // الإدارة required only if sector has visible departments
+        let hasDeptsVisible = $('#department option[data-sector]:visible').length > 0;
+        if (hasDeptsVisible && !$('[name="department"]').val()) {
+            $('[name="department"]').addClass('is-invalid');
+            isValid = false;
+        }
+    }
+
+ // نوع النشاط required
+        let projectTypeVal = $('#ComplaintProjectType').val();
+        if (!projectTypeVal || projectTypeVal === '') {
+            $('#ComplaintProjectType').addClass('is-invalid');
             isValid = false;
         } else {
-            $("#officeError").text('');
+            $('#ComplaintProjectType').removeClass('is-invalid');
         }
-
-        // مصدر الشكوى required
-        // if (!$('[name="comsource_id"]').val()) {
-        //     $('[name="comsource_id"]').addClass('is-invalid');
-        //     $("#comsourceError").text("يرجى اختيار مصدر الشكوى.");
-        //     isValid = false;
-        // } else {
-        //     $("#comsourceError").text('');
-        // }
-
-        // مصدر الشكوى required (MULTI-SELECT)
-       if (!$('#comsourceSelect').val() || $('#comsourceSelect').val().length === 0) {
-
+    // مصدر الشكوى required always
+    if (!$('#comsourceSelect').val() || $('#comsourceSelect').val().length === 0) {
         $('#comsourceSelect')
             .next('.select2-container')
             .find('.select2-selection')
             .addClass('is-invalid');
-
         $("#comsourceError").text("يرجى اختيار مصدر الشكوى.");
         isValid = false;
-
     } else {
-
         $('#comsourceSelect')
             .next('.select2-container')
             .find('.select2-selection')
             .removeClass('is-invalid');
-
         $("#comsourceError").text('');
     }
 
-        // نص البيان required
-        if ($("textarea[name='ComplaintText']").val().trim() === '') {
-            $("textarea[name='ComplaintText']").addClass('is-invalid');
-            $("#complaintTextError").text("يرجى إدخال نص البيان.");
-            isValid = false;
-        }
-
-        return isValid;
+    // نص البيان required always
+    if ($("textarea[name='ComplaintText']").val().trim() === '') {
+        $("textarea[name='ComplaintText']").addClass('is-invalid');
+        $("#complaintTextError").text("يرجى إدخال نص البيان.");
+        isValid = false;
     }
+
+    return isValid;
+}
 
     // =========================
     // GENDER DROPDOWN CLEAR ERROR
@@ -573,5 +688,85 @@ $(document).on("keyup", "input[name='ComplainerEmail']", function () {
         $(this).next('.error-text').remove();
     }
 });
+
+
+
+// =========================
+// SECTOR → FILTER DEPARTMENTS
+// =========================
+$('[name="sec_id"]').on('change', function () {
+    let selectedSector = $(this).val();
+    let $dept = $('#department');
+    let currentVal = $dept.val();
+
+    // Remove any "no departments" option
+    $dept.find('option.no-dept').remove();
+
+    let visibleCount = 0;
+
+    $dept.find('option').each(function () {
+        let optSector = $(this).data('sector');
+        if (!optSector) return; // skip placeholder
+        if (optSector == selectedSector) {
+            $(this).show();
+            visibleCount++;
+        } else {
+            $(this).hide();
+        }
+    });
+
+    // If no departments match, add a disabled placeholder
+    if (selectedSector && visibleCount === 0) {
+        $dept.append('<option class="no-dept" value="" disabled selected>لا توجد إدارة</option>');
+        $dept.val('');
+    } else {
+        // Reset if current selection no longer visible
+        let stillVisible = $dept.find('option[value="' + currentVal + '"]:visible').length > 0;
+        if (!stillVisible) $dept.val('');
+    }
+});
+
+// Run on load for edit mode
+$('[name="sec_id"]').trigger('change');
+
+// =========================
+// PROJECT TYPE CLEAR ERROR
+// =========================
+$(document).on('change', '#ComplaintProjectType', function () {
+    if ($(this).val() && $(this).val() !== '') {
+        $(this).removeClass('is-invalid');
+    }
+});
+// =========================
+// COMPLAINT TYPE → TOGGLE FIELDS
+// =========================
+function applyComplaintTypeToggle(val) {
+    if (val === 'internal') {
+        $('#govOfficeGroup, #officeGroup').show();
+        $('#sectorGroup, #departmentGroup').hide();
+        $('[name="sec_id"], [name="department"]').val('').removeClass('is-invalid');
+    } else if (val === 'external') {
+        $('#sectorGroup, #departmentGroup').show();
+        $('#govOfficeGroup, #officeGroup').hide();
+        $('[name="ComplaintGovernorate"]', '#step-2').val('').removeClass('is-invalid');
+        $('[name="office"]').val('').removeClass('is-invalid');
+        $("#governorateError, #officeError").text('');
+        // trigger sector filter on show
+        $('[name="sec_id"]').trigger('change');
+    } else {
+        // nothing selected yet — hide all 4
+        $('#govOfficeGroup, #officeGroup, #sectorGroup, #departmentGroup').hide();
+    }
+}
+
+$('#complaint_type').on('change', function () {
+    applyComplaintTypeToggle($(this).val());
+});
+
+// Run on load (handles edit mode too)
+applyComplaintTypeToggle($('#complaint_type').val());
+
+
+
 
 });

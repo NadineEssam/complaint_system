@@ -320,7 +320,7 @@
                         <div class="detail-item">
                             <span class="detail-label">محافظة مقدم الشكوى</span>
                             <span class="detail-value">
-                                {{ $complaint->complainerGov->govname ?? 'غير محدد' }}
+                                {{ $complaint->complainerGov->GOVT_NAMA ?? 'غير محدد' }}
                             </span>
                         </div>
                         <div class="detail-item">
@@ -334,6 +334,7 @@
                     </div>
                 </div>
 
+
                 {{-- Complaint Details --}}
                 <div class="detail-card">
                     <div class="detail-section-title">
@@ -346,21 +347,40 @@
                             <span class="detail-value">{{ $complaint->requestType->requesttypename ?? 'غير محدد' }}</span>
                         </div>
                         <div class="detail-item">
-                            <span class="detail-label">نوع الشكوى</span>
-                            <span class="detail-value">{{ $complaint->complaintType->comtypename ?? 'غير محدد' }}</span>
+                            <span class="detail-label">نوع النشاط</span>
+                            <span class="detail-value">{{ $complaint->projectTypes->sector_nama ?? 'غير محدد' }}</span>
                         </div>
+                        <div class="detail-item">
+                            <span class="detail-label">نوعية وتوجيه البيان</span>
+                            <span class="detail-value">
+                                {{ $complaint->complaint_type === 'internal' ? 'داخلي' : ($complaint->complaint_type === 'external' ? 'خارجي' : 'غير محدد') }}
+                            </span>
+                        </div>
+
+                        {{-- Show sector + department only for external --}}
+                        @if($complaint->complaint_type === 'external')
                         <div class="detail-item">
                             <span class="detail-label">القطاع</span>
-                            <span class="detail-value">{{ $complaint->sector->sector_name ?? 'غير محدد' }}</span>
+                            <span class="detail-value">{{ $complaint->sector->sector_ar ?? 'غير محدد' }}</span>
                         </div>
                         <div class="detail-item">
+                            <span class="detail-label">الإدارة</span>
+                            <span class="detail-value">{{ $complaint->departmentInfo->depname_ar ?? 'غير محدد' }}</span>
+                        </div>
+                        @endif
+
+                        {{-- Show governorate + office only for internal --}}
+                        @if($complaint->complaint_type === 'internal')
+                        <div class="detail-item">
                             <span class="detail-label">المحافظة</span>
-                            <span class="detail-value">{{ $complaint->gov->govname ?? 'غير محدد' }}</span>
+                            <span class="detail-value">{{ $complaint->gov->GOVT_NAMA ?? 'غير محدد' }}</span>
                         </div>
                         <div class="detail-item">
                             <span class="detail-label">المكتب</span>
                             <span class="detail-value">{{ $complaint->office_info->REG_OFFIC_NAMA ?? 'غير محدد' }}</span>
                         </div>
+                        @endif
+
                     </div>
 
                     {{-- Complaint Sources --}}

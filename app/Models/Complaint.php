@@ -28,6 +28,7 @@ class Complaint extends Model
         'ComplaintSources',
         'RequestType',
         'office',
+        'sector_id',
         'department',
         'ComplaintGovernorate',
         'fk_close_reason_id',
@@ -35,7 +36,10 @@ class Complaint extends Model
         'created_by',
         'updated_by',
         'UpdateUser',
-        'username'
+        'username',
+        'complaint_type',
+        'ComplaintProjectType',
+        
 
     ];
 
@@ -69,14 +73,7 @@ class Complaint extends Model
         );
     }
 
-    public function departmentData()
-    {
-        return $this->belongsTo(
-            Department::class,
-            'department',        
-            'department_id'      
-        );
-    }
+    
 
 
     public function createdBy()
@@ -120,8 +117,18 @@ public function sector()
 {
     return $this->belongsTo(
         Sector::class,
+        'sector_id',
+        'sec_id'
+    );
+}
+
+
+public function departmentInfo()
+{
+    return $this->belongsTo(
+        Department::class,
         'department',
-        'sector_id'
+        'dep_id'
     );
 }
 
@@ -130,13 +137,13 @@ public function gov()
     return $this->belongsTo(
         Gov::class,
         'ComplaintGovernorate',
-        'govsid'
+        'GOVT_CODE'
     );
 }
 
 public function complainerGov()
 {
-    return $this->belongsTo(Gov::class, 'ComplainerGovernorate', 'govsid');
+    return $this->belongsTo(Gov::class, 'ComplainerGovernorate', 'GOVT_CODE');
 }
 
 public function office_info()
@@ -144,6 +151,14 @@ public function office_info()
     return $this->belongsTo(
         Office::class,
         'office',
+        'ID'
+    );
+}
+public function projectTypes()
+{
+    return $this->belongsTo(
+        ProjectType::class,
+        'ComplaintProjectType',
         'ID'
     );
 }

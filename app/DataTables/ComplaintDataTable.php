@@ -51,7 +51,7 @@ class ComplaintDataTable extends DataTable
                                 <a href="' . route('complaints.show', ['complaint' => $model]) . '" 
                                 class="btn btn-sm btn-outline-info action-btn"
                                 data-bs-toggle="tooltip" 
-                                title="عرض الشكوى">
+                                title="عرض البيان">
                                     <i class="bx bx-show"></i>
                                 </a>';
                 }
@@ -70,20 +70,20 @@ class ComplaintDataTable extends DataTable
                         <a href="' . route('complaints.edit', ['complaint' => $model]) . '" 
                         class="btn btn-sm btn-outline-primary action-btn"
                         data-bs-toggle="tooltip" 
-                        title="تعديل الشكوى">
+                        title="تعديل البيان">
                             <i class="bx bx-edit-alt"></i>
                         </a>';
                 }
 
                 // Delete Button
-                if (PerUser('complaints.destroy')) {
+                if (PerUser('complaints.destroy') && !in_array($model->ComplaintStatus, [2, 4])) {
                     $html .= '
                         <button 
                             class="btn btn-sm btn-outline-danger action-btn delete-this"
-                            data-id="' . $model->id . '"
+                            data-id="' . $model->ComplaintID . '"
                             data-url="' . route('complaints.destroy', ['complaint' => $model]) . '"
                             data-bs-toggle="tooltip" 
-                            title="إزاله الشكوى">
+                            title="إزاله البيان">
                             <i class="bx bx-trash"></i>
                         </button>';
                 }

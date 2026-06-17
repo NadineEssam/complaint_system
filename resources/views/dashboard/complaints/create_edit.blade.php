@@ -277,10 +277,11 @@
 $step = (
 $errors->has('ComplaintDate') ||
 $errors->has('ComplaintGovernorate') ||
-$errors->has('sector_id') ||
+$errors->has('sec_id') ||
 $errors->has('office') ||
 $errors->has('ComplaintText')||
-$errors->has('comsource_id')
+$errors->has('comsource_id')||
+    $errors->has('ComplaintProjectType')
 ) ? 2 : 1;
 @endphp
 @section('content')
@@ -498,9 +499,9 @@ $errors->has('comsource_id')
                                         <option value="">اختر المحافظة</option>
 
                                         @foreach ($govs as $gov)
-                                        <option value="{{ $gov->govsid }}"
-                                            {{ old('ComplainerGovernorate', $complaint->ComplainerGovernorate ?? '') == $gov->govsid ? 'selected' : '' }}>
-                                            {{ $gov->govname }}
+                                        <option value="{{ $gov->GOVT_CODE }}"
+                                            {{ old('ComplainerGovernorate', $complaint->ComplainerGovernorate ?? '') == $gov->GOVT_CODE ? 'selected' : '' }}>
+                                            {{ $gov->GOVT_NAMA }}
                                         </option>
                                         @endforeach
 
@@ -602,6 +603,34 @@ $errors->has('comsource_id')
 
                                 </div>
 
+                                {{-- نوع النشاط --}}
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label">
+                                        نوع النشاط
+                                        <span class="required-star">*</span>
+                                    </label>
+
+                                    <select class="form-select @error('ComplaintProjectType') is-invalid @enderror"
+                                        name="ComplaintProjectType"
+                                        id="ComplaintProjectType">
+
+                                        <option value="">اختر</option>
+
+                                        @foreach($projectTypes as $projectType)
+                                        
+                                        <option value="{{ $projectType->ID }}"
+                                            {{ old('ComplaintProjectType', $complaint->ComplaintProjectType ?? '') == $projectType->ID ? 'selected' : '' }}>
+                                            {{ $projectType->sector_nama }}
+                                        </option>
+                                        @endforeach
+
+                                    </select>
+
+                                    @error('ComplaintProjectType')
+                                    <div class="error-text">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
                                 {{-- نوعية وتوجيه البيان--}}
                                 <div class="col-md-6 mb-4">
 
@@ -635,29 +664,57 @@ $errors->has('comsource_id')
                                 </div>
 
                                 {{-- القطاع--}}
-                                <div class="col-md-6 mb-4">
+                                <div class="col-md-6 mb-4" id="sectorGroup" style="display:none;">
                                     <label class="form-label">القطاع
                                         <span class="required-star">*</span>
                                     </label>
-                                    <select class="form-select @error('sector_id') is-invalid @enderror"
-                                        name="sector_id">
+                                    <select class="form-select @error('sec_id') is-invalid @enderror"
+                                        name="sec_id">
                                         <option value="">اختر</option>
                                         @foreach($sectors as $sector)
 
-                                        <option value="{{ $sector->sector_id }}"
-                                            {{ old('sector_id', $complaint->department ?? '') == $sector->sector_id ? 'selected' : '' }}>
+                                        <option value="{{ $sector->sec_id }}"
+                                            {{ old('sec_id', $complaint->sector_id ?? '') == $sector->sec_id ? 'selected' : '' }}>
 
-                                            {{ $sector->sector_name }}
+                                            {{ $sector->sector_ar }}
                                         </option>
                                         @endforeach
                                     </select>
-                                    @error('sector_id')
+                                    @error('sec_id')
                                     <div class="error-text">{{ $message }}</div>
                                     @enderror
                                 </div>
 
+                                {{-- الإدارة --}}
+                                <div class="col-md-6 mb-4" id="departmentGroup" style="display:none;">
+                                    <label class="form-label">
+                                        الإدارة
+                                        <span class="required-star">*</span>
+                                    </label>
+
+                                    <select class="form-select @error('department') is-invalid @enderror"
+                                        name="department"
+                                        id="department">
+
+                                        <option value="">اختر الإدارة</option>
+
+                                        @foreach($departments as $department)
+                                        <option value="{{ $department->dep_id }}"
+                                            data-sector="{{ $department->sector_code }}"
+                                            {{ old('department', $complaint->department ?? '') == $department->dep_id ? 'selected' : '' }}>
+                                            {{ $department->depname_ar }}
+                                        </option>
+                                    @endforeach
+
+                                    </select>
+
+                                    @error('department')
+                                        <div class="error-text">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
                                 {{-- المحافظة --}}
-                                <div class="col-md-6 mb-4">
+                                <div class="col-md-6 mb-4" id="govOfficeGroup" style="display:none;">
 
                                     <label class="form-label">
                                         المحافظة
@@ -672,10 +729,10 @@ $errors->has('comsource_id')
 
                                         @foreach ($govs as $gov)
 
-                                        <option value="{{ $gov->govsid }}"
-                                            {{ old('ComplaintGovernorate', $complaint->ComplaintGovernorate ?? '') == $gov->govsid ? 'selected' : '' }}>
+                                        <option value="{{ $gov->GOVT_CODE }}"
+                                            {{ old('ComplaintGovernorate', $complaint->ComplaintGovernorate ?? '') == $gov->GOVT_CODE ? 'selected' : '' }}>
 
-                                            {{ $gov->govname }}
+                                            {{ $gov->GOVT_NAMA }}
 
                                         </option>
 
@@ -691,7 +748,7 @@ $errors->has('comsource_id')
                                 </div>
 
                                 {{-- المكتب --}}
-                                <div class="col-md-6 mb-4">
+                                <div class="col-md-6 mb-4"  id="officeGroup" style="display:none;">
 
                                     <label class="form-label">
                                         المكتب
@@ -852,7 +909,8 @@ $errors->has('comsource_id')
         });
     });
 </script>
-<script src="{{ asset('assets/js/complaints.js') }}">
+<script src="{{ asset('assets/js/complaints.js') }}"></script>
+<script>
     flatpickr("input[name='ComplaintDate']", {
         locale: "ar",
         dateFormat: "Y-m-d",
