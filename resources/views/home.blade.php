@@ -247,21 +247,25 @@
       {{-- FROM --}}
       <div class="col-md-4">
         <label class="form-label fw-bold">من تاريخ</label>
-       <input type="date"
-       name="from"
-       class="form-control form-control-lg"
-       value="{{ request('from') }}"
-       max="{{ date('Y-m-d') }}">
+       <input type="text"
+   dir="rtl"
+   lang="ar"
+   name="from"
+   class="form-control form-control-lg"
+   value="{{ request('from') }}"
+   readonly>
       </div>
 
       {{-- TO --}}
       <div class="col-md-4">
         <label class="form-label fw-bold">إلى تاريخ</label>
-        <input type="date"
-       name="to"
-       class="form-control form-control-lg"
-       value="{{ request('to') }}"
-       max="{{ date('Y-m-d') }}">
+        <input type="text"
+   dir="rtl"
+   lang="ar"
+   name="to"
+   class="form-control form-control-lg"
+   value="{{ request('to') }}"
+   readonly>
       </div>
 
       {{-- BUTTONS --}}
@@ -1119,6 +1123,18 @@ new ApexCharts(document.querySelector("#sectorChart"), {
     }).render();
 
   });
+
+  flatpickr("input[name='from']", {
+    locale: "ar",
+    dateFormat: "Y-m-d",
+    maxDate: "today"
+});
+
+flatpickr("input[name='to']", {
+    locale: "ar",
+    dateFormat: "Y-m-d",
+    maxDate: "today"
+});
 </script>
 
 @endpush

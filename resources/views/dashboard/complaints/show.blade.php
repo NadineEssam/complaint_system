@@ -533,24 +533,26 @@
     });
 </script>
 <script>
-    $('#duplicatesModal').on('show.bs.modal', function () {
-        var body = $('#duplicatesModalBody');
-        body.html('<div class="text-center py-4"><i class="bx bx-loader-alt bx-spin fs-3"></i></div>');
- 
-        $.get("{{ route('complaints.duplicates.index', $complaint) }}", function (html) {
-            // jQuery's .html() strips <script> tags and won't execute them,
-            // so the markup and the scripts are appended/run separately.
-            var temp = $('<div>').html(html);
-            var scripts = temp.find('script').remove();
- 
-            body.empty().append(temp.contents());
- 
-            scripts.each(function () {
-                $.globalEval($(this).text());
-            });
-        }).fail(function () {
-            body.html('<div class="text-center text-danger py-4">حدث خطأ أثناء تحميل البيانات</div>');
+$('#duplicatesModal').on('show.bs.modal', function () {
+    var body = $('#duplicatesModalBody');
+    body.html('<div class="text-center py-4"><i class="bx bx-loader-alt bx-spin fs-3"></i></div>');
+
+    // Load DataTables JS if not already loaded
+    if (!$.fn.DataTable) {
+        $.getScript('https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js', function () {
+            loadDuplicatesTable(body);
         });
+    } else {
+        loadDuplicatesTable(body);
+    }
+});
+
+function loadDuplicatesTable(body) {
+    $.get("{{ route('complaints.duplicates.index', $complaint) }}", function (html) {
+        body.html(html);
+    }).fail(function () {
+        body.html('<div class="text-center text-danger py-4">حدث خطأ أثناء تحميل البيانات</div>');
     });
+}
 </script>
 @endpush

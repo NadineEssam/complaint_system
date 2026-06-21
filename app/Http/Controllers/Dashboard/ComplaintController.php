@@ -445,16 +445,23 @@ class ComplaintController extends Controller
      * @param  \App\Models\Complaint  $complaint
      * @return \Illuminate\Http\Response
      */
-    public function duplicatesIndex(Complaint $complaint)
-    {
-        // Always resolve to the root/original complaint, in case this is
-        // ever called with a child's id for any reason.
-        $root = $complaint->parent_id ? $complaint->parent : $complaint;
+public function duplicatesIndex(Complaint $complaint)
+{
+    $root = $complaint->parent_id ? $complaint->parent : $complaint;
 
-        return app(\App\DataTables\ComplaintDuplicatesDataTable::class)
-            ->forComplaint($root)
-            ->render('dashboard.complaints.duplicates_modal', compact('root'));
+    $dataTable = app(\App\DataTables\ComplaintDuplicatesDataTable::class)
+        ->forComplaint($root);
+
+    // DataTables AJAX calls always include a 'draw' parameter
+    if (request()->has('draw')) {
+        return $dataTable->ajax();
     }
+
+    return $dataTable->render(
+        'dashboard.complaints.duplicates_modal',
+        compact('root') + ['complaint' => $root]
+    );
+}
 
     public function validateRoles($request)
     {
