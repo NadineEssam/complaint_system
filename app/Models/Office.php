@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Office extends Model
 {
+    protected $connection = 'ben'; 
     protected $table = 'office';           // Table name
     protected $primaryKey = 'ID';          // Primary key
     public $timestamps = false;

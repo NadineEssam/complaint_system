@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Gov extends Model
 {
+    protected $connection = 'ben'; 
     protected $table = 'gov_code';          // table name
 
     protected $primaryKey = 'GOVT_CODE';   // primary key
