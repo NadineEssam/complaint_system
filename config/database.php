@@ -115,20 +115,19 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
-        // 'po' => [
-        //     'driver' => 'mysql',
-        //     'host' => env('DB_HOST', '127.0.0.1'),
-        //     'port' => env('DB_PORT', '3306'),
-        //     'database' => env('DB_DATABASE_PO', 'new_po'),
-        //     'username' => env('DB_USERNAME', 'root'),
-        //     'password' => env('DB_PASSWORD', ''),
-        //     'charset' => 'utf8mb4',
-        //     'collation' => 'utf8mb4_unicode_ci',
-        //     'prefix' => '',
-        //     'strict' => true,
-        //     'prefix_indexes' => true,
-        //     'engine' => null,
-        // ],
+        'new_po' => [
+        'driver'    => 'mysql',
+        'host'      => env('DB_HOST_NEWPO', '192.168.162.34'),
+        'port'      => env('DB_PORT_NEWPO', '3306'),
+        'database'  => env('DB_DATABASE_NEWPO', 'new_po'),
+        'username'  => env('DB_USERNAME_NEWPO', 'amgad'),
+        'password'  => env('DB_PASSWORD_NEWPO', ''),
+        'charset'   => 'utf8mb4',
+        'collation' => 'utf8mb4_unicode_ci',
+        'prefix'    => '',
+        'strict'    => true,
+        'engine'    => null,
+    ],
 
         'ben' => [
         'driver'    => 'mysql',

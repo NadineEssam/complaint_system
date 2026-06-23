@@ -5,7 +5,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProjectType extends Model
 {
-    protected $table = 'sectors_ben';
+    protected $connection = 'ben'; 
+    protected $table = 'sectors';
     protected $primaryKey = 'ID';
     public $timestamps = false;
 

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Department extends Model
 {
     use HasFactory;
-
+    protected $connection = 'new_po';
     protected $table = 'departments';
     protected $primaryKey = 'dep_id';
     public $timestamps = false;
