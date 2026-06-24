@@ -27,41 +27,44 @@ class ComplaintResponseDataTable extends DataTable
 
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
+        // Get the last response ID for this complaint once
+        $lastResponseId = ComplaintResponse::where('complaint_id', $this->complaintId)
+            ->max('id');
+
         return (new EloquentDataTable($query))
 
-            ->addColumn('action', function ($model) {
+            ->addColumn('action', function ($model) use ($lastResponseId) {
+
+                $complaintStatus = $model->complaint->ComplaintStatus ?? null;
+                $isClosed        = in_array($complaintStatus, [2, 4]);
+                $isLastResponse  = $model->id === $lastResponseId;
 
                 $html = '<div class="d-flex align-items-center gap-2 justify-content-end">';
 
-
+                // Show — always allowed
                 if (PerUser('responses.show')) {
-
-                    $html .= ' <a href="' . route('responses.show', $model->id) . '" 
-                            class="btn btn-sm btn-outline-info action-btn"
-                            data-bs-toggle="tooltip" 
-                            title="عرض الرد">
-
-                                <i class="bx bx-show"></i>
-
-                            </a>';
+                    $html .= '
+                        <a href="' . route('responses.show', $model->id) . '" 
+                           class="btn btn-sm btn-outline-info action-btn"
+                           data-bs-toggle="tooltip" 
+                           title="عرض الرد">
+                            <i class="bx bx-show"></i>
+                        </a>';
                 }
 
-                if (
-                    PerUser('responses.edit') && !in_array($model->complaint->ComplaintStatus ?? null, [2, 4])
-                ) {
+                // Edit — allowed if: not closed OR it's the last response
+                if (PerUser('responses.edit') && (!$isClosed || $isLastResponse)) {
                     $html .= '
                         <a href="' . route('responses.edit', $model->id) . '" 
-                        class="btn btn-sm btn-outline-primary action-btn"
-                        data-bs-toggle="tooltip" 
-                        title="تعديل الرد على البيان">
+                           class="btn btn-sm btn-outline-primary action-btn"
+                           data-bs-toggle="tooltip" 
+                           title="تعديل الرد على البيان">
                             <i class="bx bx-edit-alt"></i>
                         </a>';
                 }
 
-                if (
-                    PerUser('responses.destroy') &&
-                    !in_array($model->complaint->ComplaintStatus ?? null, [2, 4])
-                ) {
+                // Delete — only if not closed
+                if (PerUser('responses.destroy') && !$isClosed) {
                     $html .= '
                         <button 
                             class="btn btn-sm btn-outline-danger action-btn delete-this"
@@ -99,7 +102,7 @@ class ComplaintResponseDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-            ->setTableId('complaint_responses') // ❗ كان غلط "roles"
+            ->setTableId('complaint_responses')
             ->columns($this->getColumns())
             ->minifiedAjax()
             ->orderBy(0)

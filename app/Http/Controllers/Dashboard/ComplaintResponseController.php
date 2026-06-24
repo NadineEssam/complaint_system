@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
@@ -13,6 +11,7 @@ use App\Models\ServiceType;
 use App\Models\CompCloseReason;
 use App\Models\CompCloseReasonClassify;
 use App\DataTables\ComplaintResponseDataTable;
+use Illuminate\Support\Facades\Log;
 
 class ComplaintResponseController extends Controller
 {
@@ -67,10 +66,10 @@ class ComplaintResponseController extends Controller
             'serviceTypes' => ServiceType::all(),
             'closeReasons' => CompCloseReason::all(),
             'classifications' => CompCloseReasonClassify::select(
-            'close_reason_classify_id',
-            'close_reason_classify_Name',
-            'fk_close_reason_id'
-        )->get(),
+                'close_reason_classify_id',
+                'close_reason_classify_Name',
+                'fk_close_reason_id'
+            )->get(),
         ]);
     }
 
@@ -85,13 +84,20 @@ class ComplaintResponseController extends Controller
                 'ComplaintService' => 'nullable|integer',
                 'fk_close_reason_id' => 'nullable|integer',
                 'fk_close_reason_classify_id' => 'nullable|integer',
-
             ]);
+
             $data['created_by'] = auth()->id();
             $response = ComplaintResponse::create($data);
 
             $response->complaint()->update([
                 'ComplaintStatus' => $response->ComplaintStatus
+            ]);
+
+            Log::info('ComplaintResponse created', [
+                'response_id'  => $response->id,
+                'complaint_id' => $data['complaint_id'],
+                'status'       => $data['ComplaintStatus'],
+                'created_by'   => $data['created_by'],
             ]);
 
             alert()->success('تم بنجاح', 'تم إضافة الرد على البيان بنجاح');
@@ -100,12 +106,29 @@ class ComplaintResponseController extends Controller
                 'responses.index',
                 ['complaint_id' => $data['complaint_id']]
             );
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+
+            Log::warning('ComplaintResponse store — validation failed', [
+                'complaint_id' => $request->input('complaint_id'),
+                'user_id'      => auth()->id(),
+                'errors'       => $e->errors(),
+            ]);
+
+            return back()->withInput()->withErrors($e->errors());
+
         } catch (\Exception $e) {
 
-            return back()->withInput()->with(
-                'error',
-                $e->getMessage()
-            );
+            Log::error('ComplaintResponse store — unexpected error', [
+                'complaint_id' => $request->input('complaint_id'),
+                'user_id'      => auth()->id(),
+                'message'      => $e->getMessage(),
+                'file'         => $e->getFile(),
+                'line'         => $e->getLine(),
+                'trace'        => $e->getTraceAsString(),
+            ]);
+
+            return back()->withInput()->with('error', $e->getMessage());
         }
     }
 
@@ -127,16 +150,23 @@ class ComplaintResponseController extends Controller
     {
         $response = ComplaintResponse::findOrFail($id);
 
-        // جايب الـ complaint المرتبط
         $complaint = Complaint::findOrFail($response->complaint_id);
-        if (in_array($complaint->ComplaintStatus, [2, 4])) {
 
+        // Check if this is the last response added for this complaint
+        $lastResponseId = ComplaintResponse::where('complaint_id', $complaint->ComplaintID)
+            ->max('id');
+
+        $isLastResponse = $response->id === $lastResponseId;
+
+        // Block edit only if complaint is closed AND this is NOT the last response
+        if (in_array($complaint->ComplaintStatus, [2, 4]) && !$isLastResponse) {
             return redirect()
                 ->route('responses.index', [
                     'complaint_id' => $complaint->ComplaintID
                 ])
                 ->with('error', 'لا يمكن تعديل ردود شكوى مغلقة');
         }
+
         $usedStatuses = ComplaintResponse::where('complaint_id', $complaint->ComplaintID)
             ->where('id', '!=', $response->id)
             ->pluck('ComplaintStatus')
@@ -148,17 +178,16 @@ class ComplaintResponseController extends Controller
             ->get();
 
         return view('dashboard.responses.create_edit_responses', [
-            'response' => $response,
-            'complaint' => $complaint,
-            'statuses' => $statuses,
-            'serviceTypes' => ServiceType::all(),
-            'closeReasons' => CompCloseReason::all(),
+            'response'        => $response,
+            'complaint'       => $complaint,
+            'statuses'        => $statuses,
+            'serviceTypes'    => ServiceType::all(),
+            'closeReasons'    => CompCloseReason::all(),
             'classifications' => CompCloseReasonClassify::select(
-            'close_reason_classify_id',
-            'close_reason_classify_Name',
-            'fk_close_reason_id'
-        )->get(),
-            // 'classifications' => CompCloseReasonClassify::all(),
+                'close_reason_classify_id',
+                'close_reason_classify_Name',
+                'fk_close_reason_id'
+            )->get(),
         ]);
     }
 
@@ -169,11 +198,11 @@ class ComplaintResponseController extends Controller
             $response = ComplaintResponse::findOrFail($id);
 
             $data = $request->validate([
-                'ComplaintStatus' => 'required|integer',
-                'ComplaintText' => 'nullable|string',
-                'ComplaintService' => 'nullable|integer',
-                'fk_close_reason_id' => 'nullable|integer',
-                'fk_close_reason_classify_id' => 'nullable|integer',
+                'ComplaintStatus'            => 'required|integer',
+                'ComplaintText'              => 'nullable|string',
+                'ComplaintService'           => 'nullable|integer',
+                'fk_close_reason_id'         => 'nullable|integer',
+                'fk_close_reason_classify_id'=> 'nullable|integer',
             ]);
 
             $data['updated_by'] = auth()->id();
@@ -182,16 +211,43 @@ class ComplaintResponseController extends Controller
             $response->complaint()->update([
                 'ComplaintStatus' => $response->ComplaintStatus
             ]);
+
+            Log::info('ComplaintResponse updated', [
+                'response_id'  => $response->id,
+                'complaint_id' => $response->complaint_id,
+                'status'       => $response->ComplaintStatus,
+                'updated_by'   => $data['updated_by'],
+            ]);
+
             alert()->success('تم بنجاح', 'تم تعديل الرد على البيان بنجاح');
+
             return redirect()->route(
                 'responses.index',
                 ['complaint_id' => $response->complaint_id]
             );
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+
+            Log::warning('ComplaintResponse update — validation failed', [
+                'response_id' => $id,
+                'user_id'     => auth()->id(),
+                'errors'      => $e->errors(),
+            ]);
+
+            return back()->withInput()->withErrors($e->errors());
+
         } catch (\Exception $e) {
 
-            return back()
-                ->withInput()
-                ->with('error', 'فشل تعديل الرد');
+            Log::error('ComplaintResponse update — unexpected error', [
+                'response_id' => $id,
+                'user_id'     => auth()->id(),
+                'message'     => $e->getMessage(),
+                'file'        => $e->getFile(),
+                'line'        => $e->getLine(),
+                'trace'       => $e->getTraceAsString(),
+            ]);
+
+            return back()->withInput()->with('error', 'فشل تعديل الرد');
         }
     }
 
@@ -200,6 +256,7 @@ class ComplaintResponseController extends Controller
         try {
 
             $response = ComplaintResponse::findOrFail($id);
+            $complaintId = $response->complaint_id;
 
             $response->complaint()->update([
                 'ComplaintStatus' => 3
@@ -207,11 +264,27 @@ class ComplaintResponseController extends Controller
 
             $response->delete();
 
+            Log::info('ComplaintResponse deleted', [
+                'response_id'  => $id,
+                'complaint_id' => $complaintId,
+                'deleted_by'   => auth()->id(),
+            ]);
+
             return response()->json([
                 'success' => true,
                 'message' => 'تم الحذف بنجاح'
             ]);
+
         } catch (\Exception $e) {
+
+            Log::error('ComplaintResponse destroy — unexpected error', [
+                'response_id' => $id,
+                'user_id'     => auth()->id(),
+                'message'     => $e->getMessage(),
+                'file'        => $e->getFile(),
+                'line'        => $e->getLine(),
+                'trace'       => $e->getTraceAsString(),
+            ]);
 
             return response()->json([
                 'success' => false,
