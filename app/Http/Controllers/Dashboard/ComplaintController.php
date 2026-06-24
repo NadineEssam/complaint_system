@@ -38,6 +38,7 @@ class ComplaintController extends Controller
     {
         $genders   = [['id' => 'ذكر', 'name' => 'ذكر'], ['id' => 'أنثى', 'name' => 'أنثى']];
         $govs      = \App\Models\Gov::select('GOVT_CODE as id', 'GOVT_NAMA as name')->get();
+        $offices = \App\Models\Office::select('ID as id', 'REG_OFFIC_NAMA as name')->get(); // adjust column name
         $statuses  = \App\Models\CompStatus::select('statusID as id', 'statusText as name')->get();
         $reqTypes  = \App\Models\RequestType::select('requesttypeid as id', 'requesttypename as name')->get();
 
@@ -46,7 +47,7 @@ class ComplaintController extends Controller
             'gov_filter'      => request('gov_filter'),
             'status_filter'   => request('status_filter'),
             'reqtype_filter'  => request('reqtype_filter'),
-        ])->render('dashboard.complaints.index', compact('genders', 'govs', 'statuses', 'reqTypes'));
+        ])->render('dashboard.complaints.index', compact('genders', 'govs', 'statuses','offices', 'reqTypes'));
     }
     /**
      * Show the form for creating a new resource.

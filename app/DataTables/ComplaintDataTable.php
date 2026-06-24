@@ -28,13 +28,15 @@ class ComplaintDataTable extends DataTable
                 'sfdcomplaints.*',
                 'compstatus.statusText as status_name',
                 'complainttype.comtypename as complaint_type',
-                'requesttype.requesttypename as requesttypename'
+                'requesttype.requesttypename as requesttypename',
+                'ben.OFFICE.REG_OFFIC_NAMA as office_name', // adjust column name
                 // 'users_groups.userID as created_by_name',
                 // 'updated_by.userID as updated_by_name'
             )
                 ->leftJoin('compstatus', 'sfdcomplaints.ComplaintStatus', '=', 'compstatus.statusID')
                 ->leftJoin('complainttype', 'sfdcomplaints.ComplaintType', '=', 'complainttype.comtypeid')
                 ->leftJoin('requesttype', 'sfdcomplaints.RequestType', '=', 'requesttype.requesttypeid')
+                ->leftJoin('ben.OFFICE', 'sfdcomplaints.office', '=', 'ben.OFFICE.ID') // adjust table/column names
             // ->leftJoin('users_groups', 'sfdcomplaints.created_by', '=', 'users_groups.ID')
             // ->leftJoin('users_groups as updated_by', 'sfdcomplaints.updated_by', '=', 'updated_by.ID')
 
@@ -148,6 +150,9 @@ class ComplaintDataTable extends DataTable
         if ($gov = $this->request->get('gov_filter')) {
             $query->where('ComplaintGovernorate', $gov);
         }
+        if ($office = $this->request->get('office_filter')) {
+            $query->where('office', $office);
+        }
 
         if ($status = $this->request->get('status_filter')) {
             $query->where('ComplaintStatus', $status);
@@ -207,7 +212,9 @@ class ComplaintDataTable extends DataTable
 
             Column::make('ComplaintNationalID')->title('الرقم القومي '),
             Column::make('ComplainerPhone')->title('رقم الهاتف المحمول '),
-
+            Column::make('office_name')
+            ->name('offices.REG_OFFIC_NAMA') // adjust column name
+            ->title('الفرع'),
 
             Column::make('status_name')
                 ->name('compstatus.statusText')
