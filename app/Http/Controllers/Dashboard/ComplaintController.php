@@ -99,7 +99,7 @@ class ComplaintController extends Controller
             'ComplainerGovernorate' => 'required|integer',
             'ComplaintDate' => 'required|date|before_or_equal:today',
             'sec_id' => 'nullable|integer',
-            'department' => 'nullable|integer|exists:departments,dep_id',
+            'department' => 'nullable|integer|exists:new_po.departments,dep_id',
             'office' => 'nullable|integer',
             'comsource_ids' => 'required|array|min:1',
             'comsource_ids.*' => 'integer|exists:comsources,comsourcesid',
@@ -107,7 +107,7 @@ class ComplaintController extends Controller
             'complaint_type' => 'required|in:internal,external',
             'ComplaintNationalID' => 'nullable|required_if:requesttypeid,2,3|digits:14',
             'ComplaintText'    => 'required|string',
-            'ComplaintProjectType' => 'required|exists:sectors_ben,ID',
+            'ComplaintProjectType' => 'required|exists:ben.sectors,ID',
 
         ], [
 
@@ -244,10 +244,10 @@ class ComplaintController extends Controller
             'ComplaintNationalID' => 'nullable|required_if:requesttypeid,2,3|digits:14',
             'ComplainerGender' => 'required|string|max:10',
             'sec_id' => 'nullable|integer',
-            'department' => 'nullable|integer|exists:departments,dep_id',
+            'department' => 'nullable|integer|exists:new_po.departments,dep_id',
             'complaint_type' => 'required|in:internal,external',
             'ComplaintText'    => 'required|string',
-            'ComplaintProjectType' => 'required|exists:sectors_ben,ID',
+            'ComplaintProjectType' => 'required|exists:ben.sectors,ID',
 
         ], [
 
@@ -375,13 +375,13 @@ class ComplaintController extends Controller
             'ComplaintGovernorate' => 'nullable|integer',
             'ComplaintDate' => 'required|date|before_or_equal:today',
             'sec_id' => 'nullable|integer',
-            'department' => 'nullable|integer|exists:departments,dep_id',
+            'department' => 'nullable|integer|exists:new_po.departments,dep_id',
             'office' => 'nullable|integer',
             'comsource_ids' => 'required|array|min:1',
             'comsource_ids.*' => 'integer|exists:comsources,comsourcesid',
             'complaint_type' => 'required|in:internal,external',
             'ComplaintText'    => 'required|string',
-            'ComplaintProjectType' => 'required|exists:sectors_ben,ID',
+            'ComplaintProjectType' => 'required|exists:ben.sectors,ID',
 
         ], [
 

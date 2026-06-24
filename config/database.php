@@ -117,7 +117,7 @@ return [
 
         'new_po' => [
         'driver'    => 'mysql',
-        'host'      => env('DB_HOST_NEWPO', '192.168.162.34'),
+        'host'      => env('DB_HOST_NEWPO', '192.168.161.89'),
         'port'      => env('DB_PORT_NEWPO', '3306'),
         'database'  => env('DB_DATABASE_NEWPO', 'new_po'),
         'username'  => env('DB_USERNAME_NEWPO', 'amgad'),
@@ -126,6 +126,7 @@ return [
         'collation' => 'utf8mb4_unicode_ci',
         'prefix'    => '',
         'strict'    => true,
+        'sticky' => false,
         'engine'    => null,
     ],
 
