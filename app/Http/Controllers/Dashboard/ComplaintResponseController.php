@@ -12,18 +12,6 @@ use App\Models\CompStatus;
 use App\Models\ServiceType;
 use App\Models\CompCloseReason;
 use App\Models\CompCloseReasonClassify;
-use Yajra\DataTables\Facades\DataTables;
-use App\DataTables\ComplaintDataTable;
-use App\Models\Gov;
-use App\Models\RequestType;
-use App\Models\Sector;
-use App\Models\Comsource;
-use App\Models\Office;
-use App\Models\ComplaintSource;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\Rule;
-use Spatie\Permission\Models\Role;
 use App\DataTables\ComplaintResponseDataTable;
 
 class ComplaintResponseController extends Controller
