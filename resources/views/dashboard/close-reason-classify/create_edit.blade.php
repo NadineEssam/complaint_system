@@ -241,6 +241,22 @@
 
                             </div>
 
+                            {{-- الحالة --}}
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label">الحالة</label>
+                                <select class="form-control @error('validity') is-invalid @enderror" name="validity">
+                                    <option value="1" {{ old('validity', $classification->validity ?? 1) == 1 ? 'selected' : '' }}>
+                                        فعّال
+                                    </option>
+                                    <option value="0" {{ old('validity', $classification->validity ?? 1) == 0 ? 'selected' : '' }}>
+                                        غير فعّال
+                                    </option>
+                                </select>
+                                @error('validity')
+                                <span class="invalid-feedback d-block"><strong>{{ $message }}</strong></span>
+                                @enderror
+                            </div>
+
                         </div>
 
                     </div>

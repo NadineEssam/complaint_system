@@ -60,6 +60,11 @@ class CompCloseReasonClassifyDataTable extends DataTable
 
                 return $html;
             })
+            ->editColumn('validity', function ($row) {
+                return $row->validity == 1
+                    ? '<span class="badge bg-success">فعّال</span>'
+                    : '<span class="badge bg-danger">غير فعّال</span>';
+            })
 
             ->editColumn('closeReason.close_reason_Name', function ($row) {
                 return $row->closeReason->close_reason_Name ?? '-';
@@ -75,7 +80,7 @@ class CompCloseReasonClassifyDataTable extends DataTable
                 return $row->createdBy->userID ?? '-';
             })
 
-            ->rawColumns(['action'])
+            ->rawColumns(['action', 'validity'])
             ->setRowId('close_reason_classify_id');
     }
 
@@ -98,6 +103,7 @@ class CompCloseReasonClassifyDataTable extends DataTable
             Column::make('close_reason_classify_id')->title('الرقم'),
             Column::make('close_reason_classify_Name')->title('اسم التصنيف'),
             Column::make('closeReason.close_reason_Name')->title('السبب الرئيسي'),
+            Column::make('validity')->title('الحالة'),
             Column::make('created_at')->title('تاريخ الإنشاء'),
             Column::make('createdBy.userID')->title('أنشأ بواسطة'),
 

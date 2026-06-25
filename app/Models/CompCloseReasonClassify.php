@@ -13,6 +13,7 @@ class CompCloseReasonClassify extends Model
     protected $fillable = [
         'close_reason_classify_Name',
         'fk_close_reason_id',
+        'validity',
         'created_by',
         'updated_by'
     ];
