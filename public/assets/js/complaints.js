@@ -558,30 +558,25 @@ function validateStep2() {
         isValid = false;
     }
 
-    // المحافظة + الفرع — only required when داخلي
-    if (cType === 'internal') {
-        if (!$('[name="ComplaintGovernorate"]').val()) {
-            $('[name="ComplaintGovernorate"]').addClass('is-invalid');
-            $("#governorateError").text("يرجى اختيار المحافظة.");
-            isValid = false;
-        }
-        // الفرع nullable — no validation
+    if (cType === 'external') {          // ← was 'internal'
+    if (!$('[name="ComplaintGovernorate"]').val()) {
+        $('[name="ComplaintGovernorate"]').addClass('is-invalid');
+        $("#governorateError").text("يرجى اختيار المحافظة.");
+        isValid = false;
     }
+}
 
-    // القطاع + الإدارة — only required when خارجي
-    if (cType === 'external') {
-        if (!$('[name="sec_id"]').val()) {
-            $('[name="sec_id"]').addClass('is-invalid');
-            isValid = false;
-        }
-
-        // الإدارة required only if sector has visible departments
-        let hasDeptsVisible = $('#department option[data-sector]:visible').length > 0;
-        if (hasDeptsVisible && !$('[name="department"]').val()) {
-            $('[name="department"]').addClass('is-invalid');
-            isValid = false;
-        }
+if (cType === 'internal') {          // ← was 'external'
+    if (!$('[name="sec_id"]').val()) {
+        $('[name="sec_id"]').addClass('is-invalid');
+        isValid = false;
     }
+    let hasDeptsVisible = $('#department option[data-sector]:visible').length > 0;
+    if (hasDeptsVisible && !$('[name="department"]').val()) {
+        $('[name="department"]').addClass('is-invalid');
+        isValid = false;
+    }
+}
 
  // نوع النشاط required
         let projectTypeVal = $('#ComplaintProjectType').val();
@@ -741,20 +736,18 @@ $(document).on('change', '#ComplaintProjectType', function () {
 // COMPLAINT TYPE → TOGGLE FIELDS
 // =========================
 function applyComplaintTypeToggle(val) {
-    if (val === 'internal') {
+    if (val === 'external') {                          // ← was 'internal'
         $('#govOfficeGroup, #officeGroup').show();
         $('#sectorGroup, #departmentGroup').hide();
         $('[name="sec_id"], [name="department"]').val('').removeClass('is-invalid');
-    } else if (val === 'external') {
+    } else if (val === 'internal') {                   // ← was 'external'
         $('#sectorGroup, #departmentGroup').show();
         $('#govOfficeGroup, #officeGroup').hide();
         $('[name="ComplaintGovernorate"]', '#step-2').val('').removeClass('is-invalid');
         $('[name="office"]').val('').removeClass('is-invalid');
         $("#governorateError, #officeError").text('');
-        // trigger sector filter on show
         $('[name="sec_id"]').trigger('change');
     } else {
-        // nothing selected yet — hide all 4
         $('#govOfficeGroup, #officeGroup, #sectorGroup, #departmentGroup').hide();
     }
 }
