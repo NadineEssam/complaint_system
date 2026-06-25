@@ -188,6 +188,18 @@
                             </div>
                         </div>
 
+                        {{-- الحالة --}}
+                        <div class="col-md-6 info-row">
+                            <label class="info-label">الحالة</label>
+                            <div class="info-value">
+                                @if($source->validity == 1)
+                                <span class="badge bg-success px-3 py-2" style="font-size:13px;">فعّال</span>
+                                @else
+                                <span class="badge bg-danger px-3 py-2" style="font-size:13px;">غير فعّال</span>
+                                @endif
+                            </div>
+                        </div>
+
                         {{-- تاريخ الإنشاء --}}
                         <div class="col-md-6 info-row">
                             <label class="info-label">

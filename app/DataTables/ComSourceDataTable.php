@@ -61,6 +61,12 @@ class ComSourceDataTable extends DataTable
                 return $html;
             })
 
+            ->editColumn('validity', function ($row) {
+    return $row->validity == 1
+        ? '<span class="badge bg-success">فعّال</span>'
+        : '<span class="badge bg-danger">غير فعّال</span>';
+})
+
             ->editColumn('created_at', function ($row) {
                 return $row->created_at
                     ? $row->created_at->format('Y-m-d H:i')
@@ -71,7 +77,8 @@ class ComSourceDataTable extends DataTable
                 return $row->createdBy->userID ?? '-';
             })
 
-            ->rawColumns(['action'])
+           
+            ->rawColumns(['action', 'validity'])
             ->setRowId('comsourcesid');
     }
 
@@ -93,6 +100,7 @@ class ComSourceDataTable extends DataTable
         return [
             Column::make('comsourcesid')->title('الرقم'),
             Column::make('comsourcesname')->title('اسم المصدر'),
+            Column::make('validity')->title('الحالة'),
             Column::make('created_at')->title('تاريخ الإنشاء'),
             Column::make('createdBy.userID')->title('أنشأ بواسطة'),
 

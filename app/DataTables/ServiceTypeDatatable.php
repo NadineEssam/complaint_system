@@ -76,7 +76,7 @@ class ServiceTypeDataTable extends DataTable
                 return $row->createdBy->userID ?? '-';
             })
 
-            ->rawColumns(['action'])
+          
             ->rawColumns(['action', 'validity'])
             ->setRowId('srevicetyptid');
     }

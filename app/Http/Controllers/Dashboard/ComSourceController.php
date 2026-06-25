@@ -24,6 +24,7 @@ class ComSourceController extends Controller
         try {
             $data = $request->validate([
                 'comsourcesname' => 'required|string|max:255|unique:comsources,comsourcesname',
+                'validity'       => 'nullable|in:0,1', 
             ], [
                 'comsourcesname.required' => 'اسم المصدر مطلوب',
                 'comsourcesname.unique' => 'هذا الاسم موجود بالفعل',
@@ -68,6 +69,7 @@ class ComSourceController extends Controller
 
             $data = $request->validate([
                 'comsourcesname' => 'required|string|max:255|unique:comsources,comsourcesname,' . $id . ',comsourcesid',
+                'validity'       => 'nullable|in:0,1', 
             ], [
                 'comsourcesname.required' => 'اسم المصدر مطلوب',
                 'comsourcesname.unique' => 'هذا الاسم موجود بالفعل',
@@ -87,20 +89,34 @@ class ComSourceController extends Controller
     }
 
     public function destroy($id)
-    {
-        try {
-            $source = ComSource::findOrFail($id);
-            $source->delete();
+{
+    try {
+        $source = ComSource::findOrFail($id);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'تم الحذف بنجاح'
-            ]);
-        } catch (\Exception $e) {
+        // Block deletion if used in complaint_sources pivot table
+        $isUsed = \DB::table('complaint_sources')
+            ->where('comsource_id', $id)
+            ->exists();
+
+        if ($isUsed) {
             return response()->json([
                 'success' => false,
-                'message' => 'فشل الحذف'
+                'message' => 'لا يمكن حذف هذا المصدر لأنه مستخدم في بيانات موجودة'
             ]);
         }
+
+        $source->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'تم الحذف بنجاح'
+        ]);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'فشل الحذف'
+        ]);
     }
+}
 }

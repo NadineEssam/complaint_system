@@ -12,6 +12,7 @@ class ComSource extends Model
 
     protected $fillable = [
         'comsourcesname',
+        'validity',
         'created_by',
         'updated_by'
     ];
