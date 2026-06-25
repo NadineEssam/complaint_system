@@ -206,7 +206,7 @@ $('.prevBtn').on('click', function () {
         Swal.fire({
             icon: 'warning',
             title: 'تنبيه',
-            text: 'من فضلك استكمل البيانات المطلوبة في تفاصيل الشكوى'
+            text: 'من فضلك استكمل البيانات المطلوبة في تفاصيل البيان'
         });
 
         return false;
@@ -462,16 +462,16 @@ $('.prevBtn').on('click', function () {
 //             $("#officeError").text('');
 //         }
 
-//         // مصدر الشكوى required
+//         // مصدر البيان required
 //         // if (!$('[name="comsource_id"]').val()) {
 //         //     $('[name="comsource_id"]').addClass('is-invalid');
-//         //     $("#comsourceError").text("يرجى اختيار مصدر الشكوى.");
+//         //     $("#comsourceError").text("يرجى اختيار مصدر البيان.");
 //         //     isValid = false;
 //         // } else {
 //         //     $("#comsourceError").text('');
 //         // }
 
-//         // مصدر الشكوى required (MULTI-SELECT)
+//         // مصدر البيان required (MULTI-SELECT)
 //        if (!$('#comsourceSelect').val() || $('#comsourceSelect').val().length === 0) {
 
 //         $('#comsourceSelect')
@@ -479,7 +479,7 @@ $('.prevBtn').on('click', function () {
 //             .find('.select2-selection')
 //             .addClass('is-invalid');
 
-//         $("#comsourceError").text("يرجى اختيار مصدر الشكوى.");
+//         $("#comsourceError").text("يرجى اختيار مصدر البيان.");
 //         isValid = false;
 
 //     } else {
@@ -591,13 +591,13 @@ function validateStep2() {
         } else {
             $('#ComplaintProjectType').removeClass('is-invalid');
         }
-    // مصدر الشكوى required always
+    // مصدر البيان required always
     if (!$('#comsourceSelect').val() || $('#comsourceSelect').val().length === 0) {
         $('#comsourceSelect')
             .next('.select2-container')
             .find('.select2-selection')
             .addClass('is-invalid');
-        $("#comsourceError").text("يرجى اختيار مصدر الشكوى.");
+        $("#comsourceError").text("يرجى اختيار مصدر البيان.");
         isValid = false;
     } else {
         $('#comsourceSelect')

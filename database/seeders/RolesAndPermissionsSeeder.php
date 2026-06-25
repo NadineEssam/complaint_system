@@ -21,8 +21,8 @@ class RolesAndPermissionsSeeder extends Seeder
             'complaints' => 'الشكاوى',
             'responses' => 'الردود',
             'services' => 'الخدمات',
-            'sources' => 'مصدر الشكوى',
-            'close-reason-classify' => 'سبب إغلاق الشكوى',
+            'sources' => 'مصدر البيان',
+            'close-reason-classify' => 'سبب إغلاق البيان',
             
 
             
@@ -59,17 +59,17 @@ class RolesAndPermissionsSeeder extends Seeder
                 "reports.view-report-annual-sources-comparison" => ' مقارنه سنويه للمصادر فى الشكاوى والاستفسارات',
 
                 "complaints.index" => "عرض الشكاوى",
-                "complaints.create" => "إضافة شكوى",
-                "complaints.store" => "حفظ الشكوى",
-                "complaints.update" => "تحديث الشكوى",
-                "complaints.edit" => "تعديل الشكوى",
+                "complaints.create" => "إضافة بيان",
+                "complaints.store" => "حفظ البيان",
+                "complaints.update" => "تحديث البيان",
+                "complaints.edit" => "تعديل البيان",
                 "complaints.reply" => "الرد على البيان",
-                "complaints.destroy" => "حذف الشكوى",
-                "complaints.show" => "عرض الشكوى",
-                "complaints.duplicate" => " تكرار للشكوى",
-                "complaints.duplicate.create" => "إضافة تكرار للشكوى",
-                "complaints.duplicate.store" => "حفظ تكرار للشكوى",
-                "complaints.duplicates.index" => "عرض تكرارات الشكوى",
+                "complaints.destroy" => "حذف البيان",
+                "complaints.show" => "عرض البيان",
+                "complaints.duplicate" => " تكرار للبيان",
+                "complaints.duplicate.create" => "إضافة تكرار للبيان",
+                "complaints.duplicate.store" => "حفظ تكرار للبيان",
+                "complaints.duplicates.index" => "عرض تكرارات البيان",
 
                 
 
@@ -93,21 +93,21 @@ class RolesAndPermissionsSeeder extends Seeder
                 "services.data" => "بيانات الخدمات",
 
                 "sources.index" => "عرض مصادر الشكاوي",
-                "sources.create" => "إضافة مصدر شكوى",
-                "sources.store" => "حفظ مصدر شكوى",
-                "sources.update" => "تحديث مصدر شكوى",
-                "sources.edit" => "تعديل مصدر شكوى",
-                "sources.destroy" => "حذف مصدر شكوى",
-                "sources.show" => "عرض مصدر شكوى",
+                "sources.create" => "إضافة مصدر بيان",
+                "sources.store" => "حفظ مصدر بيان",
+                "sources.update" => "تحديث مصدر بيان",
+                "sources.edit" => "تعديل مصدر بيان",
+                "sources.destroy" => "حذف مصدر بيان",
+                "sources.show" => "عرض مصدر بيان",
                 "sources.data" => "بيانات مصادر الشكاوي",
 
                 "close-reason-classify.index" => "عرض أسباب إغلاق الشكاوي",
-                "close-reason-classify.create" => "إضافة سبب إغلاق شكوى",
-                "close-reason-classify.store" => "حفظ سبب إغلاق شكوى",
-                "close-reason-classify.update" => "تحديث سبب إغلاق شكوى",
-                "close-reason-classify.edit" => "تعديل سبب إغلاق شكوى",
-                "close-reason-classify.destroy" => "حذف سبب إغلاق شكوى",
-                "close-reason-classify.show" => "عرض سبب إغلاق شكوى",
+                "close-reason-classify.create" => "إضافة سبب إغلاق بيان",
+                "close-reason-classify.store" => "حفظ سبب إغلاق بيان",
+                "close-reason-classify.update" => "تحديث سبب إغلاق بيان",
+                "close-reason-classify.edit" => "تعديل سبب إغلاق بيان",
+                "close-reason-classify.destroy" => "حذف سبب إغلاق بيان",
+                "close-reason-classify.show" => "عرض سبب إغلاق بيان",
                 "close-reason-classify.data" => "بيانات أسباب إغلاق الشكاوي",
 
               

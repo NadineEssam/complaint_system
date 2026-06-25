@@ -204,10 +204,10 @@ class ComplaintDataTable extends DataTable
             Column::make('ComplaintID')->title('رقم الشكوي'),
             Column::make('requesttypename')
                 ->name('requesttype.requesttypename')
-                ->title('نوع الشكوى'),
+                ->title('نوع البيان'),
             // Column::make('complaint_type')
             //     ->name('complainttype.comtypename')
-            //     ->title('تصنيف الشكوى'),
+            //     ->title('تصنيف البيان'),
             Column::make('ComplainerName')->title('اسم الشاكي'),
 
             Column::make('ComplaintNationalID')->title('الرقم القومي '),

@@ -1,6 +1,6 @@
 @extends('dashboard.layouts.app')
 
-@section('title', 'عرض الشكوى')
+@section('title', 'عرض البيان')
 
 @push('headScripts')
 <style>
@@ -219,7 +219,7 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0 p-0 shadow-none">
                         <li class="breadcrumb-item active text-primary font-weight-bold">
-                            عرض الشكوى {{ $complaint->ComplaintID }}#
+                            عرض البيان {{ $complaint->ComplaintID }}#
                         </li>
                         <li class="breadcrumb-item">
                             <a href="{{ route('complaints.index') }}">الشكاوى</a>
@@ -240,7 +240,7 @@
             <div class="custom-header">
                 <h4>
                     <i class="bx bx-file-blank"></i>
-                    تفاصيل الشكوى {{ $complaint->ComplaintID }}#
+                    تفاصيل البيان {{ $complaint->ComplaintID }}#
 
                 </h4>
                 @php
@@ -263,7 +263,7 @@
                     @endif
                 </span>
 
-                <p>بيانات شاملة للشكوى والمتقدم بها</p>
+                <p>بيانات شاملة للبيان والمتقدم بها</p>
             </div>
 
             <div class="card-body p-lg-4 p-3">
@@ -306,7 +306,7 @@
                 <div class="detail-card">
                     <div class="detail-section-title">
                         <i class="bx bx-info-circle"></i>
-                        حالة الشكوى
+                        حالة البيان
                     </div>
                     <div class="detail-row">
                         <div class="detail-item">
@@ -316,7 +316,7 @@
                             </span>
                         </div>
                         <div class="detail-item">
-                            <span class="detail-label">رقم الشكوى</span>
+                            <span class="detail-label">رقم البيان</span>
                             <span class="detail-value">#{{ $complaint->ComplaintID }}</span>
                         </div>
                         <div class="detail-item">
@@ -346,7 +346,7 @@
                             <span class="detail-value">{{ $complaint->ComplainerGender ?? 'غير محدد' }}</span>
                         </div>
                         <div class="detail-item">
-                            <span class="detail-label">محافظة مقدم الشكوى</span>
+                            <span class="detail-label">محافظة مقدم البيان</span>
                             <span class="detail-value">
                                 {{ $complaint->complainerGov->GOVT_NAMA ?? 'غير محدد' }}
                             </span>
@@ -367,7 +367,7 @@
                 <div class="detail-card">
                     <div class="detail-section-title">
                         <i class="bx bx-detail"></i>
-                        تفاصيل الشكوى
+                        تفاصيل البيان
                     </div>
                     <div class="detail-row">
                         <div class="detail-item">
@@ -414,7 +414,7 @@
                     {{-- Complaint Sources --}}
                     @if($complaint->sources->count() > 0)
                     <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #f0f0f0;">
-                        <span class="detail-label" style="margin-bottom: 12px;">مصادر الشكوى</span>
+                        <span class="detail-label" style="margin-bottom: 12px;">مصادر البيان</span>
                         <div class="badge-group">
                             @foreach($complaint->sources as $source)
                             <span class="source-badge">
@@ -469,7 +469,7 @@
                     <div class="modal-dialog modal-lg" dir="rtl">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title">تكرارات الشكوى #{{ $complaint->ComplaintID }}</h5>
+                                <h5 class="modal-title">تكرارات البيان #{{ $complaint->ComplaintID }}</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body" id="duplicatesModalBody">

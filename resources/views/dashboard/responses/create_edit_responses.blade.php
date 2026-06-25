@@ -1,6 +1,6 @@
 @extends('dashboard.layouts.app')
 
-@section('title', isset($response) ? 'تعديل الرد على البيان' : 'إضافة رد للشكوى')
+@section('title', isset($response) ? 'تعديل الرد على البيان' : 'إضافة رد البيان')
 
 @push('headScripts')
 <style>
@@ -159,7 +159,7 @@
                     <ol class="breadcrumb mb-0 p-0 shadow-none">
 
                     <li class="breadcrumb-item active text-primary font-weight-bold">
-                            {{ isset($response) ? 'تعديل الرد على البيان' : 'إضافة رد للشكوى' }}
+                            {{ isset($response) ? 'تعديل الرد على البيان' : 'إضافة رد للبيان' }}
                         </li>
 
                     <li class="breadcrumb-item">
@@ -199,16 +199,16 @@
                 <h4>
                     <i class="bx bx-message-rounded-detail"></i>
 
-                    {{ isset($response) ? 'تعديل رد الشكوى' : 'إضافة رد جديد' }}
+                    {{ isset($response) ? 'تعديل رد البيان' : 'إضافة رد جديد' }}
                 </h4>
 
                 <p>
-                    يمكنك تحديث حالة الشكوى وإضافة تفاصيل الرد بسهولة.
+                    يمكنك تحديث حالة البيان وإضافة تفاصيل الرد بسهولة.
                 </p>
 
                 <div class="info-badge">
                     <i class="bx bx-hash"></i>
-                    رقم الشكوى:
+                    رقم البيان:
                     <strong>#{{ $complaint->ComplaintID }}</strong>
                 </div>
 
@@ -333,11 +333,11 @@
 
                         <div class="row">
 
-                            {{-- سبب الشكوى --}}
+                            {{-- سبب البيان --}}
                             <div class="col-md-6 mb-4">
 
                                 <label class="form-label">
-                                    سبب الشكوى
+                                    سبب البيان
                                 </label>
 
                                 <select class="form-control"

@@ -1,6 +1,6 @@
 @extends('dashboard.layouts.app')
 
-@section('title', isset($complaint) ? 'تعديل الشكوى' : 'إضافة شكوى')
+@section('title', isset($complaint) ? 'تعديل البيان' : 'إضافة البيان')
 
 @push('headScripts')
 <style>
@@ -301,7 +301,7 @@ $errors->has('comsource_id')||
 
 
                         <li class="breadcrumb-item active text-primary font-weight-bold">
-                            {{ isset($complaint) ? 'تعديل الشكوى' : 'إضافة شكوى' }}
+                            {{ isset($complaint) ? 'تعديل البيان' : 'إضافة بيان' }}
                         </li>
 
                         <li class="breadcrumb-item">
@@ -331,11 +331,11 @@ $errors->has('comsource_id')||
                 <h4>
                     <i class="bx bx-message-square-add"></i>
 
-                    {{ isset($complaint) ? 'تعديل الشكوى' : 'إضافة شكوى جديدة' }}
+                    {{ isset($complaint) ? 'تعديل البيان' : 'إضافة بيان جديدة' }}
                 </h4>
 
                 <p>
-                    قم بإدخال بيانات العميل وبيانات الشكوى بشكل صحيح لإتمام الحفظ.
+                    قم بإدخال بيانات العميل وبيانات البيان بشكل صحيح لإتمام الحفظ.
                 </p>
 
             </div>
@@ -363,7 +363,7 @@ $errors->has('comsource_id')||
                                 2
                             </a>
 
-                            <p>تفاصيل الشكوى</p>
+                            <p>تفاصيل البيان</p>
 
                         </div>
 
@@ -489,7 +489,7 @@ $errors->has('comsource_id')||
                                 </div>
                                 <div class="col-md-6 mb-4">
                                     <label class="form-label">
-                                        محافظة مقدم الشكوى
+                                        محافظة مقدم البيان
                                         <span class="required-star">*</span>
                                     </label>
 
@@ -576,7 +576,7 @@ $errors->has('comsource_id')||
 
                             <div class="section-title">
                                 <i class="bx bx-detail"></i>
-                                تفاصيل الشكوى
+                                تفاصيل البيان
                             </div>
 
                             <div class="row">
@@ -782,11 +782,11 @@ $errors->has('comsource_id')||
 
                                 </div>
 
-                                {{-- مصدر الشكوى (MULTI-SELECT) --}}
+                                {{-- مصدر البيان (MULTI-SELECT) --}}
                                 <div class="col-md-6 mb-2">
 
                                     <label class="form-label">
-                                        مصدر الشكوى
+                                        مصدر البيان
                                         <span class="required-star">*</span>
                                     </label>
 
@@ -831,7 +831,7 @@ $errors->has('comsource_id')||
                                         name="ComplaintText"
                                         id="ComplaintText"
                                         rows="5"
-                                        placeholder="أدخل تفاصيل الشكوى هنا...">{{ old('ComplaintText', $complaint->ComplaintText ?? '') }}</textarea>
+                                        placeholder="أدخل تفاصيل البيان هنا...">{{ old('ComplaintText', $complaint->ComplaintText ?? '') }}</textarea>
                                     @error('ComplaintText')
                                     <div class="error-text">{{ $message }}</div>
                                     @enderror
@@ -855,7 +855,7 @@ $errors->has('comsource_id')||
 
                                     <i class="bx bx-save me-1"></i>
 
-                                    حفظ الشكوى
+                                    حفظ البيان
 
                                 </button>
 
@@ -889,7 +889,7 @@ $errors->has('comsource_id')||
         $('#comsourceSelect').select2({
             theme: 'bootstrap-5',
             dir: 'rtl',
-            placeholder: 'اختر مصادر الشكوى',
+            placeholder: 'اختر مصادر البيان',
             allowClear: true,
             width: '100%',
             closeOnSelect: false

@@ -50,7 +50,7 @@ class ComplaintResponseController extends Controller
                 ->route('responses.index', [
                     'complaint_id' => $complaint->ComplaintID
                 ])
-                ->with('error', 'لا يمكن إضافة رد على شكوى مغلقة');
+                ->with('error', 'لا يمكن إضافة رد على بيان مغلق');
         }
         $usedStatuses = ComplaintResponse::where('complaint_id', $complaintId)
             ->pluck('ComplaintStatus')
@@ -165,7 +165,7 @@ class ComplaintResponseController extends Controller
                 ->route('responses.index', [
                     'complaint_id' => $complaint->ComplaintID
                 ])
-                ->with('error', 'لا يمكن تعديل ردود شكوى مغلقة');
+                ->with('error', 'لا يمكن تعديل ردود بيان مغلق');
         }
 
         $usedStatuses = ComplaintResponse::where('complaint_id', $complaint->ComplaintID)

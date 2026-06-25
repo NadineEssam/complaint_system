@@ -32,7 +32,7 @@ class ComSourceController extends Controller
             $data['created_by'] = auth()->id();
             ComSource::create($data);
 
-            alert()->success('تم بنجاح', 'تم إضافة مصدر الشكوى بنجاح');
+            alert()->success('تم بنجاح', 'تم إضافة مصدر البيان بنجاح');
 
             return redirect()->route('sources.index');
         } catch (\Exception $e) {
@@ -76,7 +76,7 @@ class ComSourceController extends Controller
             $data['updated_by'] = auth()->id();
             $source->update($data);
 
-            alert()->success('تم بنجاح', 'تم تحديث مصدر الشكوى بنجاح');
+            alert()->success('تم بنجاح', 'تم تحديث مصدر البيان بنجاح');
 
             return redirect()->route('sources.index');
         } catch (\Exception $e) {

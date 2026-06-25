@@ -16,10 +16,10 @@ return [
         'ComplainerEmail' => 'البريد الإلكتروني',
         'ComplainerPhone' => 'رقم الهاتف المحمول',
         'ComplaintGovernorate' => 'المحافظة',
-        'ComplaintDate' => 'تاريخ الشكوى',
+        'ComplaintDate' => 'تاريخ البيان',
         'sec_id' => 'القطاع',
         'office' => 'الفرع',
-        'comsource_id' => 'مصدر الشكوى',
+        'comsource_id' => 'مصدر البيان',
         'ComplaintNationalID' => 'الرقم القومي',
         
 

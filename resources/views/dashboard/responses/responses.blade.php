@@ -18,7 +18,7 @@
                 <nav>
                     <ol class="breadcrumb mb-0 p-0 shadow-none">
                         <li class="breadcrumb-item active text-primary font-weight-bold">
-                            الردود على الشكوى {{ $complaint->ComplaintID }}#
+                            الردود على البيان {{ $complaint->ComplaintID }}#
                         </li>
                         <li class="breadcrumb-item">
                             <a href="{{ route('complaints.index') }}">
@@ -86,7 +86,7 @@
                                     </label>
 
                                     <div class="bg-light border rounded p-3" style="min-height:80px;">
-                                        {{ $complaint->ComplaintText ?? 'لا يوجد نص للشكوى' }}
+                                        {{ $complaint->ComplaintText ?? 'لا يوجد نص للبيان' }}
                                     </div>
 
                                 </div>

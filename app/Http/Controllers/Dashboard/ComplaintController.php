@@ -124,7 +124,7 @@ class ComplaintController extends Controller
             'ComplaintNationalID.required_if' => 'الرقم القومي مطلوب',
             'ComplaintNationalID.digits' => 'الرقم القومي يجب أن يكون 14 رقم',
 
-            'ComplaintDate.required' => 'يرجى إدخال تاريخ الشكوى',
+            'ComplaintDate.required' => 'يرجى إدخال تاريخ البيان',
             'ComplaintDate.before_or_equal' => 'لا يمكن إدخال تاريخ مستقبلي',
 
             'ComplaintGovernorate.required' => 'يرجى اختيار المحافظة',
@@ -133,8 +133,8 @@ class ComplaintController extends Controller
             'department.required' => 'يرجى اختيار الإدارة',
             'office.required' => 'يرجى اختيار المكتب',
 
-            'comsource_ids.required' => 'يرجى اختيار مصدر الشكوى',
-            'comsource_ids.min' => 'يرجى اختيار مصدر شكوى واحد على الأقل',
+            'comsource_ids.required' => 'يرجى اختيار مصدر البيان',
+            'comsource_ids.min' => 'يرجى اختيار مصدر بيان واحد على الأقل',
             'ComplaintText.required' => 'يرجى إدخال نص البيان',
             'complaint_type.required' => 'يرجى اختيار نوعية وتوجيه البيان',
             'complaint_type.in'       => 'نوعية البيان غير صحيحة',
@@ -168,7 +168,7 @@ class ComplaintController extends Controller
         $complaint->sources()->sync($data['comsource_ids']);
 
 
-        alert()->success('تم بنجاح', 'تم إضافة الشكوى بنجاح');
+        alert()->success('تم بنجاح', 'تم إضافة البيان بنجاح');
 
         return redirect()->route('complaints.index');
     }
@@ -264,7 +264,7 @@ class ComplaintController extends Controller
             'ComplaintNationalID.required_if' => 'الرقم القومي مطلوب',
             'ComplaintNationalID.digits' => 'الرقم القومي يجب أن يكون 14 رقم',
 
-            'ComplaintDate.required' => 'يرجى إدخال تاريخ الشكوى',
+            'ComplaintDate.required' => 'يرجى إدخال تاريخ البيان',
             'ComplaintDate.before_or_equal' => 'لا يمكن إدخال تاريخ مستقبلي',
 
             'ComplaintGovernorate.required' => 'يرجى اختيار المحافظة',
@@ -273,8 +273,8 @@ class ComplaintController extends Controller
             'department.required' => 'يرجى اختيار الإدارة',
             'office.required' => 'يرجى اختيار المكتب',
 
-            'comsource_ids.required' => 'يرجى اختيار مصدر الشكوى',
-            'comsource_ids.min' => 'يرجى اختيار مصدر شكوى واحد على الأقل',
+            'comsource_ids.required' => 'يرجى اختيار مصدر البيان',
+            'comsource_ids.min' => 'يرجى اختيار مصدر بيان واحد على الأقل',
             'ComplaintText.required' => 'يرجى إدخال نص البيان',
             'complaint_type.required' => 'يرجى اختيار نوعية وتوجيه البيان',
             'complaint_type.in'       => 'نوعية البيان غير صحيحة',
@@ -306,7 +306,7 @@ class ComplaintController extends Controller
         ]);
 
         $complaint->sources()->sync($data['comsource_ids']);
-        alert()->success('تم بنجاح', 'تم تعديل الشكوى بنجاح');
+        alert()->success('تم بنجاح', 'تم تعديل البيان بنجاح');
 
         return redirect()->route('complaints.index');
     }
@@ -386,11 +386,11 @@ class ComplaintController extends Controller
 
         ], [
 
-            'ComplaintDate.required' => 'يرجى إدخال تاريخ الشكوى',
+            'ComplaintDate.required' => 'يرجى إدخال تاريخ البيان',
             'ComplaintDate.before_or_equal' => 'لا يمكن إدخال تاريخ مستقبلي',
 
-            'comsource_ids.required' => 'يرجى اختيار مصدر الشكوى',
-            'comsource_ids.min' => 'يرجى اختيار مصدر شكوى واحد على الأقل',
+            'comsource_ids.required' => 'يرجى اختيار مصدر البيان',
+            'comsource_ids.min' => 'يرجى اختيار مصدر بيان واحد على الأقل',
             'ComplaintText.required' => 'يرجى إدخال نص البيان',
             'complaint_type.required' => 'يرجى اختيار نوعية وتوجيه البيان',
             'complaint_type.in'       => 'نوعية البيان غير صحيحة',
@@ -428,7 +428,7 @@ class ComplaintController extends Controller
 
         $duplicate->sources()->sync($data['comsource_ids']);
 
-        alert()->success('تم بنجاح', 'تم إضافة تكرار الشكوى بنجاح');
+        alert()->success('تم بنجاح', 'تم إضافة تكرار البيان بنجاح');
 
         return redirect()->route('complaints.show', $complaint);
     }

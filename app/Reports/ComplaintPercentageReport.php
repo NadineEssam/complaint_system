@@ -131,7 +131,7 @@ class ComplaintPercentageReport implements ReportInterface
             ' نسبة الشكاوى من إجمالي الشكاوى (%)',
             'عدد الشكاوى  ',
             'نوع الطلب ',
-            ' تصنيف الشكوى ',
+            ' تصنيف البيان ',
         ];
     }
 
