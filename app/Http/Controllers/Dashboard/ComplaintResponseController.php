@@ -55,7 +55,7 @@ class ComplaintResponseController extends Controller
         $usedStatuses = ComplaintResponse::where('complaint_id', $complaintId)
             ->pluck('ComplaintStatus')
             ->toArray();
-        $usedStatuses = array_diff($usedStatuses, [1]);    
+        $usedStatuses = array_diff($usedStatuses, [1]);
 
         $statuses = CompStatus::where('statusID', '!=', 3)
             ->whereNotIn('statusID', $usedStatuses)
@@ -90,9 +90,14 @@ class ComplaintResponseController extends Controller
             $data['created_by'] = auth()->id();
             $response = ComplaintResponse::create($data);
 
-            $response->complaint()->update([
-                'ComplaintStatus' => $response->ComplaintStatus
-            ]);
+            $updateData = ['ComplaintStatus' => $response->ComplaintStatus];
+
+            if (in_array($response->ComplaintStatus, [2, 4])) {
+                $updateData['fk_close_reason_id']          = $response->fk_close_reason_id;
+                $updateData['fk_close_reason_classify_id'] = $response->fk_close_reason_classify_id;
+            }
+
+            $response->complaint()->update($updateData);
 
             Log::info('ComplaintResponse created', [
                 'response_id'  => $response->id,
@@ -107,7 +112,6 @@ class ComplaintResponseController extends Controller
                 'responses.index',
                 ['complaint_id' => $data['complaint_id']]
             );
-
         } catch (\Illuminate\Validation\ValidationException $e) {
 
             Log::warning('ComplaintResponse store — validation failed', [
@@ -117,7 +121,6 @@ class ComplaintResponseController extends Controller
             ]);
 
             return back()->withInput()->withErrors($e->errors());
-
         } catch (\Exception $e) {
 
             Log::error('ComplaintResponse store — unexpected error', [
@@ -172,7 +175,7 @@ class ComplaintResponseController extends Controller
             ->where('id', '!=', $response->id)
             ->pluck('ComplaintStatus')
             ->toArray();
-        $usedStatuses = array_diff($usedStatuses, [1]);     
+        $usedStatuses = array_diff($usedStatuses, [1]);
 
         $statuses = CompStatus::where('statusID', '!=', 3)
             ->whereNotIn('statusID', $usedStatuses)
@@ -204,15 +207,24 @@ class ComplaintResponseController extends Controller
                 'ComplaintText'              => 'nullable|string',
                 'ComplaintService'           => 'nullable|integer',
                 'fk_close_reason_id'         => 'nullable|integer',
-                'fk_close_reason_classify_id'=> 'nullable|integer',
+                'fk_close_reason_classify_id' => 'nullable|integer',
             ]);
 
             $data['updated_by'] = auth()->id();
             $response->update($data);
 
-            $response->complaint()->update([
-                'ComplaintStatus' => $response->ComplaintStatus
-            ]);
+            // Check if this is still the last response after update
+            $lastResponseId = ComplaintResponse::where('complaint_id', $response->complaint_id)
+                ->max('id');
+
+            $updateData = ['ComplaintStatus' => $response->ComplaintStatus];
+
+            if ($response->id === $lastResponseId && in_array($response->ComplaintStatus, [2, 4])) {
+                $updateData['fk_close_reason_id']          = $response->fk_close_reason_id;
+                $updateData['fk_close_reason_classify_id'] = $response->fk_close_reason_classify_id;
+            }
+
+            $response->complaint()->update($updateData);
 
             Log::info('ComplaintResponse updated', [
                 'response_id'  => $response->id,
@@ -227,7 +239,6 @@ class ComplaintResponseController extends Controller
                 'responses.index',
                 ['complaint_id' => $response->complaint_id]
             );
-
         } catch (\Illuminate\Validation\ValidationException $e) {
 
             Log::warning('ComplaintResponse update — validation failed', [
@@ -237,7 +248,6 @@ class ComplaintResponseController extends Controller
             ]);
 
             return back()->withInput()->withErrors($e->errors());
-
         } catch (\Exception $e) {
 
             Log::error('ComplaintResponse update — unexpected error', [
@@ -260,8 +270,16 @@ class ComplaintResponseController extends Controller
             $response = ComplaintResponse::findOrFail($id);
             $complaintId = $response->complaint_id;
 
+            // After deletion, sync from the new last response (if any)
+            $newLast = ComplaintResponse::where('complaint_id', $complaintId)
+                ->where('id', '!=', $id)
+                ->orderByDesc('id')
+                ->first();
+
             $response->complaint()->update([
-                'ComplaintStatus' => 3
+                'ComplaintStatus'            => $newLast?->ComplaintStatus ?? 3,
+                'fk_close_reason_id'         => $newLast?->fk_close_reason_id ?? 0,
+                'fk_close_reason_classify_id' => $newLast?->fk_close_reason_classify_id ?? 0,
             ]);
 
             $response->delete();
@@ -276,7 +294,6 @@ class ComplaintResponseController extends Controller
                 'success' => true,
                 'message' => 'تم الحذف بنجاح'
             ]);
-
         } catch (\Exception $e) {
 
             Log::error('ComplaintResponse destroy — unexpected error', [

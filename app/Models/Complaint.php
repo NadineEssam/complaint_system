@@ -11,7 +11,7 @@ class Complaint extends Model
 
     protected $primaryKey = 'ComplaintID';
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = [
         'ComplaintTitle',

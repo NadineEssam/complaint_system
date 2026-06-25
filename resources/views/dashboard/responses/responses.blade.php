@@ -78,17 +78,17 @@
                             <div class="row align-items-center">
 
                                 <!-- Complaint Text -->
-                                <div class="col-md-8 mb-3">
 
+                                <div class="col-md-8 mb-3">
                                     <label class="font-weight-bold text-muted mb-2 d-block">
                                         <i class="bx bx-message-detail"></i>
                                         نص البيان
                                     </label>
 
-                                    <div class="bg-light border rounded p-3" style="min-height:80px;">
+                                    <div class="bg-light border rounded p-3"
+                                        style="min-height:80px; max-height:200px; overflow-y:auto; word-break:break-word; white-space:pre-wrap;">
                                         {{ $complaint->ComplaintText ?? 'لا يوجد نص للبيان' }}
                                     </div>
-
                                 </div>
 
                                 <!-- Last Status -->

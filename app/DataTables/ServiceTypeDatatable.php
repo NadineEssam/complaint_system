@@ -60,6 +60,11 @@ class ServiceTypeDataTable extends DataTable
 
                 return $html;
             })
+            ->editColumn('validity', function ($row) {
+                return $row->validity == 1
+                    ? '<span class="badge bg-success">فعّال</span>'
+                    : '<span class="badge bg-danger">غير فعّال</span>';
+            })
 
             ->editColumn('created_at', function ($row) {
                 return $row->created_at
@@ -72,6 +77,7 @@ class ServiceTypeDataTable extends DataTable
             })
 
             ->rawColumns(['action'])
+            ->rawColumns(['action', 'validity'])
             ->setRowId('srevicetyptid');
     }
 
@@ -83,8 +89,7 @@ class ServiceTypeDataTable extends DataTable
             ->minifiedAjax()
             ->orderBy(0)
             ->pageLength(10)
-            ->parameters([
-            ])
+            ->parameters([])
             ->lengthMenu([10, 25, 50]);
     }
 
@@ -93,6 +98,7 @@ class ServiceTypeDataTable extends DataTable
         return [
             Column::make('srevicetyptid')->title('الرقم'),
             Column::make('srevicetyptname')->title('اسم الخدمة'),
+            Column::make('validity')->title('الحالة'),
             Column::make('created_at')->title('تاريخ الإنشاء'),
             Column::make('createdBy.userID')->title('أنشأ بواسطة'),
 

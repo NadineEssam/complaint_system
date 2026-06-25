@@ -24,6 +24,7 @@ class ServiceTypeController extends Controller
         try {
             $data = $request->validate([
                 'srevicetyptname' => 'required|string|max:255|unique:srevicetypt,srevicetyptname',
+                'validity'        => 'nullable|in:0,1',
             ], [
                 'srevicetyptname.required' => 'اسم الخدمة مطلوب',
                 'srevicetyptname.unique' => 'هذا الاسم موجود بالفعل',
@@ -68,6 +69,7 @@ class ServiceTypeController extends Controller
 
             $data = $request->validate([
                 'srevicetyptname' => 'required|string|max:255|unique:srevicetypt,srevicetyptname,' . $id . ',srevicetyptid',
+                'validity'        => 'nullable|in:0,1',
             ], [
                 'srevicetyptname.required' => 'اسم الخدمة مطلوب',
                 'srevicetyptname.unique' => 'هذا الاسم موجود بالفعل',
@@ -87,20 +89,32 @@ class ServiceTypeController extends Controller
     }
 
     public function destroy($id)
-    {
-        try {
-            $service = ServiceType::findOrFail($id);
-            $service->delete();
+{
+    try {
+        $service = ServiceType::findOrFail($id);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'تم الحذف بنجاح'
-            ]);
-        } catch (\Exception $e) {
+        // Block deletion if used in any complaint
+        $isUsed = \App\Models\Complaint::where('ComplaintService', $id)->exists()
+               || \App\Models\ComplaintResponse::where('ComplaintService', $id)->exists();
+
+        if ($isUsed) {
             return response()->json([
                 'success' => false,
-                'message' => 'فشل الحذف'
+                'message' => 'لا يمكن حذف هذه الخدمة لأنها مستخدمة في بيانات موجودة'
             ]);
         }
+
+        $service->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'تم الحذف بنجاح'
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'فشل الحذف'
+        ]);
     }
+}
 }
