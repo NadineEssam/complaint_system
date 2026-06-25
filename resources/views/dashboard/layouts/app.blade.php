@@ -134,9 +134,9 @@
 
   <div id="page-loader">
     <div class="loader-content">
-      <div class="loader-logo">
+      <!-- <div class="loader-logo">
         <i class="fa-solid fa-chart-line"></i>
-      </div>
+      </div> -->
 
       <div class="modern-spinner"></div>
 
@@ -251,6 +251,9 @@
         link.hasAttribute('data-no-loader') ||
         link.target === '_blank' ||
         link.href.startsWith('#') ||
+        link.getAttribute('href') === '#' ||
+        link.getAttribute('href')?.startsWith('javascript') ||
+        link.hasAttribute('data-bs-toggle') ||
         link.hasAttribute('download')) {
         return;
       }
@@ -311,7 +314,14 @@
     });
 
     // ── Initial page load - hide loader after 500ms ──
-    window.addEventListener('DOMContentLoaded', function() {
+    // window.addEventListener('DOMContentLoaded', function() {
+    //   setTimeout(() => {
+    //     pageLoader.hide();
+    //   }, 500);
+    // });
+
+    // ── Hide loader on jQuery document ready ──
+    $(document).ready(function() {
       setTimeout(() => {
         pageLoader.hide();
       }, 500);
