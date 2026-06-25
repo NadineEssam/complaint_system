@@ -55,6 +55,7 @@ class ComplaintResponseController extends Controller
         $usedStatuses = ComplaintResponse::where('complaint_id', $complaintId)
             ->pluck('ComplaintStatus')
             ->toArray();
+        $usedStatuses = array_diff($usedStatuses, [1]);    
 
         $statuses = CompStatus::where('statusID', '!=', 3)
             ->whereNotIn('statusID', $usedStatuses)
