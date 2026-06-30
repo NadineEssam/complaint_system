@@ -70,7 +70,7 @@ class ComplaintDuplicatesDataTable extends DataTable
                     return '<span class="text-muted">-</span>';
                 }
 
-                return '<span class="badge bg-light text-dark border">#' . $parentId . '</span>';
+                return '<span class="badge bg-light text-dark border">' . $parentId . '#</span>';
             })
             ->addColumn('action', function ($model) {
 
