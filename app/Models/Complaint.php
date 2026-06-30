@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Complaint extends Model
 {
+     const CREATED_AT = null;
 
     protected $table = 'sfdcomplaints';
 
@@ -183,24 +184,23 @@ class Complaint extends Model
     }
 
     /**
-     * Whether this complaint has at least one duplicate registered against it.
-     * Only the parent (original) complaint can be "مكرر"; a child complaint
-     * is itself a duplicate, not something that gets duplicated again here.
-     */
-    public function getIsDuplicatedAttribute(): bool
-    {
-        return $this->parent_id === null && $this->children()->exists();
-    }
+ * Whether this complaint belongs to a duplicate family — either as
+ * the original (has children) or as a duplicate itself (has a parent).
+ */
+public function getIsDuplicatedAttribute(): bool
+{
+    return $this->duplicates_count > 0;
+}
 
-    /**
-     * Count of duplicates (children) registered against this complaint.
-     */
-    public function getDuplicatesCountAttribute(): int
-    {
-        if ($this->parent_id !== null) {
-            return 0;
-        }
+/**
+ * Number of duplicates in this complaint's family, counted from the
+ * root regardless of whether this record IS the root or one of its
+ * children. Always reflects the *other* records in the family.
+ */
+public function getDuplicatesCountAttribute(): int
+{
+    $rootId = $this->parent_id ?? $this->ComplaintID;
 
-        return $this->children()->count();
-    }
+    return static::where('parent_id', $rootId)->count();
+}
 }

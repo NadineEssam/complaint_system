@@ -451,7 +451,7 @@
                         </div>
                         <div class="detail-item">
                             <span class="detail-label">تاريخ الإدخال</span>
-                            <span class="detail-value">{{ $complaint->created_at?->format('d/m/Y H:i') ?? 'غير محدد' }}</span>
+                            <span class="detail-value">{{ $complaint->entryDate?->format('d/m/Y H:i') ?? 'غير محدد' }}</span>
                         </div>
                         <div class="detail-item">
                             <span class="detail-label">موظف التعديل</span>
