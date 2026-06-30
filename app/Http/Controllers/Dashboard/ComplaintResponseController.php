@@ -65,7 +65,7 @@ class ComplaintResponseController extends Controller
             'complaint' => $complaint,
             'statuses' => $statuses,
             'serviceTypes' => ServiceType::where('validity', 1)->get(),
-            'closeReasons' => CompCloseReason::where('validity', 1)->get(),
+            'closeReasons'    => CompCloseReason::all(),
             'classifications' => CompCloseReasonClassify::where('validity', 1)->select(
                 'close_reason_classify_id',
                 'close_reason_classify_Name',
@@ -187,7 +187,7 @@ class ComplaintResponseController extends Controller
             'complaint'       => $complaint,
             'statuses'        => $statuses,
             'serviceTypes' => ServiceType::where('validity', 1)->get(),
-            'closeReasons' => CompCloseReason::where('validity', 1)->get(),
+            'closeReasons'    => CompCloseReason::all(),
             'classifications' => CompCloseReasonClassify::where('validity', 1)->select(
                 'close_reason_classify_id',
                 'close_reason_classify_Name',
