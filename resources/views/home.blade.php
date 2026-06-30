@@ -4,57 +4,75 @@
 
 @section('content')
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
 <style>
   /* ================= ROOT ================= */
   :root {
-    --primary: #4f8cff;
-    --primary-light: #eef4ff;
-    --success: #19c37d;
-    --warning: #ffb547;
-    --danger: #ff5d73;
+    --primary: #0d6efd;
+    --primary-light: #eaf2ff;
+    --success: #16a34a;
+    --warning: #d97706;
+    --danger: #dc2626;
     --dark: #1f2937;
     --gray: #6b7280;
-    --border: #edf1f7;
+    --border: #eef0f3;
     --card: #ffffff;
-    --bg: #f4f7fc;
+    --bg: #f7f8fa;
   }
-  /* ================= FROM ================= */
 
-  .form-label{
-  font-size: 13px;
-  color: #6b7280;
-}
+  .section.dashboard, .section.dashboard * {
+    font-family: 'Cairo', 'Tahoma', sans-serif;
+  }
 
-.form-control-lg{
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-}
+  /* ================= FORM ================= */
 
-.form-control-lg:focus{
-  border-color: #5b8cff;
-  box-shadow: 0 0 0 0.2rem rgba(91,140,255,.15);
-}
+  .form-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray);
+  }
+
+  .form-control-lg {
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+
+  .form-control-lg:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, .12);
+  }
+
   /* ================= GLOBAL ================= */
   .section.dashboard {
     background: var(--bg);
     padding: 24px;
-    border-radius: 24px;
+    border-radius: 16px;
   }
 
   .row.kpi-row {
-    flex-wrap: wrap;
-    /* allow wrapping on small screens */
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 4px;
   }
 
   .row.kpi-row>.col {
-    flex: 1 1 200px !important;
-    /* shrink but not below 200px */
-    min-width: 200px;
+    flex: 1 1 0 !important;
+    min-width: 150px;
+  }
+
+  @media(max-width:992px) {
+    .row.kpi-row>.col {
+      min-width: 170px;
+    }
   }
 
   /* ================= PAGE TITLE ================= */
   .pagetitle h1 {
-    font-size: 28px;
+    font-size: 24px;
     font-weight: 800;
     color: var(--dark);
     margin-bottom: 6px;
@@ -66,28 +84,22 @@
 
   .breadcrumb-item,
   .breadcrumb-item a {
-    color: #8b95a7;
-    font-size: 14px;
+    color: #98a2b3;
+    font-size: 13px;
     text-decoration: none;
   }
 
   /* ================= CARDS ================= */
   .card {
-    border: none !important;
-    border-radius: 24px !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 14px !important;
     overflow: hidden;
     background: var(--card);
-    box-shadow: 0 10px 40px rgba(15, 23, 42, 0.05);
-    transition: 0.3s ease;
-  }
-
-  .card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
   }
 
   .card-title {
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 700;
     color: var(--gray);
     margin-bottom: 18px;
@@ -100,40 +112,28 @@
   }
 
   .kpi-card .card-body {
-    padding: 24px;
+    padding: 18px;
   }
 
   .card-icon {
-    width: 65px;
-    height: 65px;
-    min-width: 65px;
-    border-radius: 18px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 26px;
-    color: #fff;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    font-size: 19px;
   }
 
-  .bg-primary-gradient {
-    background: linear-gradient(135deg, #5b8cff, #7c4dff);
-  }
-
-  .bg-success-gradient {
-    background: linear-gradient(135deg, #00c896, #00e5a8);
-  }
-
-  .bg-warning-gradient {
-    background: linear-gradient(135deg, #ffb547, #ffcc73);
-  }
-
-  .bg-danger-gradient {
-    background: linear-gradient(135deg, #ff5d73, #ff8a65);
-  }
+  .bg-primary-gradient { background: #eaf2ff; color: #3b76e0; }
+  .bg-success-gradient { background: #eafaf0; color: #2f9e63; }
+  .bg-warning-gradient { background: #fdf3e6; color: #c3791f; }
+  .bg-danger-gradient  { background: #fdecee; color: #d3556a; }
+  .bg-info-gradient    { background: #eef0fc; color: #6469c9; }
 
   .counter {
-    font-size: 32px;
+    font-size: 24px;
     font-weight: 800;
     color: var(--dark);
     margin-bottom: 0;
@@ -143,12 +143,13 @@
     color: #9ca3af;
     font-size: 13px;
     font-weight: 500;
+    white-space: nowrap;
   }
 
   /* ================= HEADERS ================= */
   .custom-header {
-    padding: 18px 22px;
-    font-size: 16px;
+    padding: 16px 20px;
+    font-size: 13px;
     font-weight: 700;
     border-bottom: 1px solid var(--border);
     background: #fff;
@@ -159,8 +160,21 @@
   }
 
   .custom-header i {
-    font-size: 18px;
+    font-size: 17px;
     opacity: .8;
+    color: var(--gray);
+  }
+
+  .section.dashboard h4 {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--dark);
+  }
+
+  .section.dashboard h4 + p,
+  .section.dashboard p.small {
+    font-size: 13px;
+    color: var(--gray);
   }
 
   /* ================= CHART WRAPPER ================= */
@@ -170,7 +184,7 @@
 
   /* ================= GOVERNORATE ================= */
   .gov-header {
-    background: linear-gradient(135deg, #00c896, #00d9a6);
+    background: var(--success);
     color: #fff;
   }
 
@@ -204,13 +218,13 @@
     }
 
     .counter {
-      font-size: 26px;
+      font-size: 22px;
     }
 
     .card-icon {
-      width: 55px;
-      height: 55px;
-      font-size: 22px;
+      width: 50px;
+      height: 50px;
+      font-size: 20px;
     }
 
   }
@@ -421,10 +435,6 @@
       </div>
     </div>
 
-
-
-
-
   </div>
 
   {{-- ================= CHARTS ================= --}}
@@ -551,7 +561,7 @@
             <p class="text-muted mb-0 small">توزيع عدد الشكاوى على القطاعات</p>
           </div>
           <div class="rounded-circle d-flex align-items-center justify-content-center"
-            style="width:55px;height:55px;background:#fce7f3;color:#ec4899;font-size:22px;">
+            style="width:55px;height:55px;background:#eaf2ff;color:#0d6efd;font-size:22px;">
             <i class="bi bi-diagram-3"></i>
           </div>
         </div>
@@ -587,8 +597,8 @@
                 style="
                  width:55px;
                  height:55px;
-                 background:#eef4ff;
-                 color:#5b8cff;
+                 background:#eaf2ff;
+                 color:#0d6efd;
                  font-size:22px;
                ">
                 <i class="bi bi-map"></i>
@@ -665,13 +675,14 @@
 
       chart: {
         type: 'bar',
+        fontFamily: "Cairo, sans-serif",
         height: 360,
         toolbar: {
           show: false
         }
       },
 
-      colors: ['#5b8cff'],
+      colors: ['#7ba3e8'],
 
       plotOptions: {
         bar: {
@@ -705,12 +716,13 @@
       chart: {
         type: 'area',
         height: 350,
+        fontFamily: "Cairo, sans-serif",
         toolbar: {
           show: false
         }
       },
 
-      colors: ['#00c896'],
+      colors: ['#5fb88a'],
 
       stroke: {
         curve: 'smooth',
@@ -742,18 +754,19 @@
 
       chart: {
         type: 'donut',
-        height: 340
+        height: 340,
+        fontFamily: "Cairo, sans-serif",
       },
 
       labels: typeLabels,
 
       colors: [
-        '#5b8cff',
-        '#00c896',
-        '#ffb547',
-        '#ff5d73',
-        '#7c4dff',
-        '#00d4ff'
+        '#7ba3e8',
+        '#5fb88a',
+        '#d6a85e',
+        '#d3849a',
+        '#9b8fd9',
+        '#6fb8c9'
       ],
 
       legend: {
@@ -787,18 +800,20 @@
 
       chart: {
         type: 'donut',
-        height: 340
+        height: 340,
+
+        fontFamily: "Cairo, sans-serif",
       },
 
       labels: sourceLabels,
 
       colors: [
-        '#14b8a6',
-        '#5b8cff',
-        '#ffb547',
-        '#ff5d73',
-        '#7c4dff',
-        '#00d4ff'
+        '#6fb8a8',
+        '#7ba3e8',
+        '#d6a85e',
+        '#d3849a',
+        '#9b8fd9',
+        '#6fb8c9'
       ],
 
       legend: {
@@ -836,7 +851,7 @@ new ApexCharts(document.querySelector("#sectorChart"), {
     fontFamily: "Cairo, sans-serif",
   },
 
-  colors: ["#14b8a6"],
+  colors: ["#6fb8a8"],
 
   theme: { mode: "light" },
 
@@ -898,7 +913,7 @@ new ApexCharts(document.querySelector("#sectorChart"), {
   yaxis: {
     labels: {
       maxWidth: 400,
-      offsetX: -200,
+      offsetX: -300,
       style: {
         fontSize: "14px",
         fontWeight: 600,
@@ -948,7 +963,7 @@ new ApexCharts(document.querySelector("#sectorChart"), {
         fontFamily: "Cairo, sans-serif",
       },
 
-      colors: ["#14b8a6"],
+      colors: ["#6fb8a8"],
 
       theme: {
         mode: "light",
@@ -1031,7 +1046,7 @@ new ApexCharts(document.querySelector("#sectorChart"), {
         labels: {
           align: "left",
 
-          offsetX: 125,
+          offsetX: 140,
           style: {
             fontSize: "16px",
             fontWeight: 600,
@@ -1085,17 +1100,19 @@ new ApexCharts(document.querySelector("#sectorChart"), {
 
       chart: {
         type: 'donut',
-        height: 340
+        height: 340,
+        
+        fontFamily: "Cairo, sans-serif",
       },
 
       labels: closeData.map(i => i.name),
 
       colors: [
-        '#00c896',
-        '#5b8cff',
-        '#ffb547',
-        '#ff5d73',
-        '#7c4dff'
+        '#5fb88a',
+        '#7ba3e8',
+        '#d6a85e',
+        '#d3849a',
+        '#9b8fd9'
       ],
 
       legend: {
