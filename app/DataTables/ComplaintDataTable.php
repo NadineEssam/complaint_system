@@ -43,6 +43,13 @@ class ComplaintDataTable extends DataTable
 
 
         ))
+            // Fix: office_name is a SELECT alias for ben.OFFICE.REG_OFFIC_NAMA,
+            // so Yajra can't search/order it directly via "WHERE office_name LIKE ...".
+            // These tell Yajra to search/sort against the real joined column instead.
+            ->filterColumn('office_name', function ($query, $keyword) {
+                $query->whereRaw('ben.OFFICE.REG_OFFIC_NAMA LIKE ?', ["%{$keyword}%"]);
+            })
+            ->orderColumn('office_name', 'ben.OFFICE.REG_OFFIC_NAMA $1')
 
             ->addColumn('action', function ($model) {
 
@@ -151,7 +158,7 @@ class ComplaintDataTable extends DataTable
             $query->where('ComplaintGovernorate', $gov);
         }
         if ($office = $this->request->get('office_filter')) {
-            $query->where('office', $office);
+            $query->where('ben.OFFICE.REG_OFFIC_NAMA', $office);
         }
 
         if ($status = $this->request->get('status_filter')) {
@@ -212,7 +219,7 @@ class ComplaintDataTable extends DataTable
 
             Column::make('ComplaintNationalID')->title('الرقم القومي '),
             Column::make('ComplainerPhone')->title('رقم الهاتف المحمول '),
-            Column::make('office')
+            Column::make('office_name')
             ->title('الفرع'),
 
             Column::make('status_name')
