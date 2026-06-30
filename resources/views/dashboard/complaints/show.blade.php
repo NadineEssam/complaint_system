@@ -385,20 +385,8 @@
                             </span>
                         </div>
 
-                        {{-- Show sector + department only for external --}}
+                        {{-- Show governorate + office only for external --}}
                         @if($complaint->complaint_type === 'external')
-                        <div class="detail-item">
-                            <span class="detail-label">القطاع</span>
-                            <span class="detail-value">{{ $complaint->sector->sector_ar ?? 'غير محدد' }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">الإدارة</span>
-                            <span class="detail-value">{{ $complaint->departmentInfo->depname_ar ?? 'غير محدد' }}</span>
-                        </div>
-                        @endif
-
-                        {{-- Show governorate + office only for internal --}}
-                        @if($complaint->complaint_type === 'internal')
                         <div class="detail-item">
                             <span class="detail-label">المحافظة</span>
                             <span class="detail-value">{{ $complaint->gov->GOVT_NAMA ?? 'غير محدد' }}</span>
@@ -406,6 +394,18 @@
                         <div class="detail-item">
                             <span class="detail-label">الفرع</span>
                             <span class="detail-value">{{ $complaint->office_info->REG_OFFIC_NAMA ?? 'غير محدد' }}</span>
+                        </div>
+                        @endif
+
+                        {{-- Show sector + department only for internal --}}
+                        @if($complaint->complaint_type === 'internal')
+                        <div class="detail-item">
+                            <span class="detail-label">القطاع</span>
+                            <span class="detail-value">{{ $complaint->sector->sector_ar ?? 'غير محدد' }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">الإدارة</span>
+                            <span class="detail-value">{{ $complaint->departmentInfo->depname_ar ?? 'غير محدد' }}</span>
                         </div>
                         @endif
 
@@ -529,30 +529,30 @@
             });
         });
 
-        
+
     });
 </script>
 <script>
-$('#duplicatesModal').on('show.bs.modal', function () {
-    var body = $('#duplicatesModalBody');
-    body.html('<div class="text-center py-4"><i class="bx bx-loader-alt bx-spin fs-3"></i></div>');
+    $('#duplicatesModal').on('show.bs.modal', function() {
+        var body = $('#duplicatesModalBody');
+        body.html('<div class="text-center py-4"><i class="bx bx-loader-alt bx-spin fs-3"></i></div>');
 
-    // Load DataTables JS if not already loaded
-    if (!$.fn.DataTable) {
-        $.getScript('https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js', function () {
+        // Load DataTables JS if not already loaded
+        if (!$.fn.DataTable) {
+            $.getScript('https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js', function() {
+                loadDuplicatesTable(body);
+            });
+        } else {
             loadDuplicatesTable(body);
-        });
-    } else {
-        loadDuplicatesTable(body);
-    }
-});
-
-function loadDuplicatesTable(body) {
-    $.get("{{ route('complaints.duplicates.index', $complaint) }}", function (html) {
-        body.html(html);
-    }).fail(function () {
-        body.html('<div class="text-center text-danger py-4">حدث خطأ أثناء تحميل البيانات</div>');
+        }
     });
-}
+
+    function loadDuplicatesTable(body) {
+        $.get("{{ route('complaints.duplicates.index', $complaint) }}", function(html) {
+            body.html(html);
+        }).fail(function() {
+            body.html('<div class="text-center text-danger py-4">حدث خطأ أثناء تحميل البيانات</div>');
+        });
+    }
 </script>
 @endpush

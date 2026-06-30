@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Complaint extends Model
 {
-    const CREATED_AT = null;
+    const CREATED_AT = 'entryDate';
+    const UPDATED_AT = 'UpdateDate';
 
     protected $table = 'sfdcomplaints';
 
