@@ -1,11 +1,113 @@
-  <header id="header" class="header fixed-top d-flex align-items-center">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+    #header, #header * {
+        font-family: 'Cairo', 'Tahoma', sans-serif;
+    }
+
+    #header {
+        background: #ffffff;
+        border-bottom: 1px solid #eef0f3;
+        box-shadow: 0 1px 2px rgba(16,24,40,0.03);
+    }
+
+    #header .logo span {
+        font-size: 19px;
+        font-weight: 700;
+        color: #1d2939;
+    }
+
+    #header .toggle-sidebar-btn {
+        color: #475467;
+        font-size: 24px;
+        transition: color .15s;
+    }
+    #header .toggle-sidebar-btn:hover {
+        color: #0d6efd;
+    }
+
+    #header .header-nav .nav-icon {
+        color: #475467;
+        font-size: 21px;
+        position: relative;
+        transition: color .15s;
+    }
+    #header .header-nav .nav-icon:hover {
+        color: #0d6efd;
+    }
+
+    #header .nav-profile {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 10px 6px 6px;
+        border-radius: 30px;
+        transition: background .15s;
+    }
+    #header .nav-profile:hover {
+        background: #f5f8ff;
+    }
+    #header .nav-profile img {
+        width: 38px;
+        height: 38px;
+        object-fit: cover;
+        border: 2px solid #eaf2ff;
+    }
+    #header .nav-profile span {
+        font-size: 16.5px;
+        font-weight: 600;
+        color: #1d2939;
+    }
+
+    #header .dropdown-menu {
+        border: none;
+        border-radius: 14px;
+        box-shadow: 0 8px 24px rgba(16,24,40,0.10);
+        padding: 8px;
+    }
+    #header .dropdown-menu.profile {
+        min-width: 220px;
+    }
+    #header .dropdown-header h6 {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1d2939;
+        margin-bottom: 2px;
+    }
+    #header .dropdown-header span {
+        font-size: 13.5px;
+        color: #98a2b3;
+    }
+    #header .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 500;
+        color: #475467;
+        transition: background .15s, color .15s;
+    }
+    #header .dropdown-item:hover {
+        background: #fef3f2;
+        color: #d92d20;
+    }
+    #header .dropdown-item i {
+        font-size: 18px;
+    }
+</style>
+
+<header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
-      <a  href="{{ route('home') }}" class="logo d-flex align-items-center">
-        <img src="{{ asset('logo.png') }}" alt="">
-        <span class="d-none d-lg-block"> نظام خدمة العملاء</span>
-      </a>
-      <i class="bi bi-list toggle-sidebar-btn"></i>
+        <a href="{{ route('home') }}" class="logo d-flex align-items-center">
+            <img src="{{ asset('logo.png') }}" alt="">
+            <span class="d-none d-lg-block"> نظام خدمة العملاء</span>
+        </a>
+        <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->
 
     {{-- <div class="search-bar">
@@ -17,172 +119,172 @@
     <!-- End Search Bar -->
 
     <nav class="header-nav ms-auto">
-      <ul class="d-flex align-items-center">
+        <ul class="d-flex align-items-center">
 
-        <li class="nav-item d-block d-lg-none">
-          <a class="nav-link nav-icon search-bar-toggle " href="#">
-            <i class="bi bi-search"></i>
-          </a>
-        </li><!-- End Search Icon-->
+            <li class="nav-item d-block d-lg-none">
+                <a class="nav-link nav-icon search-bar-toggle " href="#">
+                    <i class="bi bi-search"></i>
+                </a>
+            </li><!-- End Search Icon-->
 
-        <li class="nav-item dropdown">
-{{-- 
+            <li class="nav-item dropdown">
+                {{-- 
           <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
             <i class="bi bi-bell"></i>
             <span class="badge bg-primary badge-number">4</span>
           </a><!-- End Notification Icon --> --}}
 
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-            <li class="dropdown-header">
-              You have 4 new notifications
-              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
+                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
+                    <li class="dropdown-header">
+                        You have 4 new notifications
+                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
 
-            <li class="notification-item">
-              <i class="bi bi-exclamation-circle text-warning"></i>
-              <div>
-                <h4>Lorem Ipsum</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>30 min. ago</p>
-              </div>
-            </li>
+                    <li class="notification-item">
+                        <i class="bi bi-exclamation-circle text-warning"></i>
+                        <div>
+                            <h4>Lorem Ipsum</h4>
+                            <p>Quae dolorem earum veritatis oditseno</p>
+                            <p>30 min. ago</p>
+                        </div>
+                    </li>
 
-            <li>
-              <hr class="dropdown-divider">
-            </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
 
-            <li class="notification-item">
-              <i class="bi bi-x-circle text-danger"></i>
-              <div>
-                <h4>Atque rerum nesciunt</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>1 hr. ago</p>
-              </div>
-            </li>
+                    <li class="notification-item">
+                        <i class="bi bi-x-circle text-danger"></i>
+                        <div>
+                            <h4>Atque rerum nesciunt</h4>
+                            <p>Quae dolorem earum veritatis oditseno</p>
+                            <p>1 hr. ago</p>
+                        </div>
+                    </li>
 
-            <li>
-              <hr class="dropdown-divider">
-            </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
 
-            <li class="notification-item">
-              <i class="bi bi-check-circle text-success"></i>
-              <div>
-                <h4>Sit rerum fuga</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>2 hrs. ago</p>
-              </div>
-            </li>
+                    <li class="notification-item">
+                        <i class="bi bi-check-circle text-success"></i>
+                        <div>
+                            <h4>Sit rerum fuga</h4>
+                            <p>Quae dolorem earum veritatis oditseno</p>
+                            <p>2 hrs. ago</p>
+                        </div>
+                    </li>
 
-            <li>
-              <hr class="dropdown-divider">
-            </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
 
-            <li class="notification-item">
-              <i class="bi bi-info-circle text-primary"></i>
-              <div>
-                <h4>Dicta reprehenderit</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>4 hrs. ago</p>
-              </div>
-            </li>
+                    <li class="notification-item">
+                        <i class="bi bi-info-circle text-primary"></i>
+                        <div>
+                            <h4>Dicta reprehenderit</h4>
+                            <p>Quae dolorem earum veritatis oditseno</p>
+                            <p>4 hrs. ago</p>
+                        </div>
+                    </li>
 
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li class="dropdown-footer">
-              <a href="#">Show all notifications</a>
-            </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li class="dropdown-footer">
+                        <a href="#">Show all notifications</a>
+                    </li>
 
-          </ul><!-- End Notification Dropdown Items -->
+                </ul><!-- End Notification Dropdown Items -->
 
-        </li><!-- End Notification Nav -->
+            </li><!-- End Notification Nav -->
 
-        <li class="nav-item dropdown">
+            <li class="nav-item dropdown">
 
-          {{-- <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+                {{-- <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
             <i class="bi bi-chat-left-text"></i>
             <span class="badge bg-success badge-number">3</span>
           </a><!-- End Messages Icon --> --}}
 
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
-            <li class="dropdown-header">
-              You have 3 new messages
-              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
+                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
+                    <li class="dropdown-header">
+                        You have 3 new messages
+                        <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
 
-            <li class="message-item">
-              <a href="#">
-                <img src="{{ asset('assets/img/messages-1.jpg') }}" alt="" class="rounded-circle">
-                <div>
-                  <h4>Maria Hudson</h4>
-                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                  <p>4 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
+                    <li class="message-item">
+                        <a href="#">
+                            <img src="{{ asset('assets/img/messages-1.jpg') }}" alt="" class="rounded-circle">
+                            <div>
+                                <h4>Maria Hudson</h4>
+                                <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
+                                <p>4 hrs. ago</p>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
 
-            <li class="message-item">
-              <a href="#">
-                <img src="{{ asset('assets/img/messages-2.jpg') }}" alt="" class="rounded-circle">
-                <div>
-                  <h4>Anna Nelson</h4>
-                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                  <p>6 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
+                    <li class="message-item">
+                        <a href="#">
+                            <img src="{{ asset('assets/img/messages-2.jpg') }}" alt="" class="rounded-circle">
+                            <div>
+                                <h4>Anna Nelson</h4>
+                                <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
+                                <p>6 hrs. ago</p>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
 
-            <li class="message-item">
-              <a href="#">
-                <img src="{{ asset('assets/img/messages-3.jpg') }}" alt="" class="rounded-circle">
-                <div>
-                  <h4>David Muldon</h4>
-                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                  <p>8 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
+                    <li class="message-item">
+                        <a href="#">
+                            <img src="{{ asset('assets/img/messages-3.jpg') }}" alt="" class="rounded-circle">
+                            <div>
+                                <h4>David Muldon</h4>
+                                <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
+                                <p>8 hrs. ago</p>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
 
-            <li class="dropdown-footer">
-              <a href="#">Show all messages</a>
-            </li>
+                    <li class="dropdown-footer">
+                        <a href="#">Show all messages</a>
+                    </li>
 
-          </ul><!-- End Messages Dropdown Items -->
+                </ul><!-- End Messages Dropdown Items -->
 
-        </li><!-- End Messages Nav -->
+            </li><!-- End Messages Nav -->
 
-        <li class="nav-item dropdown pe-3">
+            <li class="nav-item dropdown pe-3">
 
-          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-            <img src="{{ asset('assets/img/profile.jpg') }}" alt="Profile" class="rounded-circle">
-            <span class="d-none d-md-block dropdown-toggle ps-2"> {{ auth()->user()->userID }} </span>
-          </a><!-- End Profile Iamge Icon -->
+                <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+                    <img src="{{ asset('assets/img/profile.jpg') }}" alt="Profile" class="rounded-circle">
+                    <span class="d-none d-md-block dropdown-toggle ps-2"> {{ auth()->user()->userID }} </span>
+                </a><!-- End Profile Iamge Icon -->
 
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
-            <li class="dropdown-header">
-              <h6> {{ auth()->user()->userID }}  </h6>
-              <span>  {{ auth()->user()->roles()->first()->name ?? '' }}  </span>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
+                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+                    <li class="dropdown-header">
+                        <h6> {{ auth()->user()->userID }} </h6>
+                        <span> {{ auth()->user()->roles()->first()->name ?? '' }} </span>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
 
-            {{-- <li>
+                    {{-- <li>
               <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
                 <i class="bi bi-person"></i>
                 <span>My Profile</span>
@@ -192,25 +294,25 @@
               <hr class="dropdown-divider">
             </li> --}}
 
-          
 
-            <li>
-               <form method="POST" action="{{ route('logout') }}">
-    @csrf
-    <a href="#"
-       class="dropdown-item d-flex align-items-center"
-       onclick="event.preventDefault(); this.closest('form').submit();">
 
-      <i class="bi bi-box-arrow-right"></i>
-      <span>تسجيل الخروج</span>
-    </a>
-  </form>
-            </li>
+                    <li>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <a href="#"
+                                class="dropdown-item d-flex align-items-center"
+                                onclick="event.preventDefault(); this.closest('form').submit();">
 
-          </ul><!-- End Profile Dropdown Items -->
-        </li><!-- End Profile Nav -->
+                                <i class="bi bi-box-arrow-right"></i>
+                                <span>تسجيل الخروج</span>
+                            </a>
+                        </form>
+                    </li>
 
-      </ul>
+                </ul><!-- End Profile Dropdown Items -->
+            </li><!-- End Profile Nav -->
+
+        </ul>
     </nav><!-- End Icons Navigation -->
 
-  </header><!-- End Header -->
+</header><!-- End Header -->
