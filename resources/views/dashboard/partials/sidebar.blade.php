@@ -157,7 +157,14 @@
 
         {{-- ===================== إعدادات النظام ===================== --}}
         <li class="nav-heading">إعدادات النظام</li>
-
+        @if (PerUser('users.index'))
+        <li class="nav-item @if (request()->segment(1) == 'users') mm-active @endif">
+            <a class="nav-link collapsed" href="{{ route('users.index') }}">
+                <i class="bx bx-user"></i>
+                <span>المستخدمين</span>
+            </a>
+        </li>
+        @endif
         @if (PerUser('roles.index'))
         <li class="nav-item @if (request()->segment(1) == 'roles') mm-active @endif">
             <a class="nav-link collapsed" href="{{ route('roles.index') }}">
@@ -167,14 +174,7 @@
         </li>
         @endif
 
-        @if (PerUser('users.index'))
-        <li class="nav-item @if (request()->segment(1) == 'users') mm-active @endif">
-            <a class="nav-link collapsed" href="{{ route('users.index') }}">
-                <i class="bx bx-user"></i>
-                <span>المستخدمين</span>
-            </a>
-        </li>
-        @endif
+        
 
     </ul>
 
