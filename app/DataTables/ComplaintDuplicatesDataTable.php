@@ -11,20 +11,9 @@ use Yajra\DataTables\Services\DataTable;
 
 class ComplaintDuplicatesDataTable extends DataTable
 {
-    /**
-     * The root (original) complaint whose family (itself + children)
-     * is being listed. Set via forComplaint() before render().
-     *
-     * @var \App\Models\Complaint|null
-     */
     protected ?Complaint $rootComplaint = null;
+    protected ?int $highlightId = null;
 
-    /**
-     * Bind the root complaint this table should list duplicates for.
-     *
-     * @param  \App\Models\Complaint  $complaint
-     * @return $this
-     */
     public function forComplaint(Complaint $complaint): self
     {
         $this->rootComplaint = $complaint;
@@ -32,26 +21,23 @@ class ComplaintDuplicatesDataTable extends DataTable
         return $this;
     }
 
-    /**
-     * Build DataTable class.
-     *
-     * @param QueryBuilder $query Results from query() method.
-     * @return \Yajra\DataTables\EloquentDataTable
-     */
+    public function highlight(int $complaintId): self
+    {
+        $this->highlightId = $complaintId;
+
+        return $this;
+    }
+
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         $rootId = $this->rootComplaint->ComplaintID;
 
-        // Children ordered by ComplaintID (creation order) so we can map
-        // each child's id to a stable "تكرار رقم N" sequence number,
-        // independent of whatever order/paging the datatable itself uses.
-        $childIdsInOrder = Complaint::where('parent_id', $rootId)
-            ->orderBy('ComplaintID')
-            ->pluck('ComplaintID')
-            ->values();
+        // Whole family tree (root + every descendant at any depth),
+        // computed once and used to build nested labels/parent links
+        // regardless of how the table itself is paginated/sorted.
+        $familyRows = Complaint::descendantsOf($rootId);
 
-        $sequenceByChildId = $childIdsInOrder
-            ->mapWithKeys(fn ($id, $index) => [$id => $index + 1]);
+        [$labels, $parentIds] = $this->buildLabels($rootId, $familyRows);
 
         return (new EloquentDataTable(
             $query->select(
@@ -62,15 +48,29 @@ class ComplaintDuplicatesDataTable extends DataTable
                 ->leftJoin('compstatus', 'sfdcomplaints.ComplaintStatus', '=', 'compstatus.statusID')
                 ->leftJoin('requesttype', 'sfdcomplaints.RequestType', '=', 'requesttype.requesttypeid')
         ))
-            ->addColumn('duplicate_badge', function ($model) use ($rootId, $sequenceByChildId) {
+            ->addColumn('duplicate_badge', function ($model) use ($rootId, $labels) {
 
                 if ($model->ComplaintID == $rootId) {
                     return '<span class="badge bg-primary">الأصل</span>';
                 }
 
-                $sequence = $sequenceByChildId->get($model->ComplaintID, '?');
+                $label = $labels[$model->ComplaintID] ?? '?';
+                $depth = substr_count($label, '.'); // 0 for top-level dup, 1+ for nested
+                $indent = $depth * 18;
 
-                return '<span class="badge bg-secondary">تكرار رقم ' . $sequence . '</span>';
+                return '<span class="badge bg-secondary" style="margin-right:' . $indent . 'px;">'
+                    . 'تكرار رقم ' . $label
+                    . '</span>';
+            })
+            ->addColumn('parent_complaint', function ($model) use ($rootId, $parentIds) {
+
+                $parentId = $parentIds[$model->ComplaintID] ?? null;
+
+                if ($model->ComplaintID == $rootId || $parentId === null) {
+                    return '<span class="text-muted">-</span>';
+                }
+
+                return '<span class="badge bg-light text-dark border">#' . $parentId . '</span>';
             })
             ->addColumn('action', function ($model) {
 
@@ -90,40 +90,70 @@ class ComplaintDuplicatesDataTable extends DataTable
 
                 return $html;
             })
-            ->rawColumns(['duplicate_badge', 'action'])
-            ->setRowId('ComplaintID');
+            ->rawColumns(['duplicate_badge', 'parent_complaint', 'action'])
+            ->setRowId('ComplaintID')
+            ->setRowClass(function ($model) {
+                return $model->ComplaintID == $this->highlightId ? 'current-complaint-row' : '';
+            });
     }
 
     /**
-     * Get query source of dataTable: the root complaint itself plus
-     * every child whose parent_id points back to it, oldest first so
-     * "تكرار رقم 1" really is the first duplicate created.
+     * Assign hierarchical labels (1, 1.1, 1.1.1...) and direct-parent
+     * IDs to every complaint in the family tree, based on sibling
+     * order (ComplaintID ascending) within each parent group.
      *
-     * @param \App\Models\Complaint $model
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  int  $rootId
+     * @param  \Illuminate\Support\Collection  $familyRows  All descendants of root (any depth).
+     * @return array{0: array<int,string>, 1: array<int,int|null>}
+     */
+    private function buildLabels(int $rootId, $familyRows): array
+    {
+        $byParent = $familyRows->groupBy('parent_id');
+
+        $labels = [];
+        $parentIds = [$rootId => null];
+
+        $assign = function ($parentId, string $prefix) use (&$assign, $byParent, &$labels, &$parentIds) {
+            $children = $byParent->get($parentId, collect())->sortBy('ComplaintID')->values();
+
+            foreach ($children as $i => $child) {
+                $num = $i + 1;
+                $label = $prefix === '' ? (string) $num : $prefix . '.' . $num;
+
+                $labels[$child->ComplaintID] = $label;
+                $parentIds[$child->ComplaintID] = $parentId;
+
+                $assign($child->ComplaintID, $label);
+            }
+        };
+
+        $assign($rootId, '');
+
+        return [$labels, $parentIds];
+    }
+
+    /**
+     * Root + every descendant at any depth.
      */
     public function query(Complaint $model): QueryBuilder
-{
-    if (!$this->rootComplaint) {
-        abort(500, 'Root complaint not set. Call forComplaint() first.');
+    {
+        if (!$this->rootComplaint) {
+            abort(500, 'Root complaint not set. Call forComplaint() first.');
+        }
+
+        $rootId = $this->rootComplaint->ComplaintID;
+
+        $allIds = Complaint::descendantsOf($rootId)
+            ->pluck('ComplaintID')
+            ->push($rootId)
+            ->unique();
+
+        return $model->newQuery()
+            ->whereIn('sfdcomplaints.ComplaintID', $allIds)
+            ->orderByRaw('CASE WHEN sfdcomplaints.parent_id IS NULL THEN 0 ELSE 1 END')
+            ->orderBy('sfdcomplaints.ComplaintID');
     }
 
-    $rootId = $this->rootComplaint->ComplaintID;
-
-    return $model->newQuery()
-        ->where(function ($q) use ($rootId) {
-            $q->where('sfdcomplaints.ComplaintID', $rootId)
-              ->orWhere('sfdcomplaints.parent_id', $rootId);
-        })
-        ->orderByRaw('CASE WHEN sfdcomplaints.parent_id IS NULL THEN 0 ELSE 1 END')
-        ->orderBy('sfdcomplaints.ComplaintID');
-}
-
-    /**
-     * Optional method if you want to use html builder.
-     *
-     * @return \Yajra\DataTables\Html\Builder
-     */
     public function html(): HtmlBuilder
     {
         return $this->builder()
@@ -135,16 +165,12 @@ class ComplaintDuplicatesDataTable extends DataTable
             ->lengthMenu([10, 25, 50]);
     }
 
-    /**
-     * Get columns.
-     *
-     * @return array
-     */
     protected function getColumns(): array
     {
         return [
             Column::make('ComplaintID')->title('رقم الشكوي'),
             Column::computed('duplicate_badge')->title('النوع'),
+            Column::computed('parent_complaint')->title('الأب'),
             Column::make('requesttypename')
                 ->name('requesttype.requesttypename')
                 ->title('نوع الطلب'),
@@ -160,11 +186,6 @@ class ComplaintDuplicatesDataTable extends DataTable
         ];
     }
 
-    /**
-     * Get filename for export.
-     *
-     * @return string
-     */
     protected function filename(): string
     {
         return 'ComplaintDuplicates_' . date('YmdHis');

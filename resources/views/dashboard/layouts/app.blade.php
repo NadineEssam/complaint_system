@@ -239,24 +239,19 @@
 
     // ── Show loader on link click ──
     document.addEventListener('click', function(e) {
-      const link = e.target.closest('a');
+  const link = e.target.closest('a');
+  const rawHref = link?.getAttribute('href') || '';
 
-      // Ignore if:
-      // - Not a link
-      // - Has data-no-loader attribute
-      // - Opens in new tab
-      // - Is a hash/anchor link
-      // - Is a download link
-      if (!link ||
-        link.hasAttribute('data-no-loader') ||
-        link.target === '_blank' ||
-        link.href.startsWith('#') ||
-        link.getAttribute('href') === '#' ||
-        link.getAttribute('href')?.startsWith('javascript') ||
-        link.hasAttribute('data-bs-toggle') ||
-        link.hasAttribute('download')) {
-        return;
-      }
+  if (!link ||
+    link.hasAttribute('data-no-loader') ||
+    link.target === '_blank' ||
+    rawHref.startsWith('#') ||                 // catches "#step-1", "#step-2", "#anything"
+    rawHref.startsWith('javascript') ||
+    link.hasAttribute('data-bs-toggle') ||
+    link.hasAttribute('download')) {
+    return;
+  }
+
 
       // Check if it's same domain
       try {

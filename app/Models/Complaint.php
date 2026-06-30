@@ -166,6 +166,7 @@ class Complaint extends Model
         );
     }
 
+  
     public function parent()
     {
         return $this->belongsTo(
@@ -184,16 +185,60 @@ class Complaint extends Model
         );
     }
 
+    /**
+     * Walk all the way up the parent chain to find the true root
+     * (original) complaint, regardless of how many levels deep this
+     * complaint is nested.
+     */
+    public function getRootAttribute(): self
+    {
+        $node = $this;
+        while ($node->parent_id) {
+            $node = $node->parent;
+        }
+        return $node;
+    }
+
+    /**
+     * Every descendant of the given root, at any depth (children,
+     * grandchildren, etc.) — not just direct children.
+     */
+    public static function descendantsOf(int $rootId): \Illuminate\Support\Collection
+    {
+        $all = collect();
+        $queue = [$rootId];
+
+        while (!empty($queue)) {
+            $children = static::whereIn('parent_id', $queue)->get();
+            if ($children->isEmpty()) {
+                break;
+            }
+            $all = $all->merge($children);
+            $queue = $children->pluck('ComplaintID')->all();
+        }
+
+        return $all;
+    }
+
+    /**
+     * Whether this complaint belongs to a duplicate family at all —
+     * either as the original (has descendants) or as a duplicate
+     * itself (has a parent somewhere up the chain).
+     */
     public function getIsDuplicatedAttribute(): bool
     {
         return $this->duplicates_count > 0;
     }
 
-
+    /**
+     * Total number of complaints in this family tree besides the
+     * root itself, counted from the true root regardless of which
+     * level (parent, child, grandchild...) this record sits at.
+     */
     public function getDuplicatesCountAttribute(): int
     {
-        $rootId = $this->parent_id ?? $this->ComplaintID;
+        $root = $this->root;
 
-        return static::where('parent_id', $rootId)->count();
+        return static::descendantsOf($root->ComplaintID)->count();
     }
 }

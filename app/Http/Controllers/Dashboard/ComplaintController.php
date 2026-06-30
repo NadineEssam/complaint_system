@@ -448,19 +448,19 @@ class ComplaintController extends Controller
      */
 public function duplicatesIndex(Complaint $complaint)
 {
-    $root = $complaint->parent_id ? $complaint->parent : $complaint;
+    $root = $complaint->root;
 
     $dataTable = app(\App\DataTables\ComplaintDuplicatesDataTable::class)
-        ->forComplaint($root);
+        ->forComplaint($root)
+        ->highlight($complaint->ComplaintID);
 
-    // DataTables AJAX calls always include a 'draw' parameter
     if (request()->has('draw')) {
         return $dataTable->ajax();
     }
 
     return $dataTable->render(
         'dashboard.complaints.duplicates_modal',
-        compact('root') + ['complaint' => $root]
+        compact('root') + ['complaint' => $root, 'currentId' => $complaint->ComplaintID]
     );
 }
 

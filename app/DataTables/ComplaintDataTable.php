@@ -36,7 +36,7 @@ class ComplaintDataTable extends DataTable
                 ->leftJoin('compstatus', 'sfdcomplaints.ComplaintStatus', '=', 'compstatus.statusID')
                 ->leftJoin('complainttype', 'sfdcomplaints.ComplaintType', '=', 'complainttype.comtypeid')
                 ->leftJoin('requesttype', 'sfdcomplaints.RequestType', '=', 'requesttype.requesttypeid')
-                ->leftJoin('ben.OFFICE', 'sfdcomplaints.office', '=', 'ben.OFFICE.ID') // adjust table/column names
+                ->leftJoin('ben.OFFICE', 'sfdcomplaints.office', '=', 'ben.OFFICE.ID')
             // ->leftJoin('users_groups', 'sfdcomplaints.created_by', '=', 'users_groups.ID')
             // ->leftJoin('users_groups as updated_by', 'sfdcomplaints.updated_by', '=', 'updated_by.ID')
 
@@ -212,8 +212,7 @@ class ComplaintDataTable extends DataTable
 
             Column::make('ComplaintNationalID')->title('الرقم القومي '),
             Column::make('ComplainerPhone')->title('رقم الهاتف المحمول '),
-            Column::make('office_name')
-            ->name('offices.REG_OFFIC_NAMA') // adjust column name
+            Column::make('office')
             ->title('الفرع'),
 
             Column::make('status_name')
