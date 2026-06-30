@@ -166,7 +166,7 @@ class Complaint extends Model
         );
     }
 
-  
+
     public function parent()
     {
         return $this->belongsTo(
@@ -240,5 +240,22 @@ class Complaint extends Model
         $root = $this->root;
 
         return static::descendantsOf($root->ComplaintID)->count();
+    }
+
+    /**
+     * The first complaint anywhere in this family (root, children,
+     * sub-children...) that is still "open" (status 1 or 3, i.e. not
+     * yet closed). Returns null if every complaint in the family has
+     * been closed — meaning a new duplicate is allowed to be added.
+     */
+    public function getOpenFamilyMemberAttribute(): ?self
+    {
+        $root = $this->root;
+
+        $family = Complaint::descendantsOf($root->ComplaintID)->push($root);
+
+        return $family->first(function ($c) {
+            return in_array($c->ComplaintStatus, [1, 3]);
+        });
     }
 }

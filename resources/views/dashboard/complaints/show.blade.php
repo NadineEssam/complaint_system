@@ -288,7 +288,16 @@
                         حذف
                     </button>
                     @endif -->
-                    @if (in_array($complaint->ComplaintStatus, [2, 4]) && PerUser('complaints.duplicate'))
+                    @php
+                    $openMember = $complaint->open_family_member;
+                    @endphp
+
+                    @if ($openMember)
+                    <div class="alert alert-warning d-flex align-items-center gap-2 mb-0" style="border-radius:12px; padding:12px 18px;">
+                        <i class="bx bx-error-circle fs-5"></i>
+                        <span>البيان رقم #{{ $openMember->ComplaintID }} لم يُقفل بعد، لا يمكن إضافة تكرار حتى يتم إغلاق جميع البيانات المرتبطة.</span>
+                    </div>
+                    @elseif (PerUser('complaints.duplicate'))
                     <a href="{{ route('complaints.duplicate.create', $complaint) }}" class="btn btn-warning btn-custom">
                         <i class="bx bx-copy-alt"></i>
                         اضافه تكرار
