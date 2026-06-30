@@ -61,7 +61,7 @@ class ComplaintController extends Controller
         $sectors = Sector::all();
         $departments = Department::all();
         // $projectTypes = ProjectType::orderBy('projecttypename')->get();
-        $comsources = Comsource::all();
+        $comsources = Comsource::where('validity', 1)->get();
         $offices = Office::all();
         $projectTypes = ProjectType::all();
 
@@ -196,7 +196,7 @@ class ComplaintController extends Controller
         $govs = Gov::all();
         $sectors = Sector::all();
         $departments = Department::all();
-        $comsources = Comsource::all();
+        $comsources = Comsource::where('validity', 1)->get();
         // $projectTypes = ProjectType::orderBy('projecttypename')->get();
         $offices = Office::all();
         $projectTypes = ProjectType::all();

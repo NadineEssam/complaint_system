@@ -64,9 +64,9 @@ class ComplaintResponseController extends Controller
         return view('dashboard.responses.create_edit_responses', [
             'complaint' => $complaint,
             'statuses' => $statuses,
-            'serviceTypes' => ServiceType::all(),
-            'closeReasons' => CompCloseReason::all(),
-            'classifications' => CompCloseReasonClassify::select(
+            'serviceTypes' => ServiceType::where('validity', 1)->get(),
+            'closeReasons' => CompCloseReason::where('validity', 1)->get(),
+            'classifications' => CompCloseReasonClassify::where('validity', 1)->select(
                 'close_reason_classify_id',
                 'close_reason_classify_Name',
                 'fk_close_reason_id'
@@ -186,9 +186,9 @@ class ComplaintResponseController extends Controller
             'response'        => $response,
             'complaint'       => $complaint,
             'statuses'        => $statuses,
-            'serviceTypes'    => ServiceType::all(),
-            'closeReasons'    => CompCloseReason::all(),
-            'classifications' => CompCloseReasonClassify::select(
+            'serviceTypes' => ServiceType::where('validity', 1)->get(),
+            'closeReasons' => CompCloseReason::where('validity', 1)->get(),
+            'classifications' => CompCloseReasonClassify::where('validity', 1)->select(
                 'close_reason_classify_id',
                 'close_reason_classify_Name',
                 'fk_close_reason_id'

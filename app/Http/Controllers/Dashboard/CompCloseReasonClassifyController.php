@@ -17,7 +17,7 @@ class CompCloseReasonClassifyController extends Controller
 
     public function create()
     {
-        $closeReasons = CompCloseReason::all();
+        $closeReasons = CompCloseReason::where('validity', 1)->get();
 
         return view('dashboard.close-reason-classify.create_edit', [
             'closeReasons' => $closeReasons
@@ -67,7 +67,7 @@ class CompCloseReasonClassifyController extends Controller
     public function edit($id)
     {
         $classification = CompCloseReasonClassify::findOrFail($id);
-        $closeReasons = CompCloseReason::all();
+        $closeReasons = CompCloseReason::where('validity', 1)->get();
 
         return view('dashboard.close-reason-classify.create_edit', [
             'classification' => $classification,
