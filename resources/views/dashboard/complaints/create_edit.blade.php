@@ -1,6 +1,6 @@
 @extends('dashboard.layouts.app')
 
-@section('title', isset($complaint) ? 'تعديل الشكوى' : 'إضافة شكوى')
+@section('title', isset($complaint) ? 'تعديل البيان' : 'إضافة البيان')
 
 @push('headScripts')
 <style>
@@ -210,16 +210,78 @@
             gap: 10px;
         }
     }
+
+    /* Select2 Multi Select Design */
+    .select2-container--bootstrap-5 .select2-selection {
+        min-height: 50px !important;
+        border: 1px solid #dce1e7 !important;
+        border-radius: 12px !important;
+        background: #fff !important;
+        box-shadow: none !important;
+        padding: 6px 10px !important;
+    }
+
+    .select2-container--bootstrap-5.select2-container--focus .select2-selection,
+    .select2-container--bootstrap-5 .select2-selection:focus {
+        border-color: #0d6efd !important;
+        box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.08) !important;
+    }
+
+    .select2-container--bootstrap-5 .select2-selection__choice {
+        border-radius: 8px !important;
+        padding: 4px 10px !important;
+        margin: 3px !important;
+        font-size: 13px !important;
+    }
+
+    .select2-container--bootstrap-5 .select2-selection__rendered {
+        display: flex !important;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .select2-container--bootstrap-5 .select2-search--inline .select2-search__field {
+        margin-top: 0 !important;
+        height: 30px !important;
+    }
+
+    .select2-container--bootstrap-5 .select2-dropdown {
+        border-radius: 12px !important;
+        border: 1px solid #dce1e7 !important;
+        overflow: hidden;
+    }
+
+    .select2-container--bootstrap-5 .select2-results__option {
+        padding: 10px 15px;
+    }
+
+    /* Validation */
+    .select2-container--bootstrap-5 .select2-selection.is-invalid,
+    .is-invalid+.select2-container .select2-selection {
+        border-color: #dc3545 !important;
+    }
+
+    .select2-container {
+        width: 100% !important;
+    }
+
+    .select2-container--bootstrap-5 .select2-selection--multiple {
+        padding-right: 12px !important;
+        padding-left: 35px !important;
+        background-position: left 0.75rem center !important;
+    }
 </style>
 @endpush
 @php
 $step = (
 $errors->has('ComplaintDate') ||
 $errors->has('ComplaintGovernorate') ||
-$errors->has('sector_id') ||
+$errors->has('sec_id') ||
 $errors->has('office') ||
 $errors->has('ComplaintText')||
-$errors->has('comsource_id')
+$errors->has('comsource_id')||
+    $errors->has('ComplaintProjectType')
 ) ? 2 : 1;
 @endphp
 @section('content')
@@ -239,7 +301,7 @@ $errors->has('comsource_id')
 
 
                         <li class="breadcrumb-item active text-primary font-weight-bold">
-                            {{ isset($complaint) ? 'تعديل الشكوى' : 'إضافة شكوى' }}
+                            {{ isset($complaint) ? 'تعديل البيان' : 'إضافة بيان' }}
                         </li>
 
                         <li class="breadcrumb-item">
@@ -269,11 +331,11 @@ $errors->has('comsource_id')
                 <h4>
                     <i class="bx bx-message-square-add"></i>
 
-                    {{ isset($complaint) ? 'تعديل الشكوى' : 'إضافة شكوى جديدة' }}
+                    {{ isset($complaint) ? 'تعديل البيان' : 'إضافة بيان جديدة' }}
                 </h4>
 
                 <p>
-                    قم بإدخال بيانات العميل وبيانات الشكوى بشكل صحيح لإتمام الحفظ.
+                    قم بإدخال بيانات العميل وبيانات البيان بشكل صحيح لإتمام الحفظ.
                 </p>
 
             </div>
@@ -301,7 +363,7 @@ $errors->has('comsource_id')
                                 2
                             </a>
 
-                            <p>تفاصيل الشكوى</p>
+                            <p>تفاصيل البيان</p>
 
                         </div>
 
@@ -310,11 +372,11 @@ $errors->has('comsource_id')
                 </div>
 
                 <form method="POST" novalidate
-                    action="{{ isset($complaint) ? route('complaints.update', $complaint) : route('complaints.store') }}">
-
+                    action="{{ ($isDuplicateMode ?? false) ? route('complaints.duplicate.store', $parentComplaint) : (isset($complaint) ? route('complaints.update', $complaint) : route('complaints.store')) }}">
+                
                     @csrf
-
-                    @if(isset($complaint))
+                
+                    @if(isset($complaint) && !($isDuplicateMode ?? false))
                     @method('PUT')
                     @endif
 
@@ -425,24 +487,31 @@ $errors->has('comsource_id')
                                     @enderror
 
                                 </div>
-
-                                {{-- البريد --}}
                                 <div class="col-md-6 mb-4">
-
-                                   <label class="form-label">
-                                        البريد الإلكتروني
+                                    <label class="form-label">
+                                        محافظة مقدم البيان
                                         <span class="required-star">*</span>
                                     </label>
 
-                                    <input type="email"
-                                        class="form-control @error('ComplainerEmail') is-invalid @enderror"
-                                        name="ComplainerEmail"
-                                        value="{{ old('ComplainerEmail', $complaint->ComplainerEmail ?? '') }}">
+                                    <select class="form-select @error('ComplainerGovernorate') is-invalid @enderror"
+                                        name="ComplainerGovernorate">
 
-                                    @error('ComplainerEmail')
+                                        <option value="">اختر المحافظة</option>
+
+                                        @foreach ($govs as $gov)
+                                        <option value="{{ $gov->GOVT_CODE }}"
+                                            {{ old('ComplainerGovernorate', $complaint->ComplainerGovernorate ?? '') == $gov->GOVT_CODE ? 'selected' : '' }}>
+                                            {{ $gov->GOVT_NAMA }}
+                                        </option>
+                                        @endforeach
+
+                                    </select>
+
+                                    @error('ComplainerGovernorate')
                                     <div class="error-text">{{ $message }}</div>
                                     @enderror
 
+                                    <div class="error-text" id="complainerGovError"></div>
                                 </div>
 
                                 {{-- الهاتف المحمول --}}
@@ -463,6 +532,27 @@ $errors->has('comsource_id')
                                     @enderror
 
                                 </div>
+
+                                {{-- البريد --}}
+                                <div class="col-md-12 mb-4">
+
+                                    <label class="form-label">
+                                        البريد الإلكتروني
+                                        <span id="emailStar" style="display:none;color:red">*</span>
+                                    </label>
+
+                                    <input type="email"
+                                        class="form-control @error('ComplainerEmail') is-invalid @enderror"
+                                        name="ComplainerEmail"
+                                        value="{{ old('ComplainerEmail', $complaint->ComplainerEmail ?? '') }}">
+
+                                    @error('ComplainerEmail')
+                                    <div class="error-text">{{ $message }}</div>
+                                    @enderror
+
+                                </div>
+
+                                
 
                             </div>
 
@@ -486,7 +576,7 @@ $errors->has('comsource_id')
 
                             <div class="section-title">
                                 <i class="bx bx-detail"></i>
-                                تفاصيل الشكوى
+                                تفاصيل البيان
                             </div>
 
                             <div class="row">
@@ -496,11 +586,15 @@ $errors->has('comsource_id')
 
                                     <label class="form-label">
                                         التاريخ
+                                        <span class="required-star">*</span>
                                     </label>
 
                                     <input type="date"
+                                        dir="rtl"
+                                        lang="ar"
                                         class="form-control @error('ComplaintDate') is-invalid @enderror"
                                         name="ComplaintDate"
+                                        max="{{ date('Y-m-d') }}"
                                         value="{{ old('ComplaintDate', $complaint->ComplaintDate ?? '') }}">
 
                                     @error('ComplaintDate')
@@ -509,26 +603,118 @@ $errors->has('comsource_id')
 
                                 </div>
 
-                                {{-- القطاع (from projecttype table) --}}
+                                {{-- نوع النشاط --}}
                                 <div class="col-md-6 mb-4">
-                                    <label class="form-label">القطاع</label>
-                                    <select class="form-select @error('sector_id') is-invalid @enderror"
-                                        name="sector_id">
+                                    <label class="form-label">
+                                        نوع النشاط
+                                        <span class="required-star">*</span>
+                                    </label>
+
+                                    <select class="form-select @error('ComplaintProjectType') is-invalid @enderror"
+                                        name="ComplaintProjectType"
+                                        id="ComplaintProjectType">
+
                                         <option value="">اختر</option>
+
                                         @foreach($projectTypes as $projectType)
-                                        <option value="{{ $projectType->projecttypeid }}"
-                                            {{ old('sector_id', $complaint->ComplaintProjectType ?? '') == $projectType->projecttypeid ? 'selected' : '' }}>
-                                            {{ $projectType->projecttypename }}
+                                        
+                                        <option value="{{ $projectType->ID }}"
+                                            {{ old('ComplaintProjectType', $complaint->ComplaintProjectType ?? '') == $projectType->ID ? 'selected' : '' }}>
+                                            {{ $projectType->sector_nama }}
                                         </option>
                                         @endforeach
+
                                     </select>
-                                    @error('sector_id')
+
+                                    @error('ComplaintProjectType')
                                     <div class="error-text">{{ $message }}</div>
                                     @enderror
                                 </div>
 
-                                {{-- المحافظة --}}
+                                {{-- نوعية وتوجيه البيان--}}
                                 <div class="col-md-6 mb-4">
+
+                                    <label class="form-label">
+                                        نوعية وتوجيه البيان
+                                        <span class="required-star">*</span>
+                                    </label>
+
+                                    <select class="form-select @error('complaint_type') is-invalid @enderror"
+                                        name="complaint_type"
+                                        id="complaint_type">
+
+                                        <option value="">اختر</option>
+
+                                        <option value="external"
+                                            {{ old('complaint_type', $complaint->complaint_type ?? '') == 'external' ? 'selected' : '' }}>
+                                            خارجي
+                                        </option>
+
+                                        <option value="internal"
+                                            {{ old('complaint_type', $complaint->complaint_type ?? '') == 'internal' ? 'selected' : '' }}>
+                                            داخلي
+                                        </option>
+
+                                    </select>
+
+                                    @error('complaint_type')
+                                    <div class="error-text">{{ $message }}</div>
+                                    @enderror
+
+                                </div>
+
+                                {{-- القطاع--}}
+                                <div class="col-md-6 mb-4" id="sectorGroup" style="display:none;">
+                                    <label class="form-label">القطاع
+                                        <span class="required-star">*</span>
+                                    </label>
+                                    <select class="form-select @error('sec_id') is-invalid @enderror"
+                                        name="sec_id">
+                                        <option value="">اختر</option>
+                                        @foreach($sectors as $sector)
+
+                                        <option value="{{ $sector->sec_id }}"
+                                            {{ old('sec_id', $complaint->sector_id ?? '') == $sector->sec_id ? 'selected' : '' }}>
+
+                                            {{ $sector->sector_ar }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                    @error('sec_id')
+                                    <div class="error-text">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                {{-- الإدارة --}}
+                                <div class="col-md-6 mb-4" id="departmentGroup" style="display:none;">
+                                    <label class="form-label">
+                                        الإدارة
+                                        <span class="required-star">*</span>
+                                    </label>
+
+                                    <select class="form-select @error('department') is-invalid @enderror"
+                                        name="department"
+                                        id="department">
+
+                                        <option value="">اختر الإدارة</option>
+
+                                        @foreach($departments as $department)
+                                        <option value="{{ $department->dep_id }}"
+                                            data-sector="{{ $department->sector_code }}"
+                                            {{ old('department', $complaint->department ?? '') == $department->dep_id ? 'selected' : '' }}>
+                                            {{ $department->depname_ar }}
+                                        </option>
+                                    @endforeach
+
+                                    </select>
+
+                                    @error('department')
+                                        <div class="error-text">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                {{-- المحافظة --}}
+                                <div class="col-md-6 mb-4" id="govOfficeGroup" style="display:none;">
 
                                     <label class="form-label">
                                         المحافظة
@@ -543,10 +729,10 @@ $errors->has('comsource_id')
 
                                         @foreach ($govs as $gov)
 
-                                        <option value="{{ $gov->govsid }}"
-                                            {{ old('ComplaintGovernorate', $complaint->ComplaintGovernorate ?? '') == $gov->govsid ? 'selected' : '' }}>
+                                        <option value="{{ $gov->GOVT_CODE }}"
+                                            {{ old('ComplaintGovernorate', $complaint->ComplaintGovernorate ?? '') == $gov->GOVT_CODE ? 'selected' : '' }}>
 
-                                            {{ $gov->govname }}
+                                            {{ $gov->GOVT_NAMA }}
 
                                         </option>
 
@@ -561,11 +747,11 @@ $errors->has('comsource_id')
 
                                 </div>
 
-                                {{-- المكتب --}}
-                                <div class="col-md-6 mb-4">
+                                {{-- الفرع --}}
+                                <div class="col-md-6 mb-4"  id="officeGroup" style="display:none;">
 
                                     <label class="form-label">
-                                        المكتب
+                                        الفرع
                                         <span class="required-star">*</span>
                                     </label>
 
@@ -573,7 +759,7 @@ $errors->has('comsource_id')
                                         id="officeSelect"
                                         name="office">
 
-                                        <option value="">اختر المكتب</option>
+                                        <option value="">اختر الفرع</option>
 
                                         @foreach ($offices as $office)
 
@@ -596,23 +782,28 @@ $errors->has('comsource_id')
 
                                 </div>
 
-                                {{-- مصدر الشكوى --}}
-                                <div class="col-md-12 mb-4">
+                                {{-- مصدر البيان (MULTI-SELECT) --}}
+                                <div class="col-md-6 mb-2">
 
                                     <label class="form-label">
-                                        مصدر الشكوى
+                                        مصدر البيان
                                         <span class="required-star">*</span>
                                     </label>
 
-                                    <select class="form-select @error('comsource_id') is-invalid @enderror"
-                                        name="comsource_id">
+                                    <select class="form-select select2-multi @error('comsource_ids') is-invalid @enderror"
+                                        name="comsource_ids[]"
+                                        id="comsourceSelect"
+                                        multiple
+                                        style="width: 100%;">
 
                                         <option value="">اختر</option>
 
                                         @foreach($comsources as $source)
 
                                         <option value="{{ $source->comsourcesid }}"
-                                            {{ old('comsource_id', $complaint->ComplaintSources ?? '') == $source->comsourcesid ? 'selected' : '' }}>
+                                            @if(isset($complaint) && $complaint->sources->pluck('comsourcesid')->contains($source->comsourcesid))
+                                            selected
+                                            @endif>
 
                                             {{ $source->comsourcesname }}
 
@@ -622,17 +813,17 @@ $errors->has('comsource_id')
 
                                     </select>
 
-                                    @error('comsource_id')
+                                    @error('comsource_ids')
                                     <div class="error-text">{{ $message }}</div>
                                     @enderror
                                     <div class="error-text" id="comsourceError"></div>
 
                                 </div>
 
-                                {{-- نص الشكوى --}}
+                                {{-- نص البيان --}}
                                 <div class="col-md-12 mb-4">
                                     <label class="form-label">
-                                        نص الشكوى
+                                        نص البيان
                                         <span class="required-star">*</span>
                                     </label>
                                     <textarea
@@ -640,7 +831,7 @@ $errors->has('comsource_id')
                                         name="ComplaintText"
                                         id="ComplaintText"
                                         rows="5"
-                                        placeholder="أدخل تفاصيل الشكوى هنا...">{{ old('ComplaintText', $complaint->ComplaintText ?? '') }}</textarea>
+                                        placeholder="أدخل تفاصيل البيان هنا...">{{ old('ComplaintText', $complaint->ComplaintText ?? '') }}</textarea>
                                     @error('ComplaintText')
                                     <div class="error-text">{{ $message }}</div>
                                     @enderror
@@ -664,7 +855,7 @@ $errors->has('comsource_id')
 
                                     <i class="bx bx-save me-1"></i>
 
-                                    حفظ الشكوى
+                                    حفظ البيان
 
                                 </button>
 
@@ -689,6 +880,36 @@ $errors->has('comsource_id')
 <script>
     window.currentWizardStep = "{{ $step == 2 ? 'step-2' : 'step-1' }}";
 </script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+<script>
+    $(document).ready(function() {
+        // Initialize Select2 for multi-select complaint sources
+        $('#comsourceSelect').select2({
+            theme: 'bootstrap-5',
+            dir: 'rtl',
+            placeholder: 'اختر مصادر البيان',
+            allowClear: true,
+            width: '100%',
+            closeOnSelect: false
+        });
+
+        // Clear error on selection
+        $('#comsourceSelect').on('change', function() {
+            if ($(this).val() && $(this).val().length > 0) {
+                $(this).removeClass('is-invalid');
+                $("#comsourceError").text('');
+            }
+        });
+    });
+</script>
 <script src="{{ asset('assets/js/complaints.js') }}"></script>
+<script>
+    flatpickr("input[name='ComplaintDate']", {
+        locale: "ar",
+        dateFormat: "Y-m-d",
+        maxDate: "today"
+    });
+</script>
 @endpush

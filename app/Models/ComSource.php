@@ -6,13 +6,24 @@ use Illuminate\Database\Eloquent\Model;
 
 class ComSource extends Model
 {
-    protected $table = 'comsources';          // Table name
-    protected $primaryKey = 'comsourcesid';   // Primary key
-    public $timestamps = false;
+    protected $table = 'comsources';
+    protected $primaryKey = 'comsourcesid';
+    public $timestamps = true;
 
     protected $fillable = [
-        'comsourcesname'
+        'comsourcesname',
+        'validity',
+        'created_by',
+        'updated_by'
     ];
 
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by', 'id');
+    }
 
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by', 'id');
+    }
 }

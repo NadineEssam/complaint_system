@@ -1,29 +1,17 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class ProjectType extends Model
 {
-    protected $table = 'projecttype';
-
-    protected $primaryKey = 'projecttypeid';
-
+    protected $connection = 'ben'; 
+    protected $table = 'sectors';
+    protected $primaryKey = 'ID';
     public $timestamps = false;
 
     protected $fillable = [
-        'projecttypeid',
-        'projecttypename',
+        // 'activ_nama',
+        'sector_nama',
     ];
-
-    
-    public function complaints()
-    {
-        return $this->hasMany(
-            \App\Models\Complaint::class,   
-            'ComplaintProjectType',          
-            'projecttypeid'                 
-        );
-    }
 }

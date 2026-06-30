@@ -9,13 +9,13 @@ use Illuminate\Database\Eloquent\Model;
 class Governorate extends Model
 {
     use HasFactory;
-    protected $table = 'govs';
+    protected $table = 'gov_code';
 
-    protected $primaryKey = 'govsid';
+    protected $primaryKey = 'GOVT_CODE';
 
     public $timestamps = false;
 
-    protected $guarded=['govsid'];
+    protected $guarded=['GOVT_CODE'];
 
 
 

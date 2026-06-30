@@ -20,6 +20,12 @@ class RolesAndPermissionsSeeder extends Seeder
             'reports' => 'التقارير',
             'complaints' => 'الشكاوى',
             'responses' => 'الردود',
+            'services' => 'الخدمات',
+            'sources' => 'مصدر البيان',
+            'close-reason-classify' => 'سبب إغلاق البيان',
+            
+
+            
         ];
 
         $permissionsByRole = [
@@ -53,13 +59,19 @@ class RolesAndPermissionsSeeder extends Seeder
                 "reports.view-report-annual-sources-comparison" => ' مقارنه سنويه للمصادر فى الشكاوى والاستفسارات',
 
                 "complaints.index" => "عرض الشكاوى",
-                "complaints.create" => "إضافة شكوى",
-                "complaints.store" => "حفظ الشكوى",
-                "complaints.update" => "تحديث الشكوى",
-                "complaints.edit" => "تعديل الشكوى",
-                "complaints.reply" => "الرد على الشكوى",
-                "complaints.destroy" => "حذف الشكوى",
-                "complaints.show" => "عرض الشكوى",
+                "complaints.create" => "إضافة بيان",
+                "complaints.store" => "حفظ البيان",
+                "complaints.update" => "تحديث البيان",
+                "complaints.edit" => "تعديل البيان",
+                "complaints.reply" => "الرد على البيان",
+                "complaints.destroy" => "حذف البيان",
+                "complaints.show" => "عرض البيان",
+                "complaints.duplicate" => " تكرار للبيان",
+                "complaints.duplicate.create" => "إضافة تكرار للبيان",
+                "complaints.duplicate.store" => "حفظ تكرار للبيان",
+                "complaints.duplicates.index" => "عرض تكرارات البيان",
+
+                
 
                 "responses.index" => "عرض الردود",
                 "responses.create" => "إضافة رد",
@@ -70,6 +82,37 @@ class RolesAndPermissionsSeeder extends Seeder
                 "responses.destroy" => "حذف الرد",
                 "responses.show" => "عرض الرد",
                 "responses.data" => "بيانات الردود",
+
+                "services.index" => "عرض الخدمات",
+                "services.create" => "إضافة خدمة",
+                "services.store" => "حفظ الخدمة",
+                "services.update" => "تحديث الخدمة",
+                "services.edit" => "تعديل الخدمة",
+                "services.destroy" => "حذف الخدمة",
+                "services.show" => "عرض الخدمة",
+                "services.data" => "بيانات الخدمات",
+
+                "sources.index" => "عرض مصادر الشكاوي",
+                "sources.create" => "إضافة مصدر بيان",
+                "sources.store" => "حفظ مصدر بيان",
+                "sources.update" => "تحديث مصدر بيان",
+                "sources.edit" => "تعديل مصدر بيان",
+                "sources.destroy" => "حذف مصدر بيان",
+                "sources.show" => "عرض مصدر بيان",
+                "sources.data" => "بيانات مصادر الشكاوي",
+
+                "close-reason-classify.index" => "عرض أسباب إغلاق الشكاوي",
+                "close-reason-classify.create" => "إضافة سبب إغلاق بيان",
+                "close-reason-classify.store" => "حفظ سبب إغلاق بيان",
+                "close-reason-classify.update" => "تحديث سبب إغلاق بيان",
+                "close-reason-classify.edit" => "تعديل سبب إغلاق بيان",
+                "close-reason-classify.destroy" => "حذف سبب إغلاق بيان",
+                "close-reason-classify.show" => "عرض سبب إغلاق بيان",
+                "close-reason-classify.data" => "بيانات أسباب إغلاق الشكاوي",
+
+              
+
+
             ],
         ];
 
@@ -111,7 +154,7 @@ class RolesAndPermissionsSeeder extends Seeder
             $role->syncPermissions($permissionIds);
 
             if ($roleName === 'admin') {
-                $adminUser = User::where('userID' , 'amjad.anwar' )->first();
+                $adminUser = User::where('userID' , 'Nadine.essam' )->first();
                 if ($adminUser) {
                     $adminUser->assignRole($role);
                 }

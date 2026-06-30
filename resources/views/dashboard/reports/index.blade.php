@@ -271,9 +271,9 @@
             {{ __('خيارات الاستخراج') }}
         </h5>
         <div class="d-flex flex-wrap gap-3 mt-2">
-            {{-- <button class="btn-action btn-preview" type="button" onclick="submitForm('view')">
-                <i class='bx bx-show'></i> {{ __('Preview') }}
-            </button> --}}
+             <button class="btn-action btn-preview" type="button" onclick="submitForm('view')">
+                <i class='bx bx-show'></i> {{ __('عرض') }}
+            </button> 
             <button class="btn-action btn-excel" type="button" onclick="submitForm('xlsx')">
                 <i class='bx bx-file-doc'></i> {{ __('استخراج Excel') }}
             </button>
@@ -368,6 +368,10 @@ async function loadFilters(key) {
 }
 
 function submitForm(format) {
+    if (!form.action || form.action === window.location.href) {
+        alert('{{ __("يرجى اختيار نوع التقرير أولاً") }}');
+        return;
+    }
     const required = container.querySelectorAll('[required]');
     for (const field of required) {
         if (!field.value) {
@@ -377,7 +381,19 @@ function submitForm(format) {
         }
     }
     formatInput.value = format;
+    form.target = '_blank';
     form.submit();
+}
+
+function submitFormNewTab(format) {
+    formatInput.value = format;
+
+    const newTab = window.open('', '_blank');
+
+    form.target = '_blank';
+    form.submit();
+
+    form.target = '_blank';
 }
 </script>
 

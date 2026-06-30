@@ -3,6 +3,7 @@
 use Illuminate\Support\Str;
 use Pdo\Mysql;
 
+
 return [
 
     /*
@@ -114,6 +115,35 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
+        'new_po' => [
+        'driver'    => 'mysql',
+        'host'      => env('DB_HOST_NEWPO', '192.168.161.89'),
+        'port'      => env('DB_PORT_NEWPO', '3306'),
+        'database'  => env('DB_DATABASE_NEWPO', 'new_po'),
+        'username'  => env('DB_USERNAME_NEWPO', 'amgad'),
+        'password'  => env('DB_PASSWORD_NEWPO', ''),
+        'charset'   => 'utf8mb4',
+        'collation' => 'utf8mb4_unicode_ci',
+        'prefix'    => '',
+        'strict'    => true,
+        'sticky' => false,
+        'engine'    => null,
+    ],
+
+        'ben' => [
+        'driver'    => 'mysql',
+        'host'      => env('DB_HOST_BEN', '192.168.161.89'),
+        'port'      => env('DB_PORT_BEN', '3306'),
+        'database'  => env('DB_DATABASE_BEN', 'ben'),
+        'username'  => env('DB_USERNAME_BEN', 'amgad'),
+        'password'  => env('DB_PASSWORD_BEN', ''),
+        'charset'   => 'utf8mb4',
+        'collation' => 'utf8mb4_unicode_ci',
+        'prefix'    => '',
+        'strict'    => true,
+        'engine'    => null,
+    ],
+
     ],
 
     /*
@@ -149,7 +179,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')).'-database-'),
+            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')) . '-database-'),
             'persistent' => env('REDIS_PERSISTENT', false),
         ],
 

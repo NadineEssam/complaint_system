@@ -1,6 +1,6 @@
 @extends('dashboard.layouts.app')
 
-@section('title', 'عرض الرد على الشكوى')
+@section('title', 'عرض الرد على البيان')
 
 @push('headScripts')
 <style>
@@ -184,16 +184,16 @@
 
                 <h4>
                     <i class="bx bx-show-alt"></i>
-                    عرض الرد على الشكوى
+                    عرض الرد على البيان
                 </h4>
 
                 <p>
-                    يمكنك الإطلاع على تفاصيل الرد المسجل على الشكوى.
+                    يمكنك الإطلاع على تفاصيل الرد المسجل على البيان.
                 </p>
 
                 <div class="info-badge">
                     <i class="bx bx-hash"></i>
-                    رقم الشكوى:
+                    رقم البيان:
                     <strong>#{{ $response->complaint_id }}</strong>
                 </div>
 
@@ -256,7 +256,7 @@
                         <div class="col-md-6 info-row">
 
                             <label class="info-label">
-                                سبب الشكوى
+                                سبب البيان
                             </label>
 
                             <div class="info-value">

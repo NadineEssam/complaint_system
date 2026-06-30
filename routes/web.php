@@ -80,6 +80,12 @@ Route::get('/dashboard', [\App\Http\Controllers\Dashboard\DashboardController::c
             'destroy' => 'complaints.destroy',
             'show' => 'complaints.show'
         ])->parameter('', 'complaint');
+        Route::get('/{complaint}/duplicate/create', [\App\Http\Controllers\Dashboard\ComplaintController::class, 'duplicateCreate'])
+            ->name('complaints.duplicate.create');
+        Route::post('/{complaint}/duplicate', [\App\Http\Controllers\Dashboard\ComplaintController::class, 'duplicateStore'])
+            ->name('complaints.duplicate.store');
+        Route::get('/{complaint}/duplicates', [\App\Http\Controllers\Dashboard\ComplaintController::class, 'duplicatesIndex'])
+            ->name('complaints.duplicates.index');
     });
     /*end complaints routes*/
 
@@ -96,6 +102,45 @@ Route::get('/dashboard', [\App\Http\Controllers\Dashboard\DashboardController::c
         ])->parameter('', 'response');
     });
 
+
+    // ✅ SERVICES ROUTES
+Route::group(['prefix' => 'services'], function () {
+    Route::resource('/', \App\Http\Controllers\Dashboard\ServiceTypeController::class)->names([
+        'index' => 'services.index',
+        'create' => 'services.create',
+        'store' => 'services.store',
+        'update' => 'services.update',
+        'edit' => 'services.edit',
+        'destroy' => 'services.destroy',
+        'show' => 'services.show'
+    ])->parameter('', 'service');
+});
+
+// ✅ ComSources Routes
+Route::group(['prefix' => 'sources'], function () {
+    Route::resource('/', \App\Http\Controllers\Dashboard\ComSourceController::class)->names([
+        'index' => 'sources.index',
+        'create' => 'sources.create',
+        'store' => 'sources.store',
+        'update' => 'sources.update',
+        'edit' => 'sources.edit',
+        'destroy' => 'sources.destroy',
+        'show' => 'sources.show'
+    ])->parameter('', 'source');
+});
+ 
+// ✅ Close Reason Classifications Routes
+Route::group(['prefix' => 'close-reason-classify'], function () {
+    Route::resource('/', \App\Http\Controllers\Dashboard\CompCloseReasonClassifyController::class)->names([
+        'index' => 'close-reason-classify.index',
+        'create' => 'close-reason-classify.create',
+        'store' => 'close-reason-classify.store',
+        'update' => 'close-reason-classify.update',
+        'edit' => 'close-reason-classify.edit',
+        'destroy' => 'close-reason-classify.destroy',
+        'show' => 'close-reason-classify.show'
+    ])->parameter('', 'classification');
+});
 
     
 

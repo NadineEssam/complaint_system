@@ -28,16 +28,18 @@ class ComplaintDataTable extends DataTable
                 'sfdcomplaints.*',
                 'compstatus.statusText as status_name',
                 'complainttype.comtypename as complaint_type',
-                'requesttype.requesttypename as requesttypename'
+                'requesttype.requesttypename as requesttypename',
+                'ben.OFFICE.REG_OFFIC_NAMA as office_name', // adjust column name
                 // 'users_groups.userID as created_by_name',
                 // 'updated_by.userID as updated_by_name'
             )
                 ->leftJoin('compstatus', 'sfdcomplaints.ComplaintStatus', '=', 'compstatus.statusID')
                 ->leftJoin('complainttype', 'sfdcomplaints.ComplaintType', '=', 'complainttype.comtypeid')
                 ->leftJoin('requesttype', 'sfdcomplaints.RequestType', '=', 'requesttype.requesttypeid')
-                    // ->leftJoin('users_groups', 'sfdcomplaints.created_by', '=', 'users_groups.ID')
-                    // ->leftJoin('users_groups as updated_by', 'sfdcomplaints.updated_by', '=', 'updated_by.ID')
-                
+                ->leftJoin('ben.OFFICE', 'sfdcomplaints.office', '=', 'ben.OFFICE.ID') // adjust table/column names
+            // ->leftJoin('users_groups', 'sfdcomplaints.created_by', '=', 'users_groups.ID')
+            // ->leftJoin('users_groups as updated_by', 'sfdcomplaints.updated_by', '=', 'updated_by.ID')
+
 
 
         ))
@@ -45,12 +47,22 @@ class ComplaintDataTable extends DataTable
             ->addColumn('action', function ($model) {
 
                 $html = '<div class="d-flex align-items-center gap-2 justify-content-end">';
+                // Add this to the action column (optional - you can also click the ID)
+                if (PerUser('complaints.show')) {
+                    $html .= '
+                                <a href="' . route('complaints.show', ['complaint' => $model]) . '" 
+                                class="btn btn-sm btn-outline-info action-btn"
+                                data-bs-toggle="tooltip" 
+                                title="عرض البيان">
+                                    <i class="bx bx-show"></i>
+                                </a>';
+                }
                 if (PerUser('responses.index')) {
                     $html .= '
                          <a href="' . route('responses.index', ['complaint_id' => $model]) . '" 
                         class="btn btn-sm btn-outline-primary action-btn"
                         data-bs-toggle="tooltip" 
-                        title="الرد على الشكوى">
+                        title="الرد على البيان">
                             <i class="fas fa-reply-all"></i>
                         </a>';
                 }
@@ -60,20 +72,20 @@ class ComplaintDataTable extends DataTable
                         <a href="' . route('complaints.edit', ['complaint' => $model]) . '" 
                         class="btn btn-sm btn-outline-primary action-btn"
                         data-bs-toggle="tooltip" 
-                        title="تعديل الشكوى">
+                        title="تعديل البيان">
                             <i class="bx bx-edit-alt"></i>
                         </a>';
                 }
 
                 // Delete Button
-                if (PerUser('complaints.destroy')) {
+                if (PerUser('complaints.destroy') && !in_array($model->ComplaintStatus, [2, 4])) {
                     $html .= '
                         <button 
                             class="btn btn-sm btn-outline-danger action-btn delete-this"
-                            data-id="' . $model->id . '"
+                            data-id="' . $model->ComplaintID . '"
                             data-url="' . route('complaints.destroy', ['complaint' => $model]) . '"
                             data-bs-toggle="tooltip" 
-                            title="إزاله الشكوى">
+                            title="إزاله البيان">
                             <i class="bx bx-trash"></i>
                         </button>';
                 }
@@ -101,16 +113,45 @@ class ComplaintDataTable extends DataTable
     //     return $model->newQuery();
     // }
 
+    // public function query(Complaint $model): QueryBuilder
+    // {
+    //     $query = $model->newQuery();
+
+    //     if ($gender = $this->request->get('gender_filter')) {
+    //         $query->where('ComplainerGender', $gender);
+    //     }
+
+    //     if ($gov = $this->request->get('gov_filter')) {
+    //         $query->where('ComplaintGovernorate', $gov);
+    //     }
+
+    //     if ($status = $this->request->get('status_filter')) {
+    //         $query->where('ComplaintStatus', $status);
+    //     }
+
+    //     if ($reqtype = $this->request->get('reqtype_filter')) {
+    //         $query->where('RequestType', $reqtype);
+    //     }
+
+    //     return $query;
+    // }
+
     public function query(Complaint $model): QueryBuilder
     {
         $query = $model->newQuery();
 
+        // عرض شكاوى عام 2022 فقط
+        // $query->whereYear('ComplaintDate', 2022);
+        $query->whereYear('ComplaintDate', '>=', 2022);
         if ($gender = $this->request->get('gender_filter')) {
             $query->where('ComplainerGender', $gender);
         }
 
         if ($gov = $this->request->get('gov_filter')) {
             $query->where('ComplaintGovernorate', $gov);
+        }
+        if ($office = $this->request->get('office_filter')) {
+            $query->where('office', $office);
         }
 
         if ($status = $this->request->get('status_filter')) {
@@ -139,7 +180,7 @@ class ComplaintDataTable extends DataTable
             ->orderBy(0)
             ->pageLength(10)
             ->parameters([
-               // 'scrollX' => true,
+                // 'scrollX' => true,
             ])
             ->lengthMenu([10, 25, 50])
             //                    ->buttons(
@@ -163,33 +204,35 @@ class ComplaintDataTable extends DataTable
             Column::make('ComplaintID')->title('رقم الشكوي'),
             Column::make('requesttypename')
                 ->name('requesttype.requesttypename')
-                ->title('نوع الشكوى'),
-            Column::make('complaint_type')
-                ->name('complainttype.comtypename')
-                ->title('تصنيف الشكوى'),
+                ->title('نوع البيان'),
+            // Column::make('complaint_type')
+            //     ->name('complainttype.comtypename')
+            //     ->title('تصنيف البيان'),
             Column::make('ComplainerName')->title('اسم الشاكي'),
 
             Column::make('ComplaintNationalID')->title('الرقم القومي '),
             Column::make('ComplainerPhone')->title('رقم الهاتف المحمول '),
-
+            Column::make('office_name')
+            ->name('offices.REG_OFFIC_NAMA') // adjust column name
+            ->title('الفرع'),
 
             Column::make('status_name')
                 ->name('compstatus.statusText')
                 ->title('الحالة'),
 
 
-                
+
             Column::make('ComplaintDate')->title('تاريخ الشكوي'),
 
-                 Column::make('username')
+            Column::make('username')
                 ->title('موظف الشكوي'),
 
-                   Column::make('UpdateUser')
-                
+            Column::make('UpdateUser')
+
                 ->title('موظف التعديل'),
 
 
-          
+
             Column::computed('action')->title('الاجراءات')
                 ->exportable(false)
                 ->printable(false)
@@ -197,8 +240,8 @@ class ComplaintDataTable extends DataTable
                 ->addClass('text-center'),
 
 
-                
-                
+
+
         ];
     }
 

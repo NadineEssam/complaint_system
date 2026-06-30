@@ -90,7 +90,7 @@ class CompareByRequestTypeBetweenYearsReport implements ReportInterface
 
     public function headings(): array
     {
-        return ['المكتب', 'عدد شكاوى لعام ' . $this->filters['first_year'], 'عدد شكاوى لعام ' . $this->filters['second_year'], 'عدد استفسارات لعام ' . $this->filters['first_year'], 'عدد استفسارات لعام ' . $this->filters['second_year']];
+        return ['الفرع', 'عدد شكاوى لعام ' . $this->filters['first_year'], 'عدد شكاوى لعام ' . $this->filters['second_year'], 'عدد استفسارات لعام ' . $this->filters['first_year'], 'عدد استفسارات لعام ' . $this->filters['second_year']];
     }
 
     public function map(mixed $row): array

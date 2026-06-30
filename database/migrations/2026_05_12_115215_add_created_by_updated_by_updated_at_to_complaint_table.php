@@ -22,7 +22,7 @@ return new class extends Migration
 
             $table->foreign('updated_by')
                 ->references('id')
-                ->on('users')
+                ->on('users_groups')
                 ->nullOnDelete();
         });
     }

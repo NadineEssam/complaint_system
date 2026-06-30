@@ -1,6 +1,6 @@
 @extends('dashboard.layouts.app')
 
-@section('title', isset($response) ? 'تعديل الرد على الشكوى' : 'إضافة رد للشكوى')
+@section('title', isset($response) ? 'تعديل الرد على البيان' : 'إضافة رد البيان')
 
 @push('headScripts')
 <style>
@@ -159,7 +159,7 @@
                     <ol class="breadcrumb mb-0 p-0 shadow-none">
 
                     <li class="breadcrumb-item active text-primary font-weight-bold">
-                            {{ isset($response) ? 'تعديل الرد على الشكوى' : 'إضافة رد للشكوى' }}
+                            {{ isset($response) ? 'تعديل الرد على البيان' : 'إضافة رد للبيان' }}
                         </li>
 
                     <li class="breadcrumb-item">
@@ -199,16 +199,16 @@
                 <h4>
                     <i class="bx bx-message-rounded-detail"></i>
 
-                    {{ isset($response) ? 'تعديل رد الشكوى' : 'إضافة رد جديد' }}
+                    {{ isset($response) ? 'تعديل رد البيان' : 'إضافة رد جديد' }}
                 </h4>
 
                 <p>
-                    يمكنك تحديث حالة الشكوى وإضافة تفاصيل الرد بسهولة.
+                    يمكنك تحديث حالة البيان وإضافة تفاصيل الرد بسهولة.
                 </p>
 
                 <div class="info-badge">
                     <i class="bx bx-hash"></i>
-                    رقم الشكوى:
+                    رقم البيان:
                     <strong>#{{ $complaint->ComplaintID }}</strong>
                 </div>
 
@@ -309,7 +309,7 @@
                                 <textarea
                                     class="form-control @error('ComplaintText') is-invalid @enderror"
                                     name="ComplaintText"
-                                    placeholder="أدخل تفاصيل الحالة أو الرد على الشكوى...">{{ old('ComplaintText', $response->ComplaintText ?? '') }}</textarea>
+                                    placeholder="أدخل تفاصيل الحالة أو الرد على البيان...">{{ old('ComplaintText', $response->ComplaintText ?? '') }}</textarea>
 
                                 @error('ComplaintText')
                                 <span class="invalid-feedback d-block">
@@ -333,11 +333,11 @@
 
                         <div class="row">
 
-                            {{-- سبب الشكوى --}}
+                            {{-- سبب البيان --}}
                             <div class="col-md-6 mb-4">
 
                                 <label class="form-label">
-                                    سبب الشكوى
+                                    سبب البيان
                                 </label>
 
                                 <select class="form-control"
@@ -375,14 +375,12 @@
                                     <option value="">اختر التصنيف</option>
 
                                     @foreach ($classifications as $classify)
-
-                                    <option value="{{ $classify->close_reason_classify_id }}"
+                                    <option
+                                        value="{{ $classify->close_reason_classify_id }}"
+                                        data-reason="{{ $classify->fk_close_reason_id }}"
                                         {{ old('fk_close_reason_classify_id', $response->fk_close_reason_classify_id ?? '') == $classify->close_reason_classify_id ? 'selected' : '' }}>
-
                                         {{ $classify->close_reason_classify_Name }}
-
                                     </option>
-
                                     @endforeach
 
                                 </select>
@@ -438,15 +436,50 @@
             $('#closeReasonBox').addClass('disabled-box');
         }
     }
+    function filterClassifications() {
+
+    let reasonId = $('#reasonSelect').val();
+
+    $('#classifySelect option').each(function () {
+
+        let optionReason = $(this).data('reason');
+
+        if ($(this).val() === '') {
+            $(this).show();
+            return;
+        }
+
+        if (reasonId == optionReason) {
+            $(this).show();
+        } else {
+            $(this).hide();
+        }
+    });
+
+    // إعادة تعيين التصنيف إذا لم يعد متوافقاً
+    let selectedOption = $('#classifySelect option:selected');
+
+    if (
+        selectedOption.val() &&
+        selectedOption.data('reason') != reasonId
+    ) {
+        $('#classifySelect').val('');
+    }
+}
 
     $(document).ready(function() {
 
+    toggleFields();
+    filterClassifications();
+
+    $('#statusSelect').on('change', function() {
         toggleFields();
-
-        $('#statusSelect').on('change', function() {
-            toggleFields();
-        });
-
     });
+
+    $('#reasonSelect').on('change', function() {
+        filterClassifications();
+    });
+
+});
 </script>
 @endpush

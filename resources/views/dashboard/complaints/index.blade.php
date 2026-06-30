@@ -70,7 +70,7 @@ select.form-select {
                                                                                 @endforeach
                                                                             </select>
                                                                         </div>
-                                                                        <div class="col-md-3 col-sm-6">
+                                                                        <!-- <div class="col-md-3 col-sm-6">
                                                                             <label class="form-label text-muted mb-1" style="font-size:12px;">
                                                                                 <i class="bx bx-map me-1"></i> المحافظة
                                                                             </label>
@@ -78,6 +78,17 @@ select.form-select {
                                                                                 <option value="">الكل</option>
                                                                                 @foreach($govs as $gov)
                                                                                 <option value="{{ $gov->id }}">{{ $gov->name }}</option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                        </div> -->
+                                                                        <div class="col-md-3 col-sm-6">
+                                                                            <label class="form-label text-muted mb-1" style="font-size:12px;">
+                                                                                <i class="bx bx-buildings me-1"></i> الفرع
+                                                                            </label>
+                                                                            <select id="filter_office" class="form-select form-select-sm shadow-none border-primary-subtle">
+                                                                                <option value="">الكل</option>
+                                                                                @foreach($offices as $o)
+                                                                                <option value="{{ $o->id }}">{{ $o->name }}</option>
                                                                                 @endforeach
                                                                             </select>
                                                                         </div>
@@ -130,6 +141,7 @@ select.form-select {
                                                 var params = {
                                                     gender_filter: $('#filter_gender').val(),
                                                     gov_filter: $('#filter_gov').val(),
+                                                    office_filter:  $('#filter_office').val(),
                                                     status_filter: $('#filter_status').val(),
                                                     reqtype_filter: $('#filter_reqtype').val(),
                                                 };
@@ -263,5 +275,12 @@ select.form-select {
                                                     }
                                                 });
                                             });
+                                            $(document).on('change', '#filter_gender, #filter_office, #filter_status, #filter_reqtype',
+                                                    applyComplaintFilters
+                                                );
+                                                $('#reset_filters').on('click', function() {
+                                                    $('#filter_gender, #filter_office, #filter_status, #filter_reqtype').val('');
+                                                    applyComplaintFilters();
+                                                });
                                         </script>
                                         @endpush
