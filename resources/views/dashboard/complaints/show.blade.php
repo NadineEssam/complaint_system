@@ -447,7 +447,7 @@
                     <div class="detail-row">
                         <div class="detail-item">
                             <span class="detail-label">موظف الإدخال</span>
-                            <span class="detail-value">{{ $complaint->createdBy->username ?? 'غير محدد' }}</span>
+                            <span class="detail-value">{{ $complaint->username ?? 'غير محدد' }}</span>
                         </div>
                         <div class="detail-item">
                             <span class="detail-label">تاريخ الإدخال</span>
@@ -455,11 +455,11 @@
                         </div>
                         <div class="detail-item">
                             <span class="detail-label">موظف التعديل</span>
-                            <span class="detail-value">{{ $complaint->updatedBy->username ?? 'لم يتم التعديل' }}</span>
+                            <span class="detail-value">{{ $complaint->UpdateUser ?? 'لم يتم التعديل' }}</span>
                         </div>
                         <div class="detail-item">
                             <span class="detail-label">تاريخ التعديل</span>
-                            <span class="detail-value">{{ $complaint->updated_at?->format('d/m/Y H:i') ?? 'لم يتم التعديل' }}</span>
+                            <span class="detail-value">{{ $complaint->UpdateDate?->format('d/m/Y H:i') ?? 'لم يتم التعديل' }}</span>
                         </div>
                     </div>
                 </div>
