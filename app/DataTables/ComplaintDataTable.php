@@ -158,7 +158,7 @@ class ComplaintDataTable extends DataTable
             $query->where('ComplaintGovernorate', $gov);
         }
         if ($office = $this->request->get('office_filter')) {
-            $query->where('ben.OFFICE.REG_OFFIC_NAMA', $office);
+            $query->where('sfdcomplaints.office', $office);
         }
 
         if ($status = $this->request->get('status_filter')) {
