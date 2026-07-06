@@ -3,253 +3,319 @@
 @section('title', isset($source) ? 'تعديل المصدر' : 'إضافة مصدر جديد')
 
 @push('headScripts')
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-    .page-breadcrumb .breadcrumb {
-        background: transparent;
-    }
 
-    .breadcrumb-item+.breadcrumb-item::before {
-        display: inline-block;
-        padding: 0 8px;
-        color: #adb5bd;
-        content: "/";
-    }
+  /* ================= GLOBAL ================= */
+  .classify-form, .classify-form * {
+    font-family: 'Cairo', 'Tahoma', sans-serif;
+    font-size: 13px;
+  }
 
-    .main-card {
-        border: 0;
-        border-radius: 24px;
-        overflow: hidden;
-        background: #fff;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-    }
+  .classify-form {
+    background: #f7f8fa;
+    padding: 24px;
+    border-radius: 16px;
+  }
 
-    .custom-card-header {
-        padding: 24px 30px;
-        background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
-        color: #fff;
-    }
+  /* ================= BREADCRUMB ================= */
+  .classify-form .breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+  }
 
-    .custom-card-header h4 {
-        margin: 0;
-        font-weight: 700;
-        font-size: 22px;
-    }
+  .classify-form .breadcrumb-item,
+  .classify-form .breadcrumb-item a {
+    font-size: 13px;
+    color: #98a2b3;
+    text-decoration: none;
+  }
 
-    .custom-card-header p {
-        margin: 8px 0 0;
-        opacity: .9;
-        font-size: 14px;
-    }
+  .classify-form .breadcrumb-item.active {
+    color: #1f2937;
+    font-weight: 700;
+  }
 
-    .section-card {
-        background: #fff;
-        border: 1px solid #eef1f4;
-        border-radius: 18px;
-        padding: 24px;
-        margin-bottom: 24px;
-        transition: .3s;
-    }
+  .classify-form .breadcrumb-item + .breadcrumb-item::before {
+    content: "/";
+    color: #d1d5db;
+    padding: 0 6px;
+  }
 
-    .section-card:hover {
-        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
-    }
+  /* ================= MAIN CARD ================= */
+  .classify-form .main-card {
+    border: 1px solid #eef0f3 !important;
+    border-radius: 14px !important;
+    background: #fff;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+    overflow: hidden;
+  }
 
-    .section-title {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 25px;
-        color: #0d6efd;
-        font-size: 18px;
-        font-weight: 700;
-    }
+  /* ================= CARD HEADER ================= */
+  .classify-form .form-header {
+    background: #fff;
+    border-bottom: 1px solid #eef0f3;
+    padding: 18px 22px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 
-    .section-title i {
-        font-size: 22px;
-    }
+  .classify-form .form-header .header-icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 10px;
+    background: #eaf2ff;
+    color: #3b76e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
 
-    .form-label {
-        font-weight: 700;
-        color: #495057;
-        margin-bottom: 10px;
-    }
+  .classify-form .form-header h4 {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+  }
 
-    .form-control,
-    .form-select {
-        border-radius: 12px;
-        min-height: 50px;
-        border: 1px solid #dce1e7;
-        padding: 12px 15px;
-        transition: .2s;
-        box-shadow: none !important;
-    }
+  .classify-form .form-header p {
+    font-size: 13px;
+    color: #9ca3af;
+    margin: 2px 0 0;
+  }
 
-    .form-control:focus,
-    .form-select:focus {
-        border-color: #0d6efd;
-        box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1) !important;
-    }
+  /* ================= SECTION CARD ================= */
+  .classify-form .section-card {
+    border: 1px solid #eef0f3;
+    border-radius: 12px;
+    padding: 20px;
+    background: #fff;
+    margin-bottom: 20px;
+  }
 
-    .required-star {
-        color: #dc3545;
-    }
+  .classify-form .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #3b76e0;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
 
-    .btn-save {
-        border-radius: 14px;
-        padding: 12px 40px;
-        font-weight: 700;
-        font-size: 15px;
-    }
+  .classify-form .section-title i {
+    font-size: 16px;
+  }
 
-    .invalid-feedback {
-        font-size: 13px;
-        margin-top: 6px;
-    }
+  /* ================= FORM CONTROLS ================= */
+  .classify-form .form-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 6px;
+  }
 
-    @media(max-width:768px) {
-        .custom-card-header {
-            padding: 20px;
-        }
+  .classify-form .form-control,
+  .classify-form .form-select {
+    font-family: 'Cairo', 'Tahoma', sans-serif;
+    font-size: 13px;
+    border-radius: 8px;
+    min-height: 42px;
+    border: 1px solid #e5e7eb;
+    box-shadow: none !important;
+    transition: border-color .15s;
+    color: #1f2937;
+  }
 
-        .section-card {
-            padding: 18px;
-        }
+  .classify-form .form-control:focus,
+  .classify-form .form-select:focus {
+    border-color: #3b76e0;
+    box-shadow: 0 0 0 3px rgba(59, 118, 224, 0.1) !important;
+  }
 
-        .btn-save {
-            width: 100%;
-        }
-    }
+  .classify-form .form-select {
+    background-position: left 0.75rem center !important;
+    padding-left: 2.25rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  .classify-form .is-invalid {
+    border-color: #d3849a !important;
+  }
+
+  .classify-form .error-text {
+    color: #d3556a;
+    font-size: 13px;
+    margin-top: 4px;
+  }
+
+  .classify-form .required-star {
+    color: #d3556a;
+  }
+
+  /* ================= BUTTONS ================= */
+  .classify-form .btn-custom {
+    min-width: 120px;
+    border-radius: 8px;
+    padding: 9px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Cairo', 'Tahoma', sans-serif;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .classify-form .btn-primary.btn-custom {
+    background: #3b76e0;
+    border-color: #3b76e0;
+  }
+
+  .classify-form .btn-primary.btn-custom:hover {
+    background: #2e65cc;
+    border-color: #2e65cc;
+  }
+
+  .classify-form .btn-secondary.btn-custom {
+    background: #f3f4f6;
+    border-color: #e5e7eb;
+    color: #374151;
+  }
+
+  .classify-form .btn-secondary.btn-custom:hover {
+    background: #e9eaec;
+  }
+
+  .classify-form .btn-success.btn-custom {
+    background: #eafaf0;
+    border-color: #c6edd8;
+    color: #2f9e63;
+  }
+
+  .classify-form .btn-success.btn-custom:hover {
+    background: #d4f5e4;
+    color: #1f7a4b;
+  }
+
+  /* ================= RESPONSIVE ================= */
+  @media(max-width:768px) {
+    .classify-form { padding: 15px; }
+    .classify-form .btn-custom { width: 100%; justify-content: center; }
+  }
+
 </style>
 @endpush
 
 @section('content')
 
-<div class="page-content-wrapper">
-    <div class="page-content">
+<div class="classify-form" dir="rtl">
 
-        {{-- breadcrumb --}}
-        <div class="page-breadcrumb d-md-flex align-items-center mb-4 pb-2 border-bottom" dir="rtl">
-            <div class="pr-3">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0 p-0 shadow-none">
-                        <li class="breadcrumb-item active text-primary font-weight-bold">
-                            {{ isset($source) ? 'تعديل المصدر' : 'إضافة مصدر جديد' }}
-                        </li>
-                        <li class="breadcrumb-item">
-                            <a href="{{ route('sources.index') }}"
-                                class="text-secondary">
-                                <i class="bx bx-git-branch"></i>
-                                المصادر
-                            </a>
-                        </li>
-                        <li class="breadcrumb-item">
-                            <a href="{{ route('dashboard') }}" class="text-secondary">
-                                <i class="bx bx-home-alt"></i>
-                                الرئيسية
-                            </a>
-                        </li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
+  {{-- ================= BREADCRUMB ================= --}}
+  <div class="mb-4">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active">
+          {{ isset($source) ? 'تعديل المصدر' : 'إضافة مصدر جديد' }}
+        </li>
+        <li class="breadcrumb-item">
+          <a href="{{ route('sources.index') }}">المصادر</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="{{ route('dashboard') }}">
+            <i class="bx bx-home-alt"></i> الرئيسية
+          </a>
+        </li>
+      </ol>
+    </nav>
+  </div>
 
-        <div class="card main-card" dir="rtl">
+  {{-- ================= MAIN CARD ================= --}}
+  <div class="main-card">
 
-            {{-- Header --}}
-            <div class="custom-card-header">
-                <h4>
-                    <i class="bx bx-git-branch"></i>
-                    {{ isset($source) ? 'تعديل المصدر' : 'إضافة مصدر جديد' }}
-                </h4>
-                <p>
-                    يمكنك {{ isset($source) ? 'تحديث' : 'إضافة' }} بيانات مصدر البيان بسهولة.
-                </p>
-            </div>
-
-            <div class="card-body p-lg-4 p-3">
-
-                <form method="POST"
-                    action="{{ isset($source) ? route('sources.update', $source->comsourcesid) : route('sources.store') }}">
-
-                    @csrf
-
-                    @if(isset($source))
-                    @method('PUT')
-                    @endif
-
-                    {{-- البيانات الأساسية --}}
-                    <div class="section-card">
-
-                        <div class="section-title">
-                            <i class="bx bx-info-circle"></i>
-                            البيانات الأساسية
-                        </div>
-
-                        <div class="row">
-
-                            {{-- اسم المصدر --}}
-                            <div class="col-12 mb-4">
-
-                                <label class="form-label">
-                                    اسم المصدر
-                                    <span class="required-star">*</span>
-                                </label>
-
-                                <input type="text"
-                                    class="form-control @error('comsourcesname') is-invalid @enderror"
-                                    name="comsourcesname"
-                                    placeholder="أدخل اسم المصدر (مثال: البريد الإلكتروني، الهاتف)..."
-                                    value="{{ old('comsourcesname', $source->comsourcesname ?? '') }}"
-                                    required>
-
-                                @error('comsourcesname')
-                                <span class="invalid-feedback d-block">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-
-                            </div>
-
-                            {{-- الحالة --}}
-                            <div class="col-12 mb-4">
-                                <label class="form-label">الحالة</label>
-                                <select class="form-control @error('validity') is-invalid @enderror" name="validity">
-                                    <option value="1" {{ old('validity', $source->validity ?? 1) == 1 ? 'selected' : '' }}>
-                                        فعّال
-                                    </option>
-                                    <option value="0" {{ old('validity', $source->validity ?? 1) == 0 ? 'selected' : '' }}>
-                                        غير فعّال
-                                    </option>
-                                </select>
-                                @error('validity')
-                                <span class="invalid-feedback d-block"><strong>{{ $message }}</strong></span>
-                                @enderror
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    {{-- submit --}}
-                    <div class="text-center mt-4">
-
-                        <button type="submit" class="btn btn-primary btn-save shadow-sm">
-
-                            <i class="bx bx-save ml-1"></i>
-
-                            {{ isset($source) ? 'تحديث المصدر' : 'حفظ المصدر' }}
-
-                        </button>
-
-                    </div>
-
-                </form>
-
-            </div>
-
-        </div>
-
+    {{-- Header --}}
+    <div class="form-header">
+      <div class="header-icon">
+        <i class="bx bx-git-branch"></i>
+      </div>
+      <div>
+        <h4>{{ isset($source) ? 'تعديل المصدر' : 'إضافة مصدر جديد' }}</h4>
+        <p>يمكنك {{ isset($source) ? 'تحديث' : 'إضافة' }} بيانات مصدر البيان بسهولة.</p>
+      </div>
     </div>
+
+    <div class="card-body p-lg-4 p-3">
+
+      <form method="POST"
+        action="{{ isset($source) ? route('sources.update', $source->comsourcesid) : route('sources.store') }}">
+
+        @csrf
+        @if(isset($source))
+          @method('PUT')
+        @endif
+
+        {{-- ================= SECTION ================= --}}
+        <div class="section-card">
+
+          <div class="section-title">
+            <i class="bx bx-info-circle"></i>
+            البيانات الأساسية
+          </div>
+
+          <div class="row">
+
+            {{-- اسم المصدر --}}
+            <div class="col-12 mb-4">
+              <label class="form-label">
+                اسم المصدر <span class="required-star">*</span>
+              </label>
+              <input type="text"
+                class="form-control @error('comsourcesname') is-invalid @enderror"
+                name="comsourcesname"
+                placeholder="أدخل اسم المصدر (مثال: البريد الإلكتروني، الهاتف)..."
+                value="{{ old('comsourcesname', $source->comsourcesname ?? '') }}"
+                required>
+              @error('comsourcesname')
+              <div class="error-text">{{ $message }}</div>
+              @enderror
+            </div>
+
+            {{-- الحالة --}}
+            <div class="col-12 mb-4">
+              <label class="form-label">الحالة</label>
+              <select class="form-select @error('validity') is-invalid @enderror" name="validity">
+                <option value="1" {{ old('validity', $source->validity ?? 1) == 1 ? 'selected' : '' }}>فعّال</option>
+                <option value="0" {{ old('validity', $source->validity ?? 1) == 0 ? 'selected' : '' }}>غير فعّال</option>
+              </select>
+              @error('validity')
+              <div class="error-text">{{ $message }}</div>
+              @enderror
+            </div>
+
+          </div>
+
+          {{-- Buttons --}}
+          <div class="d-flex justify-content-between mt-3">
+            <a href="{{ route('sources.index') }}" class="btn btn-secondary btn-custom">
+              <i class="bx bx-arrow-back me-1"></i> رجوع
+            </a>
+            <button type="submit" class="btn btn-success btn-custom">
+              <i class="bx bx-save me-1"></i>
+              {{ isset($source) ? 'تحديث المصدر' : 'حفظ المصدر' }}
+            </button>
+          </div>
+
+        </div>
+
+      </form>
+    </div>
+  </div>
+
 </div>
 
 @endsection

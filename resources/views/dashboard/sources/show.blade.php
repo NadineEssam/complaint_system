@@ -3,271 +3,330 @@
 @section('title', 'عرض المصدر')
 
 @push('headScripts')
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-    .page-breadcrumb .breadcrumb {
-        background: transparent;
-    }
 
-    .breadcrumb-item+.breadcrumb-item::before {
-        display: inline-block;
-        padding: 0 8px;
-        color: #adb5bd;
-        content: "/";
-    }
+  /* ================= GLOBAL ================= */
+  .classify-show, .classify-show * {
+    font-family: 'Cairo', 'Tahoma', sans-serif;
+    font-size: 13px;
+  }
 
-    .main-card {
-        border: 0;
-        border-radius: 24px;
-        overflow: hidden;
-        background: #fff;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-    }
+  .classify-show {
+    background: #f7f8fa;
+    padding: 24px;
+    border-radius: 16px;
+  }
 
-    .custom-card-header {
-        padding: 24px 30px;
-        background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
-        color: #fff;
-    }
+  /* ================= BREADCRUMB ================= */
+  .classify-show .breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+  }
 
-    .custom-card-header h4 {
-        margin: 0;
-        font-weight: 700;
-        font-size: 22px;
-    }
+  .classify-show .breadcrumb-item,
+  .classify-show .breadcrumb-item a {
+    font-size: 13px;
+    color: #98a2b3;
+    text-decoration: none;
+  }
 
-    .custom-card-header p {
-        margin: 8px 0 0;
-        opacity: .9;
-        font-size: 14px;
-    }
+  .classify-show .breadcrumb-item.active {
+    color: #1f2937;
+    font-weight: 700;
+  }
 
-    .info-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        background: rgba(255, 255, 255, 0.18);
-        padding: 7px 14px;
-        border-radius: 50px;
-        margin-top: 14px;
-        font-size: 13px;
-    }
+  .classify-show .breadcrumb-item + .breadcrumb-item::before {
+    content: "/";
+    color: #d1d5db;
+    padding: 0 6px;
+  }
 
-    .section-card {
-        background: #fff;
-        border: 1px solid #eef1f4;
-        border-radius: 18px;
-        padding: 24px;
-        margin-bottom: 24px;
-    }
+  /* ================= MAIN CARD ================= */
+  .classify-show .main-card {
+    border: 1px solid #eef0f3 !important;
+    border-radius: 14px !important;
+    background: #fff;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+    overflow: hidden;
+  }
 
-    .section-title {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 25px;
-        color: #0d6efd;
-        font-size: 18px;
-        font-weight: 700;
-    }
+  /* ================= CARD HEADER ================= */
+  .classify-show .form-header {
+    background: #fff;
+    border-bottom: 1px solid #eef0f3;
+    padding: 18px 22px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
 
-    .section-title i {
-        font-size: 22px;
-    }
+  .classify-show .form-header .header-icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 10px;
+    background: #eaf2ff;
+    color: #3b76e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
 
-    .info-row {
-        margin-bottom: 20px;
-    }
+  .classify-show .form-header h4 {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+  }
 
-    .info-label {
-        font-weight: 700;
-        color: #6c757d;
-        margin-bottom: 8px;
-        display: block;
-    }
+  .classify-show .form-header p {
+    font-size: 13px;
+    color: #9ca3af;
+    margin: 2px 0 0;
+  }
 
-    .info-value {
-        background: #f8f9fa;
-        border-radius: 12px;
-        padding: 14px 16px;
-        min-height: 50px;
-        color: #212529;
-        border: 1px solid #edf0f2;
-        line-height: 1.8;
-    }
+  /* ================= SECTION CARDS ================= */
+  .classify-show .detail-card {
+    background: #fff;
+    border: 1px solid #eef0f3;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 16px;
+  }
 
-    .btn-back {
-        border-radius: 14px;
-        padding: 11px 30px;
-        font-weight: 700;
-    }
+  .classify-show .detail-section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #3b76e0;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #eef0f3;
+  }
 
-    @media(max-width:768px) {
-        .custom-card-header {
-            padding: 20px;
-        }
+  .classify-show .detail-section-title i {
+    font-size: 16px;
+  }
 
-        .section-card {
-            padding: 18px;
-        }
+  /* ================= DETAIL GRID ================= */
+  .classify-show .detail-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px;
+  }
 
-        .btn-back {
-            width: 100%;
-        }
-    }
+  .classify-show .detail-item {
+    padding: 12px 14px;
+    background: #f7f8fa;
+    border-radius: 8px;
+    border-right: 3px solid #3b76e0;
+  }
+
+  .classify-show .detail-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #6b7280;
+    margin-bottom: 5px;
+    display: block;
+  }
+
+  .classify-show .detail-value {
+    font-size: 13px;
+    color: #1f2937;
+    font-weight: 600;
+    line-height: 1.5;
+    word-break: break-word;
+  }
+
+  /* ================= STATUS BADGE ================= */
+  .classify-show .status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .classify-show .status-badge.active   { background: #eafaf0; color: #2f9e63; }
+  .classify-show .status-badge.inactive { background: #fdecee; color: #d3556a; }
+
+  /* ================= BUTTONS ================= */
+  .classify-show .action-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .classify-show .btn-custom {
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Cairo', 'Tahoma', sans-serif;
+    min-width: 110px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .classify-show .btn-warning.btn-custom {
+    background: #fdf3e6;
+    border-color: #f0d4b0;
+    color: #c3791f;
+  }
+
+  .classify-show .btn-warning.btn-custom:hover {
+    background: #fce8cc;
+    color: #a3611a;
+  }
+
+  .classify-show .btn-secondary.btn-custom {
+    background: #f3f4f6;
+    border-color: #e5e7eb;
+    color: #374151;
+  }
+
+  .classify-show .btn-secondary.btn-custom:hover {
+    background: #e9eaec;
+  }
+
+  /* ================= RESPONSIVE ================= */
+  @media(max-width:768px) {
+    .classify-show { padding: 15px; }
+    .classify-show .action-buttons { flex-direction: column; }
+    .classify-show .btn-custom { width: 100%; justify-content: center; }
+    .classify-show .detail-row { grid-template-columns: 1fr; }
+  }
+
 </style>
 @endpush
 
 @section('content')
 
-<div class="page-content-wrapper">
-    <div class="page-content">
+<div class="classify-show" dir="rtl">
 
-        {{-- breadcrumb --}}
-        <div class="page-breadcrumb d-md-flex align-items-center mb-4 pb-2 border-bottom" dir="rtl">
-            <div class="pr-3">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0 p-0 shadow-none">
-                        <li class="breadcrumb-item active text-primary font-weight-bold">
-                            عرض المصدر
-                        </li>
-                        <li class="breadcrumb-item">
-                            <a href="{{ route('sources.index') }}"
-                                class="text-secondary">
-                                <i class="bx bx-git-branch"></i>
-                                المصادر
-                            </a>
-                        </li>
-                        <li class="breadcrumb-item">
-                            <a href="{{ route('dashboard') }}" class="text-secondary">
-                                <i class="bx bx-home-alt"></i>
-                                الرئيسية
-                            </a>
-                        </li>
-                    </ol>
-                </nav>
-            </div>
+  {{-- ================= BREADCRUMB ================= --}}
+  <div class="mb-4">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active">
+          عرض المصدر #{{ $source->comsourcesid }}
+        </li>
+        <li class="breadcrumb-item">
+          <a href="{{ route('sources.index') }}">المصادر</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="{{ route('dashboard') }}">
+            <i class="bx bx-home-alt"></i> الرئيسية
+          </a>
+        </li>
+      </ol>
+    </nav>
+  </div>
+
+  {{-- ================= MAIN CARD ================= --}}
+  <div class="main-card">
+
+    {{-- Header --}}
+    <div class="form-header">
+      <div class="header-icon">
+        <i class="bx bx-git-branch"></i>
+      </div>
+      <div>
+        <h4>تفاصيل المصدر #{{ $source->comsourcesid }}</h4>
+        <p>بيانات شاملة لمصدر البيان المحدد</p>
+      </div>
+    </div>
+
+    <div class="card-body p-lg-4 p-3">
+
+      {{-- ================= ACTION BUTTONS ================= --}}
+      <div class="action-buttons">
+
+        @if(PerUser('sources.edit'))
+        <a href="{{ route('sources.edit', $source->comsourcesid) }}"
+          class="btn btn-warning btn-custom">
+          <i class="bx bx-edit-alt"></i> تعديل
+        </a>
+        @endif
+
+        <a href="{{ route('sources.index') }}" class="btn btn-secondary btn-custom">
+          <i class="bx bx-arrow-back"></i> رجوع
+        </a>
+
+      </div>
+
+      {{-- ================= BASIC INFO ================= --}}
+      <div class="detail-card">
+        <div class="detail-section-title">
+          <i class="bx bx-info-circle"></i>
+          البيانات الأساسية
         </div>
+        <div class="detail-row">
 
-        <div class="card main-card" dir="rtl">
+          <div class="detail-item">
+            <span class="detail-label">اسم المصدر</span>
+            <span class="detail-value">{{ $source->comsourcesname ?? '-' }}</span>
+          </div>
 
-            {{-- Header --}}
-            <div class="custom-card-header">
-                <h4>
-                    <i class="bx bx-show-alt"></i>
-                    عرض المصدر
-                </h4>
-                <p>
-                    يمكنك الإطلاع على تفاصيل مصدر البيان.
-                </p>
-                <div class="info-badge">
-                    <i class="bx bx-hash"></i>
-                    رقم المصدر:
-                    <strong>#{{ $source->comsourcesid }}</strong>
-                </div>
-            </div>
-
-            <div class="card-body p-lg-4 p-3">
-
-                {{-- البيانات الأساسية --}}
-                <div class="section-card">
-
-                    <div class="section-title">
-                        <i class="bx bx-info-circle"></i>
-                        البيانات الأساسية
-                    </div>
-
-                    <div class="row">
-
-                        {{-- اسم المصدر --}}
-                        <div class="col-12 info-row">
-                            <label class="info-label">
-                                اسم المصدر
-                            </label>
-                            <div class="info-value">
-                                {{ $source->comsourcesname ?? '-' }}
-                            </div>
-                        </div>
-
-                        {{-- الحالة --}}
-                        <div class="col-md-6 info-row">
-                            <label class="info-label">الحالة</label>
-                            <div class="info-value">
-                                @if($source->validity == 1)
-                                <span class="badge bg-success px-3 py-2" style="font-size:13px;">فعّال</span>
-                                @else
-                                <span class="badge bg-danger px-3 py-2" style="font-size:13px;">غير فعّال</span>
-                                @endif
-                            </div>
-                        </div>
-
-                        {{-- تاريخ الإنشاء --}}
-                        <div class="col-md-6 info-row">
-                            <label class="info-label">
-                                تاريخ الإنشاء
-                            </label>
-                            <div class="info-value">
-                                {{ $source->created_at ? $source->created_at->format('Y-m-d H:i') : '-' }}
-                            </div>
-                        </div>
-
-                        {{-- أنشأ بواسطة --}}
-                        <div class="col-md-6 info-row">
-                            <label class="info-label">
-                                أنشأ بواسطة
-                            </label>
-                            <div class="info-value">
-                                {{ $source->createdBy->userID ?? '-' }}
-                            </div>
-                        </div>
-
-                        {{-- آخر تعديل --}}
-                        <div class="col-md-6 info-row">
-                            <label class="info-label">
-                                آخر تعديل في
-                            </label>
-                            <div class="info-value">
-                                {{ $source->updated_at ? $source->updated_at->format('Y-m-d H:i') : '-' }}
-                            </div>
-                        </div>
-
-                        {{-- آخر تعديل بواسطة --}}
-                        <div class="col-md-6 info-row">
-                            <label class="info-label">
-                                آخر تعديل بواسطة
-                            </label>
-                            <div class="info-value">
-                                {{ $source->updatedBy->userID ?? '-' }}
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
-
-                {{-- buttons --}}
-                <div class="text-center mt-4">
-
-                    @if(PerUser('sources.edit'))
-                    <a href="{{ route('sources.edit', $source->comsourcesid) }}"
-                        class="btn btn-primary btn-back shadow-sm">
-                        <i class="bx bx-edit-alt ml-1"></i>
-                        تعديل المصدر
-                    </a>
-                    @endif
-
-                    <a href="{{ route('sources.index') }}"
-                        class="btn btn-secondary btn-back shadow-sm ms-2">
-                        <i class="bx bx-arrow-back ml-1"></i>
-                        العودة للمصادر
-                    </a>
-
-                </div>
-
-            </div>
+          <div class="detail-item">
+            <span class="detail-label">الحالة</span>
+            <span class="status-badge {{ $source->validity == 1 ? 'active' : 'inactive' }}">
+              {{ $source->validity == 1 ? 'فعّال' : 'غير فعّال' }}
+            </span>
+          </div>
 
         </div>
+      </div>
+
+      {{-- ================= SYSTEM INFO ================= --}}
+      <div class="detail-card">
+        <div class="detail-section-title">
+          <i class="bx bx-cog"></i>
+          معلومات النظام
+        </div>
+        <div class="detail-row">
+
+          <div class="detail-item">
+            <span class="detail-label">أنشأ بواسطة</span>
+            <span class="detail-value">{{ $source->createdBy->userID ?? '-' }}</span>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">تاريخ الإنشاء</span>
+            <span class="detail-value">
+              {{ $source->created_at ? $source->created_at->format('d/m/Y H:i') : '-' }}
+            </span>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">آخر تعديل بواسطة</span>
+            <span class="detail-value">{{ $source->updatedBy->userID ?? '-' }}</span>
+          </div>
+
+          <div class="detail-item">
+            <span class="detail-label">تاريخ آخر تعديل</span>
+            <span class="detail-value">
+              {{ $source->updated_at ? $source->updated_at->format('d/m/Y H:i') : '-' }}
+            </span>
+          </div>
+
+        </div>
+      </div>
 
     </div>
+  </div>
+
 </div>
 
 @endsection
