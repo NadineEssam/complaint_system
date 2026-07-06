@@ -64,13 +64,13 @@ class ComplaintDataTable extends DataTable
                                     <i class="bx bx-show"></i>
                                 </a>';
                 }
-                if (PerUser('responses.index')) {
+               if (PerUser('responses.index')) {
                     $html .= '
-                         <a href="' . route('responses.index', ['complaint_id' => $model]) . '" 
+                        <a href="' . route('responses.index', ['complaint_id' => $model]) . '" 
                         class="btn btn-sm btn-outline-primary action-btn"
                         data-bs-toggle="tooltip" 
                         title="الرد على البيان">
-                            <i class="fas fa-reply-all"></i>
+                            <i class="bx bx-message-square-detail"></i>
                         </a>';
                 }
                 // Edit Button
@@ -220,7 +220,7 @@ class ComplaintDataTable extends DataTable
             Column::make('ComplaintNationalID')->title('الرقم القومي '),
             Column::make('ComplainerPhone')->title('رقم الهاتف المحمول '),
             Column::make('office_name')
-            ->title('الفرع'),
+                ->title('الفرع'),
 
             Column::make('status_name')
                 ->name('compstatus.statusText')
