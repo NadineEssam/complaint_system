@@ -96,8 +96,8 @@ class ComplaintController extends Controller
                 'regex:/^01[0-2,5]{1}[0-9]{8}$/'
             ],
 
-            'ComplaintGovernorate' => 'nullable|integer',
-            'ComplainerGovernorate' => 'required|integer',
+            'ComplaintGovernorate' => 'nullable|string',
+            'ComplainerGovernorate' => 'required|string',
             'ComplaintDate' => 'required|date|before_or_equal:today',
             'sec_id' => 'nullable|integer',
             'department' => 'nullable|integer|exists:new_po.departments,dep_id',
@@ -236,8 +236,8 @@ class ComplaintController extends Controller
                 'regex:/^01[0-2,5]{1}[0-9]{8}$/'
             ],
 
-            'ComplaintGovernorate' => 'nullable|integer',
-            'ComplainerGovernorate' => 'required|integer',
+            'ComplaintGovernorate' => 'nullable|string',
+            'ComplainerGovernorate' => 'required|string',
             'ComplaintDate' => 'required|date|before_or_equal:today',
             'office' => 'nullable|integer',
             'comsource_ids' => 'required|array|min:1',
@@ -373,7 +373,7 @@ class ComplaintController extends Controller
     {
         $data = $request->validate([
 
-            'ComplaintGovernorate' => 'nullable|integer',
+            'ComplaintGovernorate' => 'nullable|string',
             'ComplaintDate' => 'required|date|before_or_equal:today',
             'sec_id' => 'nullable|integer',
             'department' => 'nullable|integer|exists:new_po.departments,dep_id',
@@ -448,19 +448,19 @@ class ComplaintController extends Controller
      */
 public function duplicatesIndex(Complaint $complaint)
 {
-    $root = $complaint->parent_id ? $complaint->parent : $complaint;
+    $root = $complaint->root;
 
     $dataTable = app(\App\DataTables\ComplaintDuplicatesDataTable::class)
-        ->forComplaint($root);
+        ->forComplaint($root)
+        ->highlight($complaint->ComplaintID);
 
-    // DataTables AJAX calls always include a 'draw' parameter
     if (request()->has('draw')) {
         return $dataTable->ajax();
     }
 
     return $dataTable->render(
         'dashboard.complaints.duplicates_modal',
-        compact('root') + ['complaint' => $root]
+        compact('root') + ['complaint' => $root, 'currentId' => $complaint->ComplaintID]
     );
 }
 

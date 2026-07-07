@@ -3,51 +3,145 @@
     <link href="{{ asset('assets/datatable/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/datatable/css/buttons.bootstrap4.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('assets/css/datatable.css') }}" rel="stylesheet" type="text/css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* ================= GLOBAL ================= */
+        .roles-page, .roles-page * {
+            font-family: 'Cairo', 'Tahoma', sans-serif;
+            font-size: 13px;
+        }
+
+        .roles-page {
+            background: #f7f8fa;
+            padding: 24px;
+            border-radius: 16px;
+        }
+
+        /* ================= BREADCRUMB ================= */
+        .roles-page .breadcrumb {
+            margin-bottom: 0;
+            background: transparent;
+            padding: 0;
+        }
+
+        .roles-page .breadcrumb-item,
+        .roles-page .breadcrumb-item a {
+            font-size: 13px;
+            color: #98a2b3;
+            text-decoration: none;
+        }
+
+        .roles-page .breadcrumb-item.active {
+            color: #1f2937;
+            font-weight: 700;
+        }
+
+        /* ================= CARD ================= */
+        .roles-page .main-card {
+            border: 1px solid #eef0f3 !important;
+            border-radius: 14px !important;
+            background: #fff;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+            overflow: hidden;
+        }
+
+        /* ================= CARD HEADER ================= */
+        .roles-page .card-top-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #eef0f3;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+        }
+
+        .roles-page .card-top-header h4 {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .roles-page .card-top-header h4 i {
+            color: #3b76e0;
+            font-size: 16px;
+        }
+
+        /* ================= ADD BUTTON ================= */
+        .roles-page .btn-add {
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 8px;
+            background: #eafaf0;
+            color: #2f9e63;
+            border: 1px solid #c6edd8;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+            transition: background .15s;
+        }
+
+        .roles-page .btn-add:hover {
+            background: #d4f5e4;
+            color: #1f7a4b;
+        }
+    </style>
 @endpush
 @section('content')
-    <div class="page-content-wrapper">
-        <div class="page-content">
-            <!--breadcrumb-->
-            <div class="page-breadcrumb d-md-flex align-items-center mb-4 pb-2 border-bottom" dir="rtl">
-                <div class="pr-3">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb mb-0 p-0 shadow-none">
-                            <li class="breadcrumb-item active text-primary font-weight-bold" aria-current="page">الأدوار
-                            </li>
-                            <li class="breadcrumb-item">
-                                <a href="{{ route('dashboard') }}" class="text-secondary"><i class="bx bx-home-alt"></i>
-                                    الرئيسية</a>
-                            </li>
 
-                        </ol>
-                    </nav>
-                </div>
+<div class="roles-page" dir="rtl">
 
-            </div>
+    {{-- ================= BREADCRUMB ================= --}}
+    <div class="mb-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active">الأدوار</li>
+                <li class="breadcrumb-item">
+                    <a href="{{ route('dashboard') }}">
+                        <i class="bx bx-home-alt"></i> الرئيسية
+                    </a>
+                </li>
+            </ol>
+        </nav>
+    </div>
 
-            <!--end breadcrumb-->
-            <div class="card radius-15 shadow-sm border-0" dir="rtl" style="text-align: right;">
-                <div class="card-body">
-                    <div class="card-header bg-white d-flex align-items-center justify-content-between">
-                        <h4 class="mb-0 text-primary"><i class="bx bx-shield-quarter ml-2"></i> إدارة الأدوار والصلاحيات
-                        </h4>
-                        <div>
-                            @if (PerUser('roles.create'))
-                                <a href="{{ route('roles.create') }}" class="btn btn-sm btn-success"><i
-                                        class="bx bx-plus"></i> إضافة دور</a>
-                            @endif
-                        </div>
-                    </div>
-                    <hr class="d-none">
-                    <div class="px-2 pb-3">
-                        <div class="table-responsive">
-                            {{ $dataTable->table(['class' => 'table text-center align-middle datatable-custom', 'style' => 'width:100%']) }}
-                        </div>
-                    </div>
-                </div>
+    {{-- ================= MAIN CARD ================= --}}
+    <div class="main-card">
+
+        {{-- Card Header --}}
+        <div class="card-top-header">
+            <h4>
+                <i class="bx bx-shield-quarter"></i>
+                إدارة الأدوار والصلاحيات
+            </h4>
+            @if (PerUser('roles.create'))
+            <a href="{{ route('roles.create') }}" class="btn-add">
+                <i class="bx bx-plus"></i>
+                إضافة دور
+            </a>
+            @endif
+        </div>
+
+        {{-- Body --}}
+        <div class="p-3">
+            <div class="table-responsive">
+                {{ $dataTable->table(['class' => 'table text-center align-middle datatable-custom', 'style' => 'width:100%']) }}
             </div>
         </div>
+
     </div>
+
+</div>
+
 @endsection
 
 @push('footerScripts')

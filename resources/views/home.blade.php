@@ -2,6 +2,12 @@
 
 @section('title', 'Dashboard')
 
+@push('headScripts')
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+@endpush
+
 @section('content')
 
 <style>
@@ -18,6 +24,13 @@
     --card: #ffffff;
     --bg: #f4f7fc;
   }
+
+  /* ================= FONT (matches عرض البيان page) ================= */
+  .section.dashboard,
+  .section.dashboard * {
+    font-family: 'Cairo', 'Tahoma', sans-serif;
+  }
+
   /* ================= FROM ================= */
 
   .form-label{
@@ -668,7 +681,8 @@
         height: 360,
         toolbar: {
           show: false
-        }
+        },
+        fontFamily: 'Cairo, sans-serif'
       },
 
       colors: ['#5b8cff'],
@@ -707,7 +721,8 @@
         height: 350,
         toolbar: {
           show: false
-        }
+        },
+        fontFamily: 'Cairo, sans-serif'
       },
 
       colors: ['#00c896'],
@@ -742,7 +757,8 @@
 
       chart: {
         type: 'donut',
-        height: 340
+        height: 340,
+        fontFamily: 'Cairo, sans-serif'
       },
 
       labels: typeLabels,
@@ -787,7 +803,8 @@
 
       chart: {
         type: 'donut',
-        height: 340
+        height: 340,
+        fontFamily: 'Cairo, sans-serif'
       },
 
       labels: sourceLabels,
@@ -898,7 +915,7 @@ new ApexCharts(document.querySelector("#sectorChart"), {
   yaxis: {
     labels: {
       maxWidth: 400,
-      offsetX: -200,
+      offsetX: -300,
       style: {
         fontSize: "14px",
         fontWeight: 600,
@@ -1031,7 +1048,7 @@ new ApexCharts(document.querySelector("#sectorChart"), {
         labels: {
           align: "left",
 
-          offsetX: 125,
+          offsetX: 155,
           style: {
             fontSize: "16px",
             fontWeight: 600,
@@ -1085,7 +1102,8 @@ new ApexCharts(document.querySelector("#sectorChart"), {
 
       chart: {
         type: 'donut',
-        height: 340
+        height: 340,
+        fontFamily: 'Cairo, sans-serif'
       },
 
       labels: closeData.map(i => i.name),

@@ -6,19 +6,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class Gov extends Model
 {
-    protected $connection = 'ben'; 
-    protected $table = 'GOV_CODE';          // table name
+    protected $connection = 'ben';
+    protected $table = 'GOV_CODE';
 
-    protected $primaryKey = 'GOVT_CODE';   // primary key
+    protected $primaryKey = 'GOVT_CODE';
 
-    public $timestamps = false;         
+    public $incrementing = false;   // not an auto-increment integer
+    protected $keyType = 'string';  // key is a string, not int
+
+    public $timestamps = false;
 
     protected $fillable = [
         'GOVT_NAMA'
     ];
 
-  public function offices()
-{
-    return $this->hasMany(Office::class, 'FK_GOVT_CODE', 'GOVT_CODE');
+    public function offices()
+    {
+        return $this->hasMany(Office::class, 'FK_GOVT_CODE', 'GOVT_CODE');
+    }
 }
-}
+

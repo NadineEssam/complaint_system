@@ -1,158 +1,261 @@
 @extends('dashboard.layouts.app')
 
 @push('headScripts')
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* ================= GLOBAL ================= */
+        .users-page, .users-page * {
+            font-family: 'Cairo', 'Tahoma', sans-serif;
+            font-size: 13px;
+        }
+
+        .users-page {
+            background: #f7f8fa;
+            padding: 24px;
+            border-radius: 16px;
+        }
+
+        /* ================= BREADCRUMB ================= */
+        .users-page .breadcrumb {
+            margin-bottom: 0;
+            background: transparent;
+            padding: 0;
+        }
+
+        .users-page .breadcrumb-item,
+        .users-page .breadcrumb-item a {
+            font-size: 13px;
+            color: #98a2b3;
+            text-decoration: none;
+        }
+
+        .users-page .breadcrumb-item.active {
+            color: #1f2937;
+            font-weight: 700;
+        }
+
+        /* ================= CARD ================= */
+        .users-page .main-card {
+            border: 1px solid #eef0f3 !important;
+            border-radius: 14px !important;
+            background: #fff;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+            overflow: hidden;
+        }
+
+        /* ================= CARD HEADER ================= */
+        .users-page .card-top-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #eef0f3;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+        }
+
+        .users-page .card-top-header h4 {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .users-page .card-top-header h4 i {
+            color: #3b76e0;
+            font-size: 16px;
+        }
+
+        /* ================= FORM ================= */
+        .users-page .form-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .users-page .form-control,
+        .users-page .form-select {
+            font-size: 13px;
+            font-family: 'Cairo', 'Tahoma', sans-serif;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            color: #1f2937;
+            padding: 8px 12px;
+            background-color: #fff;
+            box-shadow: none !important;
+            transition: border-color .15s;
+        }
+
+        .users-page .form-control:focus,
+        .users-page .form-select:focus {
+            border-color: #3b76e0;
+            box-shadow: 0 0 0 0.18rem rgba(59,118,224,.13) !important;
+        }
+
+        /* ================= SAVE BUTTON ================= */
+        .users-page .btn-save {
+            font-size: 13px;
+            font-weight: 600;
+            padding: 8px 22px;
+            border-radius: 8px;
+            background: #eafaf0;
+            color: #2f9e63;
+            border: 1px solid #c6edd8;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background .15s;
+        }
+
+        .users-page .btn-save:hover {
+            background: #d4f5e4;
+            color: #1f7a4b;
+        }
+    </style>
 @endpush
 
 @section('content')
-    <div class="page-content-wrapper">
-        <div class="page-content">
 
-            <!-- breadcrumb -->
-            <div class="page-breadcrumb d-md-flex align-items-center mb-4 pb-2 border-bottom" dir="rtl">
+<div class="users-page" dir="rtl">
 
-                <div class="pl-3">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb mb-0 p-0 shadow-none">
+    {{-- ================= BREADCRUMB ================= --}}
+    <div class="mb-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active">
+                    {{ isset($user) ? 'تعديل المستخدم: ' . $user->userID : 'إضافة مستخدم جديد' }}
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ route('users.index') }}">
+                        <i class="bx bx-user"></i> المستخدمون
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ route('dashboard') }}">
+                        <i class="bx bx-home-alt"></i> الرئيسية
+                    </a>
+                </li>
+            </ol>
+        </nav>
+    </div>
 
-                            <li class="breadcrumb-item active text-primary font-weight-bold" aria-current="page">
-                                {{ isset($user) ? 'تعديل المستخدم: ' . $user->userID : 'إضافة مستخدم جديد' }}
-                            </li>
+    {{-- ================= MAIN CARD ================= --}}
+    <div class="main-card">
 
-                            <li class="breadcrumb-item">
-                                <a href="{{ route('users.index') }}" class="text-secondary">
-                                    <i class="bx bx-user"></i> المستخدمون
-                                </a>
-                            </li>
-                            
-                            <li class="breadcrumb-item">
-                                <a href="{{ route('dashboard') }}" class="text-secondary">
-                                    <i class="bx bx-home-alt"></i> الرئيسية
-                                </a>
-                            </li>
+        {{-- Card Header --}}
+        <div class="card-top-header">
+            <h4>
+                <i class="bx bx-user-circle"></i>
+                {{ isset($user) ? 'تعديل بيانات المستخدم' : 'بيانات المستخدم الجديد' }}
+            </h4>
+        </div>
 
-                            
+        {{-- Body --}}
+        <div class="p-4">
 
-                            
+            <form method="POST"
+                action="{{ isset($user) ? route('users.update', ['user' => $user]) : route('users.store') }}"
+                enctype="multipart/form-data">
 
-                        </ol>
-                    </nav>
-                </div>
+                @if (isset($user))
+                    @method('PUT')
+                @endif
 
-            </div>
-            <!-- end breadcrumb -->
+                @csrf
 
+                {{-- اسم المستخدم --}}
+                <div class="row mb-4">
+                    <label for="userid" class="col-sm-2 col-form-label form-label">
+                        اسم المستخدم
+                    </label>
 
-            <div class="card radius-15 border-lg-top-primary">
-                <div class="card-body">
+                    <div class="col-sm-10">
+                        <input type="text"
+                            class="form-control @error('userid') is-invalid @enderror"
+                            {{ isset($user) ? 'readonly' : '' }}
+                            name="userid"
+                            id="userid"
+                            value="{{ isset($user) ? $user->userID : old('userid') }}"
+                            placeholder="أدخل اسم المستخدم">
 
-                    <div class="card-header bg-white mb-4 d-flex align-items-center">
-                        <h5 class="mb-0 text-primary font-weight-bold">
-                            <i class="bx bx-user-circle ml-2"></i>
-
-                            {{ isset($user) ? 'تعديل بيانات المستخدم' : 'بيانات المستخدم الجديد' }}
-                        </h5>
+                        @error('userid')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
                     </div>
+                </div>
 
-                    <form method="POST"
-                        action="{{ isset($user) ? route('users.update', ['user' => $user]) : route('users.store') }}"
-                        enctype="multipart/form-data">
+                {{-- الدور والصلاحيات --}}
+                <div class="row mb-4">
+                    <label for="role_id" class="col-sm-2 col-form-label form-label">
+                        الدور والصلاحيات
+                    </label>
 
-                        @if (isset($user))
-                            @method('PUT')
-                        @endif
+                    <div class="col-sm-10">
 
-                        @csrf
+                        <select id="role_id"
+                            class="form-select form-select-lg px-4 @error('role_id') is-invalid @enderror"
+                            required
+                            name="role_id[]">
 
+                            <option value="">
+                                اختر الدور والصلاحيات
+                            </option>
 
-                        {{-- اسم المستخدم --}}
-                        <div class="row mb-4">
-                            <label for="userid" class="col-sm-2 col-form-label font-weight-bold">
-                                اسم المستخدم
-                            </label>
+                            @foreach (\Spatie\Permission\Models\Role::where('guard_name', 'web')->pluck('name', 'id')->toArray() as $id => $name)
 
-                            <div class="col-sm-10">
-                                <input type="text"
-                                    class="form-control @error('userid') is-invalid @enderror"
-                                    {{ isset($user) ? 'readonly' : '' }}
-                                    name="userid"
-                                    id="userid"
-                                    value="{{ isset($user) ? $user->userID : old('userid') }}"
-                                    placeholder="أدخل اسم المستخدم">
+                                <option
+                                    @if (isset($user) && in_array($id, $user->roles()->pluck('id')->toArray()))
+                                        selected
+                                    @elseif(old('role_id') && in_array($id, old('role_id')))
+                                        selected
+                                    @endif
+                                    value="{{ $name }}">
 
-                                @error('userid')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
+                                    {{ $name }}
 
+                                </option>
 
-                        {{-- الدور والصلاحيات --}}
-                        <div class="row mb-4">
-                            <label for="role_id" class="col-sm-2 col-form-label font-weight-bold">
-                                الدور والصلاحيات
-                            </label>
+                            @endforeach
 
-                            <div class="col-sm-10">
+                        </select>
 
-                                <select id="role_id"
-                                    class="form-select form-select-lg px-4 @error('role_id') is-invalid @enderror"
-                                    required
-                                    name="role_id[]">
+                        @error('role_id')
+                            <span class="invalid-feedback d-block" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
 
-                                    <option value="">
-                                        اختر الدور والصلاحيات
-                                    </option>
+                    </div>
+                </div>
 
-                                    @foreach (\Spatie\Permission\Models\Role::where('guard_name', 'web')->pluck('name', 'id')->toArray() as $id => $name)
+                {{-- الأزرار --}}
+                <div class="text-center mt-5">
 
-                                        <option
-                                            @if (isset($user) && in_array($id, $user->roles()->pluck('id')->toArray()))
-                                                selected
-                                            @elseif(old('role_id') && in_array($id, old('role_id')))
-                                                selected
-                                            @endif
-                                            value="{{ $name }}">
+                    <button type="submit" class="btn-save">
 
-                                            {{ $name }}
+                        <i class="bx bx-save"></i>
 
-                                        </option>
+                        {{ isset($user) ? 'حفظ التعديلات' : 'إضافة المستخدم' }}
 
-                                    @endforeach
-
-                                </select>
-
-                                @error('role_id')
-                                    <span class="invalid-feedback d-block" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-
-                            </div>
-                        </div>
-
-
-                        {{-- الأزرار --}}
-                        <div class="text-center mt-5">
-
-                            <button type="submit" class="btn btn-primary px-5">
-
-                                <i class="bx bx-save mr-1"></i>
-
-                                {{ isset($user) ? 'حفظ التعديلات' : 'إضافة المستخدم' }}
-
-                            </button>
-
-                        </div>
-
-                    </form>
+                    </button>
 
                 </div>
-            </div>
+
+            </form>
 
         </div>
+
     </div>
+
+</div>
+
 @endsection
 
 

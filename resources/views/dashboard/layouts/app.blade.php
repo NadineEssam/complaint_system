@@ -18,6 +18,7 @@
       transition: all 0.4s ease;
       opacity: 1;
       visibility: visible;
+      font-family: 'Cairo', 'Tahoma', sans-serif;
     }
 
     #page-loader.hidden {
@@ -62,6 +63,7 @@
       color: #003b8e;
       font-weight: 600;
       letter-spacing: 0.5px;
+      font-family: 'Cairo', 'Tahoma', sans-serif;
     }
 
     .dots::after {
@@ -125,6 +127,11 @@
   <link href="{{ asset('assets/css/rtl.css') }}" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+  <!-- Cairo Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <!--  -->
   
   @stack('headScripts')
@@ -186,6 +193,7 @@
     .swal2-popup {
       border-radius: 20px !important;
       padding: 25px !important;
+      font-family: 'Cairo', 'Tahoma', sans-serif;
     }
 
     .swal2-title {
@@ -239,24 +247,19 @@
 
     // ── Show loader on link click ──
     document.addEventListener('click', function(e) {
-      const link = e.target.closest('a');
+  const link = e.target.closest('a');
+  const rawHref = link?.getAttribute('href') || '';
 
-      // Ignore if:
-      // - Not a link
-      // - Has data-no-loader attribute
-      // - Opens in new tab
-      // - Is a hash/anchor link
-      // - Is a download link
-      if (!link ||
-        link.hasAttribute('data-no-loader') ||
-        link.target === '_blank' ||
-        link.href.startsWith('#') ||
-        link.getAttribute('href') === '#' ||
-        link.getAttribute('href')?.startsWith('javascript') ||
-        link.hasAttribute('data-bs-toggle') ||
-        link.hasAttribute('download')) {
-        return;
-      }
+  if (!link ||
+    link.hasAttribute('data-no-loader') ||
+    link.target === '_blank' ||
+    rawHref.startsWith('#') ||                 // catches "#step-1", "#step-2", "#anything"
+    rawHref.startsWith('javascript') ||
+    link.hasAttribute('data-bs-toggle') ||
+    link.hasAttribute('download')) {
+    return;
+  }
+
 
       // Check if it's same domain
       try {
