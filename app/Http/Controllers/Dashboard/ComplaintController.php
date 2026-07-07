@@ -96,7 +96,7 @@ class ComplaintController extends Controller
                 'regex:/^01[0-2,5]{1}[0-9]{8}$/'
             ],
 
-            'ComplaintGovernorate' => 'nullable|integer',
+            'ComplaintGovernorate' => 'nullable|string',
             'ComplainerGovernorate' => 'required|integer',
             'ComplaintDate' => 'required|date|before_or_equal:today',
             'sec_id' => 'nullable|integer',
@@ -236,7 +236,7 @@ class ComplaintController extends Controller
                 'regex:/^01[0-2,5]{1}[0-9]{8}$/'
             ],
 
-            'ComplaintGovernorate' => 'nullable|integer',
+            'ComplaintGovernorate' => 'nullable|string',
             'ComplainerGovernorate' => 'required|integer',
             'ComplaintDate' => 'required|date|before_or_equal:today',
             'office' => 'nullable|integer',
@@ -373,7 +373,7 @@ class ComplaintController extends Controller
     {
         $data = $request->validate([
 
-            'ComplaintGovernorate' => 'nullable|integer',
+            'ComplaintGovernorate' => 'nullable|string',
             'ComplaintDate' => 'required|date|before_or_equal:today',
             'sec_id' => 'nullable|integer',
             'department' => 'nullable|integer|exists:new_po.departments,dep_id',
