@@ -97,7 +97,7 @@ class ComplaintController extends Controller
             ],
 
             'ComplaintGovernorate' => 'nullable|string',
-            'ComplainerGovernorate' => 'required|integer',
+            'ComplainerGovernorate' => 'required|string',
             'ComplaintDate' => 'required|date|before_or_equal:today',
             'sec_id' => 'nullable|integer',
             'department' => 'nullable|integer|exists:new_po.departments,dep_id',
@@ -237,7 +237,7 @@ class ComplaintController extends Controller
             ],
 
             'ComplaintGovernorate' => 'nullable|string',
-            'ComplainerGovernorate' => 'required|integer',
+            'ComplainerGovernorate' => 'required|string',
             'ComplaintDate' => 'required|date|before_or_equal:today',
             'office' => 'nullable|integer',
             'comsource_ids' => 'required|array|min:1',
