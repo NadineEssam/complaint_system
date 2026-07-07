@@ -95,7 +95,7 @@
     <ul class="sidebar-nav" id="sidebar-nav">
 
      <li class="nav-item  @if (request()->segment(1) == '') mm-active @endif  ">
-       <a class="nav-link collapsed" href="{{ route('home') }}">
+       <a class="nav-link collapsed" href="{{ route('dashboard') }}">
          <i class="bi bi-grid"></i>
          <span>الرئيسية</span>
        </a>
