@@ -122,7 +122,7 @@ class ComplaintController extends Controller
             'complaint_type' => 'required|in:internal,external',
             'ComplaintNationalID' => 'nullable|required_if:requesttypeid,2,3|digits:14',
             'ComplaintText'    => 'required|string',
-            'ComplaintProjectType' => 'required|exists:ben.sectors,ID',
+            'ComplaintProjectType' => 'nullable|exists:ben.sectors,ID',
 
         ], [
 
@@ -152,7 +152,7 @@ class ComplaintController extends Controller
             'ComplaintText.required' => 'يرجى إدخال نص البيان',
             'complaint_type.required' => 'يرجى اختيار نوعية وتوجيه البيان',
             'complaint_type.in'       => 'نوعية البيان غير صحيحة',
-            'ComplaintProjectType.required' => 'يرجى اختيار نوع النشاط',
+            // 'ComplaintProjectType.required' => 'يرجى اختيار نوع النشاط',
 
 
         ]);
@@ -172,7 +172,7 @@ class ComplaintController extends Controller
             'ComplaintText' => $data['ComplaintText'],
             'office' => $data['office'] ?? 0,
             'complaint_type' => $data['complaint_type'],
-            'ComplaintProjectType' => $data['ComplaintProjectType'],
+            'ComplaintProjectType' => $data['ComplaintProjectType']?? 0,
             // 'ComplaintSources' => $data['comsource_id'],
             'ComplaintNationalID' => $data['ComplaintNationalID'] ?? null,
             'ComplainerGender' => $data['ComplainerGender'] ?? null,
@@ -270,7 +270,7 @@ class ComplaintController extends Controller
             'department' => 'nullable|integer|exists:new_po.departments,dep_id',
             'complaint_type' => 'required|in:internal,external',
             'ComplaintText'    => 'required|string',
-            'ComplaintProjectType' => 'required|exists:ben.sectors,ID',
+            'ComplaintProjectType' => 'nullable|exists:ben.sectors,ID',
 
         ], [
 
@@ -300,7 +300,7 @@ class ComplaintController extends Controller
             'ComplaintText.required' => 'يرجى إدخال نص البيان',
             'complaint_type.required' => 'يرجى اختيار نوعية وتوجيه البيان',
             'complaint_type.in'       => 'نوعية البيان غير صحيحة',
-            'ComplaintProjectType.required' => 'يرجى اختيار نوع النشاط',
+            // 'ComplaintProjectType.required' => 'يرجى اختيار نوع النشاط',
 
         ]);
 
@@ -320,7 +320,7 @@ class ComplaintController extends Controller
             'ComplaintText' => $data['ComplaintText'],
             'ComplainerGovernorate' => $data['ComplainerGovernorate'] ?? 0,
             // 'ComplaintSources' => $data['comsource_id'],
-            'ComplaintProjectType' => $data['ComplaintProjectType'],
+            'ComplaintProjectType' => $data['ComplaintProjectType']?? 0,
             'ComplaintNationalID' => $data['ComplaintNationalID'] ?? null,
             'ComplainerGender' => $data['ComplainerGender'],
 
@@ -413,7 +413,7 @@ class ComplaintController extends Controller
             'comsource_ids.*' => 'integer|exists:comsources,comsourcesid',
             'complaint_type' => 'required|in:internal,external',
             'ComplaintText'    => 'required|string',
-            'ComplaintProjectType' => 'required|exists:ben.sectors,ID',
+            'ComplaintProjectType' => 'nullable|exists:ben.sectors,ID',
 
         ], [
 
@@ -425,7 +425,7 @@ class ComplaintController extends Controller
             'ComplaintText.required' => 'يرجى إدخال نص البيان',
             'complaint_type.required' => 'يرجى اختيار نوعية وتوجيه البيان',
             'complaint_type.in'       => 'نوعية البيان غير صحيحة',
-            'ComplaintProjectType.required' => 'يرجى اختيار نوع النشاط',
+            // 'ComplaintProjectType.required' => 'يرجى اختيار نوع النشاط',
 
         ]);
 
@@ -448,7 +448,7 @@ class ComplaintController extends Controller
             'ComplaintText' => $data['ComplaintText'],
             'office' => $data['office'] ?? 0,
             'complaint_type' => $data['complaint_type'],
-            'ComplaintProjectType' => $data['ComplaintProjectType'],
+            'ComplaintProjectType' => $data['ComplaintProjectType']?? 0,
 
             // Linkage + initial status for every newly created duplicate.
             'parent_id' => $complaint->ComplaintID,

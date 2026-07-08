@@ -579,13 +579,13 @@ if (cType === 'internal') {          // ← was 'external'
 }
 
  // نوع النشاط required
-        let projectTypeVal = $('#ComplaintProjectType').val();
-        if (!projectTypeVal || projectTypeVal === '') {
-            $('#ComplaintProjectType').addClass('is-invalid');
-            isValid = false;
-        } else {
-            $('#ComplaintProjectType').removeClass('is-invalid');
-        }
+        // let projectTypeVal = $('#ComplaintProjectType').val();
+        // if (!projectTypeVal || projectTypeVal === '') {
+        //     $('#ComplaintProjectType').addClass('is-invalid');
+        //     isValid = false;
+        // } else {
+        //     $('#ComplaintProjectType').removeClass('is-invalid');
+        // }
     // مصدر البيان required always
     if (!$('#comsourceSelect').val() || $('#comsourceSelect').val().length === 0) {
         $('#comsourceSelect')

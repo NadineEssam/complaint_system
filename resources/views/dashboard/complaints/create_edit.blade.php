@@ -618,7 +618,7 @@ $step = (
               {{-- نوع النشاط --}}
               <div class="col-md-6 mb-4">
                 <label class="form-label">
-                  نوع النشاط <span class="required-star">*</span>
+                  نوع النشاط 
                 </label>
                 <select class="form-select @error('ComplaintProjectType') is-invalid @enderror"
                   name="ComplaintProjectType" id="ComplaintProjectType">
