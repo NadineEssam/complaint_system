@@ -175,7 +175,7 @@
                     </a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="{{ route('home') }}">
+                    <a href="{{ route('dashboard') }}">
                         <i class="bx bx-home-alt"></i> {{ __('الرئيسية') }}
                     </a>
                 </li>

@@ -29,13 +29,13 @@ class DashboardController extends Controller
                 ($from && $from > $today) ||
                 ($to && $to > $today)
             ) {
-                return redirect()->route('home')
+                return redirect()->route('dashboard')
                     ->with('error', 'لا يمكن اختيار تاريخ أكبر من تاريخ اليوم');
             }
 
             // 2) منع range غلط
             if ($from && $to && $from > $to) {
-                return redirect()->route('home')
+                return redirect()->route('dashboard')
                     ->with('error', 'تاريخ البداية لا يمكن أن يكون بعد تاريخ النهاية');
             }
 

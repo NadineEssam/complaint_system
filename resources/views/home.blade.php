@@ -243,7 +243,7 @@
             إحصائيات الشكاوى
           </li>
           <li class="breadcrumb-item">
-            <a href="{{ route('home') }}">الرئيسية</a>
+            <a href="{{ route('dashboard') }}">الرئيسية</a>
           </li>
 
         </ol>
@@ -289,7 +289,7 @@
           فلترة
         </button>
 
-        <a href="{{ route('home') }}"
+        <a href="{{ route('dashboard') }}"
            class="btn btn-outline-secondary btn-lg w-100">
           إعادة ضبط
         </a>
