@@ -2,6 +2,7 @@
 
 namespace App\Reports;
 
+use App\Models\RequestType;
 use App\Reports\Contracts\ReportInterface;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -27,8 +28,7 @@ class ComplaintSavedReasonsReport implements ReportInterface
     {
 
 
-        $request_type = DB::table('requesttype')
-            ->get()
+        $request_type = RequestType::all()
             ->mapWithKeys(function ($item) {
                 return [$item->requesttypeid  => $item->requesttypename];
             })
@@ -79,6 +79,7 @@ class ComplaintSavedReasonsReport implements ReportInterface
                     ->where('s.ComplaintStatus', 4);
 
 
+                $join->where('s.valid', 1);
                 if (!empty($filters['date_from'])) {
                     $join->whereDate('s.ComplaintDate', '>=', $filters['date_from']);
                 }
@@ -96,7 +97,7 @@ class ComplaintSavedReasonsReport implements ReportInterface
                 'c.close_reason_classify_Name',
                 'r.close_reason_ID',
                 'r.close_reason_Name',
-                DB::raw('COUNT(s.ComplaintID) as complaints_count')
+                DB::raw('COUNT(CASE WHEN s.valid = 1 THEN 1 END) as complaints_count')
             )
 
 
@@ -115,24 +116,21 @@ class ComplaintSavedReasonsReport implements ReportInterface
 
 
 
-    public function headings(): array
-    {
-        return [
+ public function headings(): array
+{
+    return [
+        'التصنيف',
+        'بسبب (عميل/جهاز)',
+        'العدد',
+    ];
+}
 
-            'العدد ',
-            'بسبب (عميل/جهاز) ',
-            'التصنيف ',
-        ];
-    }
-
-    public function map(mixed $row): array
-    {
-        return [
-
-            $row->complaints_count ?? 0,
-            $row->close_reason_Name ?? '',
-            $row->close_reason_classify_Name ?? '',
-
-        ];
-    }
+public function map(mixed $row): array
+{
+    return [
+        $row->close_reason_classify_Name ?? '',
+        $row->close_reason_Name ?? '',
+        $row->complaints_count ?? 0,
+    ];
+}
 }

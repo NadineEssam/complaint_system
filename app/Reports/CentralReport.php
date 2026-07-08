@@ -2,6 +2,10 @@
 
 namespace App\Reports;
 
+use App\Models\CompStatus;
+use App\Models\ComSource;
+use App\Models\Office;
+use App\Models\RequestType;
 use App\Reports\Contracts\ReportInterface;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -27,8 +31,7 @@ class CentralReport implements ReportInterface
     {
 
 
-        $request_type = DB::table('requesttype')
-            ->get()
+        $request_type = RequestType::all()
             ->mapWithKeys(function ($item) {
                 return [$item->requesttypeid  => $item->requesttypename];
             })
@@ -36,24 +39,21 @@ class CentralReport implements ReportInterface
         $request_type[0] = 'الكل';
 
 
-        $request_status = DB::table('compstatus')
-            ->get()
+        $request_status = CompStatus::all()
             ->mapWithKeys(function ($item) {
                 return [$item->statusID  => $item->statusText];
             })
             ->toArray();
         $request_status[0] = 'الكل';
 
-        $request_source = DB::table('comsources')
-            ->get()
+        $request_source = ComSource::all()
             ->mapWithKeys(function ($item) {
                 return [$item->comsourcesid  => $item->comsourcesname];
             })
             ->toArray();
         $request_source[0] = 'الكل';
 
-        $request_office = DB::table('office')
-            ->get()
+        $request_office = Office::all()
             ->mapWithKeys(function ($item) {
                 return [$item->ID  => $item->REG_OFFIC_NAMA];
             })
@@ -115,53 +115,55 @@ class CentralReport implements ReportInterface
     {
 
         $data = DB::table('sfdcomplaints')
-            ->leftJoin('office', 'office.id', '=', 'sfdcomplaints.office')
-            ->leftJoin('comsources', 'comsources.comsourcesid', '=', 'sfdcomplaints.ComplaintSources')
-            ->leftJoin('requesttype', 'requesttype.requesttypeid', '=', 'sfdcomplaints.RequestType')
-            ->leftJoin('compstatus', 'compstatus.statusID', '=', 'sfdcomplaints.ComplaintStatus')
-            ->leftJoin('comp_close_reason', 'comp_close_reason.close_reason_ID', '=', 'sfdcomplaints.fk_close_reason_id')
-            ->select(
-                'sfdcomplaints.ComplainerName',
-                'sfdcomplaints.ComplainerPhone',
-                'sfdcomplaints.ComplaintDate',
-                'office.REG_OFFIC_NAMA',
-                'comsources.comsourcesname',
-                'requesttype.requesttypename',
-                'sfdcomplaints.ComplaintText',
-                'sfdcomplaints.Comment',
-                'sfdcomplaints.statusdetails',
-                'compstatus.statusText',
-                'comp_close_reason.close_reason_Name'
-            )
-
-            ->when($filters['date_from'] ?? null, function ($query, $date_from) {
-                $query->whereDate('sfdcomplaints.ComplaintDate', '>=', $date_from);
-            })
-            ->when($filters['date_to'] ?? null, function ($query, $date_to) {
-                $query->whereDate('sfdcomplaints.ComplaintDate', '<=', $date_to );
-            })
-            ->when($filters['request_type'] ?? null, function ($query, $request_type) {
-                if ($request_type != '0') {
-                    $query->where('sfdcomplaints.RequestType', $request_type);
-                }
-            })
-            ->when($filters['request_status'] ?? null, function ($query, $request_status) {
-                if ($request_status != '0') {
-                    $query->where('sfdcomplaints.ComplaintStatus', $request_status);
-                }
-            })
-            ->when($filters['request_source'] ?? null, function ($query, $request_source) {
-                if ($request_source != '0') {
-                    $query->where('sfdcomplaints.ComplaintSources', $request_source);
-                }
-            })
-            ->when($filters['request_office'] ?? null, function ($query, $request_office) {
-                if ($request_office != '0') {
-                    $query->where('sfdcomplaints.office', $request_office);
-                }
-            })
-
-            ->get();
+    ->leftJoin('ben.OFFICE as oo', 'oo.id', '=', 'sfdcomplaints.office')
+    ->leftJoin('complaint_sources', 'complaint_sources.complaint_id', '=', 'sfdcomplaints.complaintid')
+    ->leftJoin('comsources', 'comsources.comsourcesid', '=', 'complaint_sources.comsource_id')
+    ->leftJoin('requesttype', 'requesttype.requesttypeid', '=', 'sfdcomplaints.RequestType')
+    ->leftJoin('compstatus', 'compstatus.statusID', '=', 'sfdcomplaints.ComplaintStatus')
+    ->leftJoin('comp_close_reason', 'comp_close_reason.close_reason_ID', '=', 'sfdcomplaints.fk_close_reason_id')
+    ->select(
+        'sfdcomplaints.complaintid',
+        'sfdcomplaints.ComplainerName',
+        'sfdcomplaints.ComplainerPhone',
+        'sfdcomplaints.ComplaintDate',
+        'oo.REG_OFFIC_NAMA',
+        DB::raw('GROUP_CONCAT(DISTINCT comsources.comsourcesname ORDER BY comsources.comsourcesname SEPARATOR ", ") as comsourcesname'),
+        'requesttype.requesttypename',
+        'sfdcomplaints.ComplaintText',
+        'sfdcomplaints.Comment',
+        'sfdcomplaints.statusdetails',
+        'compstatus.statusText',
+        'comp_close_reason.close_reason_Name'
+    )
+    ->where('sfdcomplaints.valid', 1 )
+    ->when($filters['date_from'] ?? null, function ($query, $date_from) {
+        $query->whereDate('sfdcomplaints.ComplaintDate', '>=', $date_from);
+    })
+    ->when($filters['date_to'] ?? null, function ($query, $date_to) {
+        $query->whereDate('sfdcomplaints.ComplaintDate', '<=', $date_to);
+    })
+    ->when($filters['request_type'] ?? null, function ($query, $request_type) {
+        if ($request_type != '0') {
+            $query->where('sfdcomplaints.RequestType', $request_type);
+        }
+    })
+    ->when($filters['request_status'] ?? null, function ($query, $request_status) {
+        if ($request_status != '0') {
+            $query->where('sfdcomplaints.ComplaintStatus', $request_status);
+        }
+    })
+    ->when($filters['request_source'] ?? null, function ($query, $request_source) {
+        if ($request_source != '0') {
+            $query->where('complaint_sources.comsource_id', $request_source);
+        }
+    })
+    ->when($filters['request_office'] ?? null, function ($query, $request_office) {
+        if ($request_office != '0') {
+            $query->where('sfdcomplaints.office', $request_office);
+        }
+    })
+    ->groupBy('sfdcomplaints.complaintid')
+    ->get();
 
         return $data;
     }

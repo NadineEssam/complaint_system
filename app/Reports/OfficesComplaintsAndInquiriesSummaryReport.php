@@ -2,6 +2,8 @@
 
 namespace App\Reports;
 
+use App\Models\CompStatus;
+use App\Models\ComSource;
 use App\Reports\Contracts\ReportInterface;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -27,16 +29,14 @@ class OfficesComplaintsAndInquiriesSummaryReport implements ReportInterface
     {
 
 
-        $request_status = DB::table('compstatus')
-            ->get()
+        $request_status = CompStatus::all()
             ->mapWithKeys(function ($item) {
                 return [$item->statusID  => $item->statusText];
             })
             ->toArray();
         $request_status[0] = 'الكل';
 
-        $request_source = DB::table('comsources')
-            ->get()
+        $request_source = ComSource::all()
             ->mapWithKeys(function ($item) {
                 return [$item->comsourcesid  => $item->comsourcesname];
             })
@@ -82,10 +82,10 @@ class OfficesComplaintsAndInquiriesSummaryReport implements ReportInterface
     {
 
 
-       $data = DB::table('office as o')
+       $data = DB::table('ben.OFFICE as o')
         ->leftJoin('sfdcomplaints as c', function ($join) use ($filters) {
             $join->on('o.id', '=', 'c.office');
-
+            $join->where('c.valid', 1); 
             // Apply filters INSIDE join to preserve LEFT JOIN behavior
             if (!empty($filters['date_from'])) {
                 $join->where('c.ComplaintDate', '>=', $filters['date_from'] );
@@ -107,8 +107,8 @@ class OfficesComplaintsAndInquiriesSummaryReport implements ReportInterface
             'o.id as office',
             'o.REG_OFFIC_NAMA as office_name',
 
-            DB::raw("SUM(CASE WHEN c.RequestType = 2 THEN 1 ELSE 0 END) as complaints_count"),
-            DB::raw("SUM(CASE WHEN c.RequestType = 1 THEN 1 ELSE 0 END) as inquiries_count")
+            DB::raw("SUM(CASE WHEN c.RequestType = 2 AND c.valid = 1 THEN 1 ELSE 0 END) as complaints_count"),
+            DB::raw("SUM(CASE WHEN c.RequestType = 1 AND c.valid = 1 THEN 1 ELSE 0 END) as inquiries_count")
         )
         ->groupBy('o.id', 'o.REG_OFFIC_NAMA')
         ->get();

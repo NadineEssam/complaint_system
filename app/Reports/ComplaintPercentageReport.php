@@ -55,6 +55,7 @@ class ComplaintPercentageReport implements ReportInterface
     {
 
         $totalComplaints = DB::table('sfdcomplaints as s')
+            ->where('s.valid', 1)
             ->when(
                 !empty($filters['date_from']),
                 fn($q) =>
@@ -72,7 +73,7 @@ class ComplaintPercentageReport implements ReportInterface
             ->leftJoin('requesttype', 'requesttype.requesttypeid', '=', 'complainttype.request_fk')
             ->leftJoin('sfdcomplaints as s', function ($join) use ($filters) {
                 $join->on('s.ComplaintType', '=', 'complainttype.comtypeid');
-
+                $join->where('s.valid', 1);
 
                 if (!empty($filters['date_from'])) {
                     $join->whereDate('s.ComplaintDate', '>=', $filters['date_from']);
@@ -90,18 +91,18 @@ class ComplaintPercentageReport implements ReportInterface
                 'requesttype.requesttypeid',
                 'requesttype.requesttypename',
 
-                DB::raw('COUNT(s.ComplaintID) as complaints_count'),
-                DB::raw("ROUND((COUNT(s.ComplaintID) / {$totalComplaints}) * 100, 2) as complaints_percentage"),
+                DB::raw('COUNT(CASE WHEN s.valid = 1 THEN 1 END) as complaints_count'),
+                DB::raw("ROUND((COUNT(CASE WHEN s.valid = 1 THEN 1 END) / {$totalComplaints}) * 100, 2) as complaints_percentage"),
 
 
-                DB::raw("SUM(CASE WHEN s.ComplaintStatus = 4 THEN 1 ELSE 0 END) as saved_count"),
-                DB::raw("ROUND((SUM(CASE WHEN s.ComplaintStatus = 4 THEN 1 ELSE 0 END) / COUNT(s.ComplaintID)) * 100, 2) as saved_percentage"),
+                DB::raw("SUM(CASE WHEN s.ComplaintStatus = 4 And s.valid = 1 THEN 1 ELSE 0 END) as saved_count"),
+                DB::raw("ROUND((SUM(CASE WHEN s.ComplaintStatus = 4 AND s.valid = 1 THEN 1 ELSE 0 END) / COUNT(CASE WHEN s.valid = 1 THEN 1 END)) * 100, 2) as saved_percentage"),
 
-                DB::raw("SUM(CASE WHEN s.ComplaintStatus = 2 THEN 1 ELSE 0 END) as solved_count"),
-                DB::raw("ROUND((SUM(CASE WHEN s.ComplaintStatus = 2 THEN 1 ELSE 0 END) / COUNT(s.ComplaintID)) * 100, 2) as solved_percentage"),
+                DB::raw("SUM(CASE WHEN s.ComplaintStatus = 2 AND s.valid = 1 THEN 1 ELSE 0 END) as solved_count"),
+                DB::raw("ROUND((SUM(CASE WHEN s.ComplaintStatus = 2 AND s.valid = 1 THEN 1 ELSE 0 END) / COUNT(CASE WHEN s.valid = 1 THEN 1 END)) * 100, 2) as solved_percentage"),
 
-                DB::raw("SUM(CASE WHEN s.fk_close_reason_id = 1 AND s.ComplaintStatus = 4 THEN 1 ELSE 0 END) as client_reason_count"),
-                DB::raw("SUM(CASE WHEN s.fk_close_reason_id = 2 AND s.ComplaintStatus = 4 THEN 1 ELSE 0 END) as company_reason_count"),
+                DB::raw("SUM(CASE WHEN s.fk_close_reason_id = 1 AND s.ComplaintStatus = 4 AND s.valid = 1 THEN 1 ELSE 0 END) as client_reason_count"),
+                DB::raw("SUM(CASE WHEN s.fk_close_reason_id = 2 AND s.ComplaintStatus = 4 AND s.valid = 1 THEN 1 ELSE 0 END) as company_reason_count"),
 
             )
 

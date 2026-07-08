@@ -2,6 +2,8 @@
 
 namespace App\Reports;
 
+use App\Models\ComSource;
+use App\Models\RequestType;
 use App\Reports\Contracts\ReportInterface;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -27,8 +29,7 @@ class OfficesSavedComplaintsCountReport implements ReportInterface
     {
 
 
-     $request_type = DB::table('requesttype')
-            ->get()
+     $request_type = RequestType::all()
             ->mapWithKeys(function ($item) {
                 return [$item->requesttypeid  => $item->requesttypename];
             })
@@ -37,8 +38,7 @@ class OfficesSavedComplaintsCountReport implements ReportInterface
 
       
 
-        $request_source = DB::table('comsources')
-            ->get()
+        $request_source = ComSource::all()
             ->mapWithKeys(function ($item) {
                 return [$item->comsourcesid  => $item->comsourcesname];
             })
@@ -85,11 +85,11 @@ class OfficesSavedComplaintsCountReport implements ReportInterface
     {
 
 
-       $data = DB::table('office as o')
+       $data = DB::table('ben.OFFICE as o')
         ->leftJoin('sfdcomplaints as c', function ($join) use ($filters) {
             $join->on('o.id', '=', 'c.office');
             $join->where('c.ComplaintStatus', 4 ); // Only count saved complaints
-
+            $join->where('c.valid', 1); 
             // Apply filters INSIDE join to preserve LEFT JOIN behavior
             if (!empty($filters['date_from'])) {
                 $join->where('c.ComplaintDate', '>=', $filters['date_from'] );
@@ -110,8 +110,8 @@ class OfficesSavedComplaintsCountReport implements ReportInterface
             'o.id as office',
             'o.REG_OFFIC_NAMA as office_name',
 
-            DB::raw("SUM(CASE WHEN c.fk_close_reason_id = 2 THEN 1 ELSE 0 END) as for_company_count"),
-            DB::raw("SUM(CASE WHEN c.fk_close_reason_id = 1 THEN 1 ELSE 0 END) as for_client_count")
+            DB::raw("SUM(CASE WHEN c.fk_close_reason_id = 2 AND c.valid = 1 THEN 1 ELSE 0 END) as for_company_count"),
+            DB::raw("SUM(CASE WHEN c.fk_close_reason_id = 1 AND c.valid = 1 THEN 1 ELSE 0 END) as for_client_count")
         )
         ->groupBy('o.id', 'o.REG_OFFIC_NAMA')
         ->get();

@@ -54,32 +54,33 @@ class CompareByRequestTypeBetweenYearsReport implements ReportInterface
 
 
         $data = DB::table('sfdcomplaints as c')
-            ->leftJoin('office as o', 'o.id', '=', 'c.office')
+            ->leftJoin('ben.OFFICE as o', 'o.id', '=', 'c.office')
             ->select(
 
                 'c.office',
                 'o.REG_OFFIC_NAMA as office_name',
 
-                DB::raw("COUNT(CASE 
-            WHEN RequestType = 2 
-            AND YEAR(ComplaintDate) = $first_year
-        THEN 1 END) as complaints_first_year"),
+                        DB::raw("COUNT(CASE 
+                    WHEN RequestType = 2 AND valid = 1
+                    AND YEAR(ComplaintDate) = $first_year
+                THEN 1 END) as complaints_first_year"),
 
-                DB::raw("COUNT(CASE 
-            WHEN RequestType = 1 
-            AND YEAR(ComplaintDate) = $first_year
-        THEN 1 END) as inquiries_first_year"),
+                        DB::raw("COUNT(CASE 
+                    WHEN RequestType = 1 AND valid = 1
+                    AND YEAR(ComplaintDate) = $first_year
+                THEN 1 END) as inquiries_first_year"),
 
-                DB::raw("COUNT(CASE 
-            WHEN RequestType = 2 
-            AND YEAR(ComplaintDate) = $second_year
-        THEN 1 END) as complaints_second_year"),
+                        DB::raw("COUNT(CASE 
+                    WHEN RequestType = 2 AND valid = 1
+                    AND YEAR(ComplaintDate) = $second_year
+                THEN 1 END) as complaints_second_year"),
 
-                DB::raw("COUNT(CASE 
-            WHEN RequestType = 1 
-            AND YEAR(ComplaintDate) = $second_year
-        THEN 1 END) as inquiries_second_year")
+                        DB::raw("COUNT(CASE 
+                    WHEN RequestType = 1 AND valid = 1
+                    AND YEAR(ComplaintDate) = $second_year
+                THEN 1 END) as inquiries_second_year")
             )
+            ->where('c.valid', 1)
             ->groupBy('c.office', 'o.REG_OFFIC_NAMA')
             ->get();
 
