@@ -36,9 +36,15 @@ class ComplaintController extends Controller
 
     public function index(ComplaintDataTable $dataTable)
     {
+        // $genders   = [['id' => 'ذكر', 'name' => 'ذكر'], ['id' => 'أنثى', 'name' => 'أنثى']];
+        // $govs      = \App\Models\Gov::select('GOVT_CODE as id', 'GOVT_NAMA as name')->get();
+        // $offices = \App\Models\Office::select('ID as id', 'REG_OFFIC_NAMA as name')->get(); // adjust column name
+        // $statuses  = \App\Models\CompStatus::select('statusID as id', 'statusText as name')->get();
+        // $reqTypes  = \App\Models\RequestType::select('requesttypeid as id', 'requesttypename as name')->get();
+
         $genders   = [['id' => 'ذكر', 'name' => 'ذكر'], ['id' => 'أنثى', 'name' => 'أنثى']];
-        $govs      = \App\Models\Gov::select('GOVT_CODE as id', 'GOVT_NAMA as name')->get();
-        $offices = \App\Models\Office::select('ID as id', 'REG_OFFIC_NAMA as name')->get(); // adjust column name
+        $govs      = \App\Models\Gov::where('VALIDITY', 1)->select('GOVT_CODE as id', 'GOVT_NAMA as name')->get();
+        $offices   = \App\Models\Office::where('VALIDITY', 1)->select('ID as id', 'REG_OFFIC_NAMA as name')->get();
         $statuses  = \App\Models\CompStatus::select('statusID as id', 'statusText as name')->get();
         $reqTypes  = \App\Models\RequestType::select('requesttypeid as id', 'requesttypename as name')->get();
 
@@ -47,7 +53,7 @@ class ComplaintController extends Controller
             'gov_filter'      => request('gov_filter'),
             'status_filter'   => request('status_filter'),
             'reqtype_filter'  => request('reqtype_filter'),
-        ])->render('dashboard.complaints.index', compact('genders', 'govs', 'statuses','offices', 'reqTypes'));
+        ])->render('dashboard.complaints.index', compact('genders', 'govs', 'statuses', 'offices', 'reqTypes'));
     }
     /**
      * Show the form for creating a new resource.
@@ -56,13 +62,21 @@ class ComplaintController extends Controller
      */
     public function create()
     {
+        // $requestTypes = RequestType::all();
+        // $govs = Gov::all();
+        // $sectors = Sector::all();
+        // $departments = Department::all();
+        // // $projectTypes = ProjectType::orderBy('projecttypename')->get();
+        // $comsources = Comsource::where('validity', 1)->get();
+        // $offices = Office::all();
+        // $projectTypes = ProjectType::all();
+
         $requestTypes = RequestType::all();
-        $govs = Gov::all();
-        $sectors = Sector::all();
-        $departments = Department::all();
-        // $projectTypes = ProjectType::orderBy('projecttypename')->get();
+        $govs = Gov::where('validity', 1)->get();
+        $sectors = Sector::where('validity', 1)->get();
+        $departments = Department::where('validity', 1)->get();
         $comsources = Comsource::where('validity', 1)->get();
-        $offices = Office::all();
+        $offices = Office::where('validity', 1)->get();
         $projectTypes = ProjectType::all();
 
         return view('dashboard.complaints.create_edit', compact(
@@ -182,7 +196,7 @@ class ComplaintController extends Controller
     {
         return view('dashboard.complaints.show', compact('complaint'));
     }
-    
+
 
     /**
      * Show the form for editing the specified resource.
@@ -192,13 +206,21 @@ class ComplaintController extends Controller
      */
     public function edit(Complaint $complaint)
     {
+        // $requestTypes = RequestType::all();
+        // $govs = Gov::all();
+        // $sectors = Sector::all();
+        // $departments = Department::all();
+        // $comsources = Comsource::where('validity', 1)->get();
+        // // $projectTypes = ProjectType::orderBy('projecttypename')->get();
+        // $offices = Office::all();
+        // $projectTypes = ProjectType::all();
+
         $requestTypes = RequestType::all();
-        $govs = Gov::all();
-        $sectors = Sector::all();
-        $departments = Department::all();
+        $govs = Gov::where('validity', 1)->get();
+        $sectors = Sector::where('validity', 1)->get();
+        $departments = Department::where('validity', 1)->get();
         $comsources = Comsource::where('validity', 1)->get();
-        // $projectTypes = ProjectType::orderBy('projecttypename')->get();
-        $offices = Office::all();
+        $offices = Office::where('validity', 1)->get();
         $projectTypes = ProjectType::all();
 
         return view('dashboard.complaints.create_edit', compact(
@@ -296,7 +318,7 @@ class ComplaintController extends Controller
             'office' => $data['office'] ?? 0,
             'complaint_type' => $data['complaint_type'],
             'ComplaintText' => $data['ComplaintText'],
-             'ComplainerGovernorate' => $data['ComplainerGovernorate'] ?? 0,
+            'ComplainerGovernorate' => $data['ComplainerGovernorate'] ?? 0,
             // 'ComplaintSources' => $data['comsource_id'],
             'ComplaintProjectType' => $data['ComplaintProjectType'],
             'ComplaintNationalID' => $data['ComplaintNationalID'] ?? null,
@@ -317,9 +339,10 @@ class ComplaintController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
     public function destroy(Complaint $complaint)
     {
-        $complaint->delete();
+        $complaint->update(['valid' => 0]);
 
         return response()->json(['success' => true, 'message' => __('Delete Successful')]);
     }
@@ -336,13 +359,21 @@ class ComplaintController extends Controller
     public function duplicateCreate(Complaint $complaint)
     {
         // print_r($complaint);
-        $requestTypes = RequestType::all();
-        $govs = Gov::all();
-        $sectors = Sector::all();
-        $departments = Department::all();
-        $comsources = Comsource::all();
-        $offices = Office::all();
-        $projectTypes = ProjectType::all();
+        // $requestTypes = RequestType::all();
+        // $govs = Gov::all();
+        // $sectors = Sector::all();
+        // $departments = Department::all();
+        // $comsources = Comsource::all();
+        // $offices = Office::all();
+        // $projectTypes = ProjectType::all();
+
+        $requestTypes = RequestType::where('valid', 1)->get();
+        $govs = Gov::where('valid', 1)->get();
+        $sectors = Sector::where('valid', 1)->get();
+        $departments = Department::where('valid', 1)->get();
+        $comsources = Comsource::where('validity', 1)->get();
+        $offices = Office::where('valid', 1)->get();
+        $projectTypes = ProjectType::where('valid', 1)->get();
 
         return view('dashboard.complaints.create_edit', compact(
             'complaint',
@@ -354,7 +385,7 @@ class ComplaintController extends Controller
             'departments',
             'projectTypes',
         ))->with('isDuplicateMode', true)
-          ->with('parentComplaint', $complaint);
+            ->with('parentComplaint', $complaint);
     }
 
     /**
@@ -446,23 +477,23 @@ class ComplaintController extends Controller
      * @param  \App\Models\Complaint  $complaint
      * @return \Illuminate\Http\Response
      */
-public function duplicatesIndex(Complaint $complaint)
-{
-    $root = $complaint->root;
+    public function duplicatesIndex(Complaint $complaint)
+    {
+        $root = $complaint->root;
 
-    $dataTable = app(\App\DataTables\ComplaintDuplicatesDataTable::class)
-        ->forComplaint($root)
-        ->highlight($complaint->ComplaintID);
+        $dataTable = app(\App\DataTables\ComplaintDuplicatesDataTable::class)
+            ->forComplaint($root)
+            ->highlight($complaint->ComplaintID);
 
-    if (request()->has('draw')) {
-        return $dataTable->ajax();
+        if (request()->has('draw')) {
+            return $dataTable->ajax();
+        }
+
+        return $dataTable->render(
+            'dashboard.complaints.duplicates_modal',
+            compact('root') + ['complaint' => $root, 'currentId' => $complaint->ComplaintID]
+        );
     }
-
-    return $dataTable->render(
-        'dashboard.complaints.duplicates_modal',
-        compact('root') + ['complaint' => $root, 'currentId' => $complaint->ComplaintID]
-    );
-}
 
     public function validateRoles($request)
     {

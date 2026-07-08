@@ -552,6 +552,28 @@
 
     </div>
   </div> 
+  <div class="row mt-4">
+  <div class="col-12">
+    <div class="card border-0 shadow-sm overflow-hidden">
+      <div class="card-body p-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h4 class="mb-1 fw-bold">🏗️ الشكاوى حسب نوع النشاط</h4>
+            <p class="text-muted mb-0 small">توزيع عدد الشكاوى على أنواع الأنشطة</p>
+          </div>
+          <div class="rounded-circle d-flex align-items-center justify-content-center"
+            style="width:55px;height:55px;background:#eef2ff;color:#6366f1;font-size:22px;">
+            <i class="bi bi-building-gear"></i>
+          </div>
+        </div>
+
+        <div id="projectTypeChart"></div>
+
+      </div>
+    </div>
+  </div>
+</div>
 
   <div class="row mt-4">
   <div class="col-12">
@@ -665,6 +687,9 @@
 
     const sourceLabels = @json($sourceStats -> pluck('comsourcesname'));
     const sourceData = @json($sourceStats -> pluck('total'));
+
+    const projectTypeLabels = @json(collect($projectTypeStats)->pluck('name'));
+    const projectTypeData   = @json(collect($projectTypeStats)->pluck('total'));
 
     const closeData = @json($closeReasonStats);
 
@@ -796,6 +821,47 @@
 
     }).render();
 
+
+    new ApexCharts(document.querySelector("#projectTypeChart"), {
+
+  series: [{
+    name: 'عدد الشكاوى',
+    data: projectTypeData
+  }],
+
+  chart: {
+    type: 'area',
+    height: 350,
+    toolbar: {
+      show: false
+    },
+    fontFamily: 'Cairo, sans-serif'
+  },
+
+  colors: ['#6366f1'],
+
+  stroke: {
+    curve: 'smooth',
+    width: 4
+  },
+
+  fill: {
+    type: 'gradient',
+    gradient: {
+      opacityFrom: 0.5,
+      opacityTo: 0.05
+    }
+  },
+
+  dataLabels: {
+    enabled: false
+  },
+
+  xaxis: {
+    categories: projectTypeLabels
+  }
+
+}).render();
     // ================= DEPARTMENT =================
     new ApexCharts(document.querySelector("#sourceChart"), {
 
