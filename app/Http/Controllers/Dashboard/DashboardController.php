@@ -40,6 +40,7 @@ class DashboardController extends Controller
             }
 
             $complaintsQuery = Complaint::query()
+                ->where('valid', 1) // <-- only active complaints in every stat below
                 ->when($from && $to, function ($q) use ($from, $to) {
                     $q->whereBetween('ComplaintDate', [$from, $to]);
                 })
@@ -52,7 +53,7 @@ class DashboardController extends Controller
 
 
             $total = (clone $complaintsQuery)->count();
-            
+
             $statuses = (clone $complaintsQuery)
                 ->select('ComplaintStatus', DB::raw('COUNT(*) as total'))
                 ->groupBy('ComplaintStatus')
@@ -66,11 +67,12 @@ class DashboardController extends Controller
 
             $requestTypesStats = RequestType::withCount([
                 'complaints' => function ($q) use ($from, $to) {
-                    $q->when(
-                        $from && $to,
-                        fn($q) =>
-                        $q->whereBetween('ComplaintDate', [$from, $to])
-                    )
+                    $q->where('valid', 1) // <-- only active complaints
+                        ->when(
+                            $from && $to,
+                            fn($q) =>
+                            $q->whereBetween('ComplaintDate', [$from, $to])
+                        )
                         ->when(
                             $from && !$to,
                             fn($q) =>
@@ -115,7 +117,7 @@ class DashboardController extends Controller
                     'total' => $item->total
                 ]);
 
-                $sectorStats = (clone $complaintsQuery)
+            $sectorStats = (clone $complaintsQuery)
                 ->select('sector_id', DB::raw('COUNT(*) as total'))
                 ->groupBy('sector_id')
                 ->get()
@@ -125,7 +127,21 @@ class DashboardController extends Controller
                         'name'  => $sector->sector_ar ?? 'غير معروف',
                         'total' => $item->total,
                     ];
-                });
+                })
+                // merge every bucket that resolved to the same name (e.g. all the
+                // unmatched/غير معروف ones) into a single row instead of many
+                ->groupBy('name')
+                ->map(function ($group, $name) {
+                    return [
+                        'name'  => $name,
+                        'total' => $group->sum('total'),
+                    ];
+                })
+                ->values();
+
+            // This one builds its own query from scratch via joins rather
+            // than cloning $complaintsQuery, so the valid filter has to be
+            // applied on the joined sfdcomplaints table explicitly.
             $sourceStats = ComSource::select(
                 'comsources.comsourcesid',
                 'comsources.comsourcesname',
@@ -133,6 +149,12 @@ class DashboardController extends Controller
             )
                 ->leftJoin('complaint_sources', 'complaint_sources.comsource_id', '=', 'comsources.comsourcesid')
                 ->leftJoin('sfdcomplaints', 'sfdcomplaints.ComplaintID', '=', 'complaint_sources.complaint_id')
+                ->where(function ($q) {
+                    // keep sources with zero matching complaints (left join nulls)
+                    // but exclude any complaint row that's soft-deleted
+                    $q->whereNull('sfdcomplaints.ComplaintID')
+                        ->orWhere('sfdcomplaints.valid', 1);
+                })
                 ->when($from && $to, function ($q) use ($from, $to) {
                     $q->whereBetween('sfdcomplaints.ComplaintDate', [$from, $to]);
                 })
@@ -148,8 +170,26 @@ class DashboardController extends Controller
                 ->filter(fn($i) => $i->total > 0)
                 ->values();
 
-       
-            
+            $projectTypeStats = (clone $complaintsQuery)
+    ->select('ComplaintProjectType', DB::raw('COUNT(*) as total'))
+    ->groupBy('ComplaintProjectType')
+    ->get()
+    ->map(function ($item) {
+        $projectType = \App\Models\ProjectType::where('ID', $item->ComplaintProjectType)->first();
+        return [
+            'name'  => $projectType->sector_nama ?? 'غير معروف',
+            'total' => $item->total,
+        ];
+    })
+    // merge every bucket that resolved to the same name (covers all
+    // unmatched/null ComplaintProjectType values collapsing into one bar)
+    ->groupBy('name')
+    ->map(fn($group, $name) => [
+        'name'  => $name,
+        'total' => $group->sum('total'),
+    ])
+    ->values();
+
 
             $officeStats = (clone $complaintsQuery)
                 ->select('office', DB::raw('COUNT(*) as total'))
@@ -174,6 +214,7 @@ class DashboardController extends Controller
                 'status24Total',
                 'closeReasonStats',
                 'sectorStats',
+                'projectTypeStats',
                 // 'govStats',
                 'officeStats',
                 'sourceStats'
@@ -194,18 +235,10 @@ class DashboardController extends Controller
                 'sectorStats' => collect(),
                 'status24Total' => collect(),
                 'closeReasonStats' => collect(),
+                'projectTypeStats' => collect(),
                 'sourceStats' => collect(),
                 'officeStats' => collect(),
             ]);
         }
-        // Add right after $complaintsQuery is defined
-\Log::info('Total raw complaints: ' . \App\Models\Complaint::count());
-\Log::info('Statuses: ' . json_encode(
-    \App\Models\Complaint::select('ComplaintStatus', \DB::raw('COUNT(*) as c'))
-        ->groupBy('ComplaintStatus')->get()
-));
     }
-
-
-    
 }

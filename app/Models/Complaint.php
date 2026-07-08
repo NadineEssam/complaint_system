@@ -42,6 +42,7 @@ class Complaint extends Model
         'complaint_type',
         'ComplaintProjectType',
         'parent_id',
+        'valid',
 
 
     ];
@@ -50,8 +51,18 @@ class Complaint extends Model
         'fk_close_reason_id' => 0,
         'fk_close_reason_classify_id' => 0,
         'ComplaintStatus' => 3,
+        'valid'=> 1, 
     ];
-
+    protected static function booted()
+    {
+        static::addGlobalScope('valid', function (\Illuminate\Database\Eloquent\Builder $builder) {
+            $builder->where('sfdcomplaints.valid', 1);
+        });
+    }
+    public static function withInvalid()
+    {
+        return static::withoutGlobalScope('valid');
+    }
 
     public function responses()
     {
