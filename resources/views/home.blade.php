@@ -682,7 +682,8 @@
     const sectorLabels = @json(collect($sectorStats)->pluck('name'));
     const sectorData   = @json(collect($sectorStats)->pluck('total'));
 
-    const officeLabels = @json(collect($officeStats) -> pluck('name'));
+    const officeLabels = @json(collect($officeStats)->pluck('name'))
+      .map(name => name.replace(/^مكتب\s+/, ''));
     const officeData = @json(collect($officeStats) -> pluck('total'));
 
     const sourceLabels = @json($sourceStats -> pluck('comsourcesname'));
@@ -1015,151 +1016,152 @@ new ApexCharts(document.querySelector("#sectorChart"), {
 
 }).render();
     // ================= GOVERNORATE =================
-    new ApexCharts(document.querySelector("#offChart"), {
-      series: [{
-        name: "عدد الشكاوى",
-        data: officeData,
-      }, ],
+    
+new ApexCharts(document.querySelector("#offChart"), {
+  series: [{
+    name: "عدد الشكاوى",
+    data: officeData,
+  }, ],
 
-      chart: {
-        type: "bar",
-        height: 520,
-        background: "transparent",
-        toolbar: {
-          show: false,
-        },
-        fontFamily: "Cairo, sans-serif",
-      },
+  chart: {
+    type: "bar",
+    height: 750,          // increased from 520 — more room per row
+    background: "transparent",
+    toolbar: {
+      show: false,
+    },
+    fontFamily: "Cairo, sans-serif",
+  },
 
-      colors: ["#14b8a6"],
+  colors: ["#14b8a6"],
 
-      theme: {
-        mode: "light",
-      },
+  theme: {
+    mode: "light",
+  },
 
-      grid: {
-        borderColor: "#e5e7eb",
-        strokeDashArray: 4,
-        xaxis: {
-          lines: {
-            show: true,
-          },
-        },
-        yaxis: {
-          lines: {
-            show: false,
-          },
-        },
-        padding: {
-          left: 20,
-          right: 20,
-          top: 10,
-          bottom: 10,
-        },
-      },
-
-      plotOptions: {
-        bar: {
-          horizontal: true,
-          borderRadius: 14,
-          borderRadiusApplication: "end",
-          barHeight: "58%",
-          distributed: true,
-          dataLabels: {
-            position: "top",
-          },
-        },
-      },
-
-      dataLabels: {
-        enabled: true,
-        offsetX: 25,
-        style: {
-          fontSize: "13px",
-          fontWeight: "700",
-          colors: ["#111827"],
-        },
-        formatter: function(val) {
-          return val;
-        },
-      },
-
-      stroke: {
+  grid: {
+    borderColor: "#e5e7eb",
+    strokeDashArray: 4,
+    xaxis: {
+      lines: {
         show: true,
-        width: 1,
-        colors: ["#ffffff"],
       },
-
-      xaxis: {
-        categories: officeLabels,
-
-        axisBorder: {
-          show: false,
-        },
-
-        axisTicks: {
-          show: false,
-        },
-
-        labels: {
-          style: {
-            colors: "#6b7280",
-            fontSize: "12px",
-            fontWeight: 500,
-          },
-        },
-      },
-
-      yaxis: {
-        labels: {
-          align: "left",
-
-          offsetX: 155,
-          style: {
-            fontSize: "16px",
-            fontWeight: 600,
-            colors: "#0f172a",
-          },
-        },
-      },
-
-      tooltip: {
-        theme: "light",
-        style: {
-          fontSize: "13px",
-          fontFamily: "Cairo, sans-serif",
-        },
-      },
-
-      legend: {
+    },
+    yaxis: {
+      lines: {
         show: false,
       },
+    },
+    padding: {
+      left: 20,
+      right: 20,
+      top: 10,
+      bottom: 10,
+    },
+  },
 
-      states: {
-        hover: {
-          filter: {
-            type: "lighten",
-            value: 0.08,
+  plotOptions: {
+    bar: {
+      horizontal: true,
+      borderRadius: 14,
+      borderRadiusApplication: "end",
+      barHeight: "45%",    // reduced from 58% — thinner bars, more gap between them
+      distributed: true,
+      dataLabels: {
+        position: "top",
+      },
+    },
+  },
+
+  dataLabels: {
+    enabled: true,
+    offsetX: 25,
+    style: {
+      fontSize: "13px",
+      fontWeight: "700",
+      colors: ["#111827"],
+    },
+    formatter: function(val) {
+      return val;
+    },
+  },
+
+  stroke: {
+    show: true,
+    width: 1,
+    colors: ["#ffffff"],
+  },
+
+  xaxis: {
+    categories: officeLabels,
+
+    axisBorder: {
+      show: false,
+    },
+
+    axisTicks: {
+      show: false,
+    },
+
+    labels: {
+      style: {
+        colors: "#6b7280",
+        fontSize: "12px",
+        fontWeight: 500,
+      },
+    },
+  },
+
+  yaxis: {
+    labels: {
+      align: "left",
+
+      offsetX: 135,
+      style: {
+        fontSize: "16px",
+        fontWeight: 600,
+        colors: "#0f172a",
+      },
+    },
+  },
+
+  tooltip: {
+    theme: "light",
+    style: {
+      fontSize: "13px",
+      fontFamily: "Cairo, sans-serif",
+    },
+  },
+
+  legend: {
+    show: false,
+  },
+
+  states: {
+    hover: {
+      filter: {
+        type: "lighten",
+        value: 0.08,
+      },
+    },
+  },
+
+  responsive: [{
+    breakpoint: 768,
+    options: {
+      chart: {
+        height: 600,       // increased from 420 to match the more spacious desktop look
+      },
+      yaxis: {
+        labels: {
+          style: {
+            fontSize: "12px",
           },
         },
       },
-
-      responsive: [{
-        breakpoint: 768,
-        options: {
-          chart: {
-            height: 420,
-          },
-          yaxis: {
-            labels: {
-              style: {
-                fontSize: "12px",
-              },
-            },
-          },
-        },
-      }, ],
-    }).render();
+    },
+  }, ],
+}).render();
 
     // ================= CLOSE REASON =================
     new ApexCharts(document.querySelector("#closeReasonChart"), {
