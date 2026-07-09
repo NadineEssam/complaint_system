@@ -395,7 +395,11 @@
 
           </div>
 
-          {{-- Buttons --}}
+         
+
+        </div>
+        <div>
+             {{-- Buttons --}}
           <div class="d-flex justify-content-between mt-3">
             <a href="{{ route('responses.index', ['complaint_id' => $complaint->ComplaintID]) }}" class="btn btn-secondary btn-custom">
               <i class="bx bx-arrow-back me-1"></i> رجوع
@@ -405,9 +409,7 @@
               {{ isset($response) ? 'تحديث الرد' : 'حفظ الرد' }}
             </button>
           </div>
-
         </div>
-
       </form>
     </div>
   </div>
