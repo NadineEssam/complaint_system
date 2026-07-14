@@ -208,14 +208,14 @@ class ComplaintDataTable extends DataTable
     {
         return [
 
-            Column::make('ComplaintID')->title('رقم الشكوي'),
+            Column::make('ComplaintID')->title('رقم البيان'),
             Column::make('requesttypename')
                 ->name('requesttype.requesttypename')
                 ->title('نوع البيان'),
             // Column::make('complaint_type')
             //     ->name('complainttype.comtypename')
             //     ->title('تصنيف البيان'),
-            Column::make('ComplainerName')->title('اسم الشاكي'),
+            Column::make('ComplainerName')->title('اسم مقدم الطلب'),
 
             Column::make('ComplaintNationalID')->title('الرقم القومي '),
             Column::make('ComplainerPhone')->title('رقم الهاتف المحمول '),
@@ -228,10 +228,10 @@ class ComplaintDataTable extends DataTable
 
 
 
-            Column::make('ComplaintDate')->title('تاريخ الشكوي'),
+            Column::make('ComplaintDate')->title('تاريخ البيان'),
 
             Column::make('username')
-                ->title('موظف الشكوي'),
+                ->title('موظف البيان'),
 
             Column::make('UpdateUser')
 

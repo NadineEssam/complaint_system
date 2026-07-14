@@ -197,7 +197,7 @@
       @if (PerUser('complaints.create'))
       <a href="{{ route('complaints.create') }}" class="btn-add">
         <i class="bx bx-plus"></i>
-        إضافة شكوى
+        إضافة بيان
       </a>
       @endif
     </div>
