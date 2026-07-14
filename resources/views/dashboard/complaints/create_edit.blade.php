@@ -600,21 +600,24 @@ $step = (
             <div class="row">
 
               {{-- التاريخ --}}
-              <div class="col-md-6 mb-4">
-                <label class="form-label">
-                  التاريخ <span class="required-star">*</span>
-                </label>
-                <input type="date"
-                  dir="rtl" lang="ar"
-                  class="form-control @error('ComplaintDate') is-invalid @enderror"
-                  name="ComplaintDate"
-                  max="{{ date('Y-m-d') }}"
-                  value="{{ old('ComplaintDate', $complaint->ComplaintDate ?? '') }}">
-                @error('ComplaintDate')
-                <div class="error-text">{{ $message }}</div>
-                @enderror
-              </div>
+           <div class="col-md-6 mb-4">
+    <label class="form-label">
+        التاريخ <span class="required-star">*</span>
+    </label>
 
+    <input
+        type="datetime-local"
+        dir="rtl"
+        lang="ar"
+        class="form-control @error('ComplaintDate') is-invalid @enderror"
+        name="ComplaintDate"
+        max="{{ now()->format('Y-m-d\TH:i') }}"
+        value="{{ old('ComplaintDate', isset($complaint) ? \Carbon\Carbon::parse($complaint->ComplaintDate)->format('Y-m-d\TH:i') : '') }}">
+
+    @error('ComplaintDate')
+        <div class="error-text">{{ $message }}</div>
+    @enderror
+</div>
               {{-- نوع النشاط --}}
               <div class="col-md-6 mb-4">
                 <label class="form-label">
@@ -828,10 +831,10 @@ $step = (
 </script>
 <script src="{{ asset('assets/js/complaints.js') }}"></script>
 <script>
-    flatpickr("input[name='ComplaintDate']", {
-        locale: "ar",
-        dateFormat: "Y-m-d",
-        maxDate: "today"
-    });
+    // flatpickr("input[name='ComplaintDate']", {
+    //     locale: "ar",
+    //     dateFormat: "Y-m-d H:i",
+    //     maxDate: "today"
+    // });
 </script>
 @endpush

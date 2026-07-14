@@ -8,6 +8,7 @@ use App\Reports\CompareByRequestTypeBetweenYearsReport;
 use App\Reports\ComplaintPercentageReport;
 use App\Reports\ComplaintsAndInquiriesSummaryBySource;
 use App\Reports\ComplaintSavedReasonsReport;
+use App\Reports\ComplaintToVisitorsAndResponseTimeComparisonReport;
 use App\Reports\OfficesComplaintsAndInquiriesSummaryReport;
 use App\Reports\OfficesSavedComplaintsCountReport;
 use App\Reports\ReportRegistry;
@@ -31,6 +32,7 @@ class ReportServiceProvider extends ServiceProvider
                 new OfficesSavedComplaintsCountReport(),
                 new ComplaintSavedReasonsReport(),
                 new ComplaintPercentageReport(),
+                new ComplaintToVisitorsAndResponseTimeComparisonReport(),
             );
 
             return $registry;
