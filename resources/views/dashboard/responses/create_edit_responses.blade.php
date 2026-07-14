@@ -143,6 +143,9 @@
 
   .classify-form .form-control,
   .classify-form .form-select {
+    background-position: left 0.75rem center !important;
+    padding-left: 2.25rem;
+    padding-right: 0.75rem;
     font-family: 'Cairo', 'Tahoma', sans-serif;
     font-size: 13px;
     border-radius: 8px;
@@ -152,6 +155,10 @@
     transition: border-color .15s;
     color: #1f2937;
   }
+  .classify-form .select2-selection__arrow {
+  left: 8px !important;
+  right: auto !important;
+}
 
   .classify-form textarea.form-control {
     min-height: 110px;
