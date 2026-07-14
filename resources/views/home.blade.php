@@ -54,17 +54,52 @@
     border-radius: 24px;
   }
 
+.row.kpi-row {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1.5rem;
+  align-items: stretch; /* force all cards to match tallest one */
+}
+
+.row.kpi-row > .col {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  display: flex; /* let card fill the column */
+}
+
+.row.kpi-row > .col > .card {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.row.kpi-row > .col > .card > .card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* ================= RESPONSIVE KPI GRID ================= */
+@media (max-width: 1200px) {
   .row.kpi-row {
-    flex-wrap: wrap;
-    /* allow wrapping on small screens */
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+}
 
-  .row.kpi-row>.col {
-    flex: 1 1 200px !important;
-    /* shrink but not below 200px */
-    min-width: 200px;
+@media (max-width: 768px) {
+  .row.kpi-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
 
+@media (max-width: 480px) {
+  .row.kpi-row {
+    grid-template-columns: 1fr;
+  }
+}
   /* ================= PAGE TITLE ================= */
   .pagetitle h1 {
     font-size: 28px;

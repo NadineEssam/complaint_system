@@ -85,6 +85,9 @@ class ComplaintResponseController extends Controller
                 'ComplaintService' => 'nullable|integer',
                 'fk_close_reason_id' => 'nullable|integer',
                 'fk_close_reason_classify_id' => 'nullable|integer',
+            ], [
+                'fk_close_reason_id.required_if'          => 'سبب البيان مطلوب عند إغلاق البيان',
+                'fk_close_reason_classify_id.required_if' => 'التصنيف مطلوب عند إغلاق البيان',
             ]);
 
             $data['created_by'] = auth()->id();
@@ -208,6 +211,9 @@ class ComplaintResponseController extends Controller
                 'ComplaintService'           => 'nullable|integer',
                 'fk_close_reason_id'         => 'nullable|integer',
                 'fk_close_reason_classify_id' => 'nullable|integer',
+            ], [
+                'fk_close_reason_id.required_if'          => 'سبب البيان مطلوب عند إغلاق البيان',
+                'fk_close_reason_classify_id.required_if' => 'التصنيف مطلوب عند إغلاق البيان',
             ]);
 
             $data['updated_by'] = auth()->id();
