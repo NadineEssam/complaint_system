@@ -19,7 +19,7 @@ class CompareByRequestTypeBetweenYearsReport implements ReportInterface
 
     public function label(): string
     {
-        return ' تقرير سنوى بعدد الشكاوى والاستفسارات الوارده ';
+        return ' تقرير سنوى بعدد الطلبات الوارده وانوعها ';
     }
 
     public function key(): string
@@ -32,16 +32,16 @@ class CompareByRequestTypeBetweenYearsReport implements ReportInterface
         return [
             [
                 'name'        => 'first_year',
-                'label'       => 'العام الاول',
+                'label'       => 'العام ',
                 'type'        => 'number',
                 'required'    => true,
             ],
-            [
-                'name'        => 'second_year',
-                'label'       => 'العام الثانى',
-                'type'        => 'number',
-                'required'    => true,
-            ],
+            // [
+            //     'name'        => 'second_year',
+            //     'label'       => 'العام الثانى',
+            //     'type'        => 'number',
+            //     'required'    => true,
+            // ],
 
         ];
     }
@@ -50,7 +50,7 @@ class CompareByRequestTypeBetweenYearsReport implements ReportInterface
     {
         $this->filters = $filters;
         $first_year  = $filters['first_year'];
-        $second_year = $filters['second_year'];
+        //$second_year = $filters['second_year'];
 
 
         $data = DB::table('sfdcomplaints as c')
@@ -60,25 +60,41 @@ class CompareByRequestTypeBetweenYearsReport implements ReportInterface
                 'c.office',
                 'o.REG_OFFIC_NAMA as office_name',
 
-                        DB::raw("COUNT(CASE 
-                    WHEN RequestType = 2 AND valid = 1
+                DB::raw("COUNT(CASE 
+                    WHEN RequestType = 2 AND valid = 1  
                     AND YEAR(ComplaintDate) = $first_year
                 THEN 1 END) as complaints_first_year"),
 
-                        DB::raw("COUNT(CASE 
+                DB::raw("COUNT(CASE 
                     WHEN RequestType = 1 AND valid = 1
                     AND YEAR(ComplaintDate) = $first_year
                 THEN 1 END) as inquiries_first_year"),
 
-                        DB::raw("COUNT(CASE 
-                    WHEN RequestType = 2 AND valid = 1
-                    AND YEAR(ComplaintDate) = $second_year
-                THEN 1 END) as complaints_second_year"),
+                DB::raw("COUNT(CASE 
+                    WHEN RequestType = 3 AND valid = 1
+                    AND YEAR(ComplaintDate) = $first_year
+                THEN 1 END) as direct_complaints_first_year"),
 
-                        DB::raw("COUNT(CASE 
-                    WHEN RequestType = 1 AND valid = 1
-                    AND YEAR(ComplaintDate) = $second_year
-                THEN 1 END) as inquiries_second_year")
+                DB::raw("COUNT(CASE 
+                    WHEN RequestType = 4 AND valid = 1
+                    AND YEAR(ComplaintDate) = $first_year
+                THEN 1 END) as suggestions_first_year"),
+
+                DB::raw("COUNT(CASE 
+                    WHEN RequestType = 5 AND valid = 1
+                    AND YEAR(ComplaintDate) = $first_year
+                THEN 1 END) as request_first_year"),
+
+
+                //         DB::raw("COUNT(CASE 
+                //     WHEN RequestType = 2 AND valid = 1
+                //     AND YEAR(ComplaintDate) = $second_year
+                // THEN 1 END) as complaints_second_year"),
+
+                //         DB::raw("COUNT(CASE 
+                //     WHEN RequestType = 1 AND valid = 1
+                //     AND YEAR(ComplaintDate) = $second_year
+                // THEN 1 END) as inquiries_second_year")
             )
             ->where('c.valid', 1)
             ->groupBy('c.office', 'o.REG_OFFIC_NAMA')
@@ -91,7 +107,17 @@ class CompareByRequestTypeBetweenYearsReport implements ReportInterface
 
     public function headings(): array
     {
-        return ['الفرع', 'عدد شكاوى لعام ' . $this->filters['first_year'], 'عدد شكاوى لعام ' . $this->filters['second_year'], 'عدد استفسارات لعام ' . $this->filters['first_year'], 'عدد استفسارات لعام ' . $this->filters['second_year']];
+        return [
+            'الفرع',
+            'عدد شكوى عامة لعام ' . $this->filters['first_year'],
+
+            'عدد استفسارات لعام ' . $this->filters['first_year'],
+            'عدد شكوى موجهة لعام ' . $this->filters['first_year'],
+            'عدد مقترحات لعام ' . $this->filters['first_year'],
+            'عدد طلب رواد الأعمال لعام ' . $this->filters['first_year'],
+
+
+        ];
     }
 
     public function map(mixed $row): array
@@ -99,9 +125,10 @@ class CompareByRequestTypeBetweenYearsReport implements ReportInterface
         return [
             $row->office_name,
             $row->complaints_first_year,
-            $row->complaints_second_year,
             $row->inquiries_first_year,
-            $row->inquiries_second_year
+            $row->direct_complaints_first_year,
+            $row->suggestions_first_year,
+            $row->request_first_year,
         ];
     }
 }

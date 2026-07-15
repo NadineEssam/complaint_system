@@ -19,7 +19,7 @@ class CentralReport implements ReportInterface
 
     public function label(): string
     {
-        return ' تقرير مركزى لجميع الشكاوى والاستفسارات الوارده ';
+        return ' تقرير مركزى لجميع الطلبات الوارده ';
     }
 
     public function key(): string

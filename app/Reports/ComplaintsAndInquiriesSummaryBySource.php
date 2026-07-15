@@ -15,7 +15,7 @@ class ComplaintsAndInquiriesSummaryBySource implements ReportInterface
 
     public function label(): string
     {
-        return ' بيان مختصر بإجمالى عدد ( الشكاوى / الإستفسارات ) بالنسبه للمصدر ';
+        return ' بيان مختصر بإجمالى عدد الطلبات وانوعها بالنسبه للمصدر ';
     }
 
     public function key(): string
@@ -51,9 +51,12 @@ class ComplaintsAndInquiriesSummaryBySource implements ReportInterface
             ->select(
                 'comsources.comsourcesid',
                 'comsources.comsourcesname',
-                DB::raw('COUNT(CASE WHEN  sfdcomplaints.valid = 1 And (sfdcomplaints.RequestType = 2 or sfdcomplaints.RequestType = 1) THEN 1 END) as total_count'),
+                DB::raw('COUNT(CASE WHEN  sfdcomplaints.valid = 1  THEN 1 END) as total_count'),
                 DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '2' AND sfdcomplaints.valid = 1 THEN 1 END) as complaint_count"),
-                DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '1' AND sfdcomplaints.valid = 1 THEN 1 END) as inquiry_count")
+                DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '1' AND sfdcomplaints.valid = 1 THEN 1 END) as inquiry_count"),
+                DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '3' AND sfdcomplaints.valid = 1 THEN 1 END) as direct_complaint_count"),
+                DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '4' AND sfdcomplaints.valid = 1 THEN 1 END) as suggestion_count"),
+                DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '5' AND sfdcomplaints.valid = 1 THEN 1 END) as request_count"),
             )
             ->where('sfdcomplaints.valid', 1)
             ->when($filters['date_from'] ?? null, function ($query, $date_from) {
@@ -78,8 +81,11 @@ class ComplaintsAndInquiriesSummaryBySource implements ReportInterface
         return [
             'اسم المصدر',
             'إجمالي العدد',
-            'عدد الشكاوى',
+            'عدد شكوى عامة',
             'عدد الاستفسارات',
+            'عدد الشكاوى الموجهة',
+            'عدد المقترحات',
+            'عدد طلبات رواد الأعمال',
         ];
     }
 
@@ -90,6 +96,9 @@ class ComplaintsAndInquiriesSummaryBySource implements ReportInterface
             $row->total_count,
             $row->complaint_count,
             $row->inquiry_count,
+            $row->direct_complaint_count,
+            $row->suggestion_count,
+            $row->request_count,
         ];
     }
 }

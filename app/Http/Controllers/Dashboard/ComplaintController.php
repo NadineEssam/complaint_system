@@ -6,6 +6,7 @@ use App\DataTables\ComplaintDataTable;
 use App\DataTables\RolesDataTable;
 use App\Http\Controllers\Controller;
 use App\Models\Complaint;
+use App\Models\ComplaintType;
 use Illuminate\Http\Request;
 use App\Models\Gov;
 use App\Models\RequestType;
@@ -71,6 +72,7 @@ class ComplaintController extends Controller
         // $offices = Office::all();
         // $projectTypes = ProjectType::all();
 
+        $complainttype = ComplaintType::all();
         $requestTypes = RequestType::all();
         $govs = Gov::where('validity', 1)->get();
         $sectors = Sector::where('validity', 1)->get();
@@ -88,6 +90,7 @@ class ComplaintController extends Controller
             'sectors',
             'departments',
             'projectTypes',
+            'complainttype',
         ));
     }
 
@@ -100,66 +103,73 @@ class ComplaintController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
+        $data = $request->validate(
+            [
 
-            'requesttypeid' => 'required|integer',
-            'ComplainerName' => 'required|string',
-            'ComplainerEmail' => 'nullable|required_if:requesttypeid,4|email',
-            'ComplainerPhone' => [
-                'required',
-                'regex:/^01[0-2,5]{1}[0-9]{8}$/'
+                'requesttypeid' => 'required|integer',
+                'ComplainerName' => 'required|string',
+                'ComplainerEmail' => 'nullable|required_if:requesttypeid,4|email',
+                'complainttype' => 'nullable|required_if:requesttypeid,1,2|exists:complainttype,comtypeid',
+                'ComplainerPhone' => [
+                    'required',
+                    'regex:/^01[0-2,5]{1}[0-9]{8}$/'
+                ],
+
+                'ComplaintGovernorate' => 'nullable|string',
+                'ComplainerGovernorate' => 'required|string',
+                'ComplaintDate' => 'required|date|before_or_equal:today',
+                'sec_id' => 'nullable|integer',
+                'department' => 'nullable|integer|exists:new_po.departments,dep_id',
+                'office' => 'nullable|integer',
+                'comsource_ids' => 'required|array|min:1',
+                'comsource_ids.*' => 'integer|exists:comsources,comsourcesid',
+                'ComplainerGender' => 'required|string|max:10',
+                'complaint_type' => 'required|in:internal,external',
+                'ComplaintNationalID' => 'nullable|required_if:requesttypeid,2,3|digits:14',
+                'ComplaintText'    => 'required|string',
+                'ComplaintProjectType' => 'nullable|exists:ben.sectors,ID',
+
             ],
+            [
 
-            'ComplaintGovernorate' => 'nullable|string',
-            'ComplainerGovernorate' => 'required|string',
-            'ComplaintDate' => 'required|date|before_or_equal:today',
-            'sec_id' => 'nullable|integer',
-            'department' => 'nullable|integer|exists:new_po.departments,dep_id',
-            'office' => 'nullable|integer',
-            'comsource_ids' => 'required|array|min:1',
-            'comsource_ids.*' => 'integer|exists:comsources,comsourcesid',
-            'ComplainerGender' => 'required|string|max:10',
-            'complaint_type' => 'required|in:internal,external',
-            'ComplaintNationalID' => 'nullable|required_if:requesttypeid,2,3|digits:14',
-            'ComplaintText'    => 'required|string',
-            'ComplaintProjectType' => 'nullable|exists:ben.sectors,ID',
+                'requesttypeid.required' => 'يرجى اختيار نوع الطلب',
+                'complainttype.required_if' => 'يرجى اختيار تصنيف البيان',
+                'ComplainerName.required' => 'يرجى إدخال اسم العميل',
 
-        ], [
+                'ComplainerEmail.email' => 'البريد الإلكتروني غير صحيح',
+                'ComplainerEmail.required_if' => 'البريد الإلكتروني مطلوب',
 
-            'requesttypeid.required' => 'يرجى اختيار نوع الطلب',
-            'ComplainerName.required' => 'يرجى إدخال اسم العميل',
+                'ComplainerPhone.required' => 'يرجى إدخال رقم الهاتف المحمول',
+                'ComplainerPhone.regex' => 'رقم الهاتف المحمول غير صحيح',
 
-            'ComplainerEmail.email' => 'البريد الإلكتروني غير صحيح',
-            'ComplainerEmail.required_if' => 'البريد الإلكتروني مطلوب',
+                'ComplaintNationalID.required_if' => 'الرقم القومي مطلوب',
+                'ComplaintNationalID.digits' => 'الرقم القومي يجب أن يكون 14 رقم',
 
-            'ComplainerPhone.required' => 'يرجى إدخال رقم الهاتف المحمول',
-            'ComplainerPhone.regex' => 'رقم الهاتف المحمول غير صحيح',
+                'ComplaintDate.required' => 'يرجى إدخال تاريخ البيان',
+                'ComplaintDate.before_or_equal' => 'لا يمكن إدخال تاريخ مستقبلي',
 
-            'ComplaintNationalID.required_if' => 'الرقم القومي مطلوب',
-            'ComplaintNationalID.digits' => 'الرقم القومي يجب أن يكون 14 رقم',
+                'ComplaintGovernorate.required' => 'يرجى اختيار المحافظة',
 
-            'ComplaintDate.required' => 'يرجى إدخال تاريخ البيان',
-            'ComplaintDate.before_or_equal' => 'لا يمكن إدخال تاريخ مستقبلي',
+                'sec_id.required' => 'يرجى اختيار القطاع',
+                'department.required' => 'يرجى اختيار الإدارة',
+                'office.required' => 'يرجى اختيار المكتب',
 
-            'ComplaintGovernorate.required' => 'يرجى اختيار المحافظة',
-
-            'sec_id.required' => 'يرجى اختيار القطاع',
-            'department.required' => 'يرجى اختيار الإدارة',
-            'office.required' => 'يرجى اختيار المكتب',
-
-            'comsource_ids.required' => 'يرجى اختيار مصدر البيان',
-            'comsource_ids.min' => 'يرجى اختيار مصدر بيان واحد على الأقل',
-            'ComplaintText.required' => 'يرجى إدخال نص البيان',
-            'complaint_type.required' => 'يرجى اختيار نوعية وتوجيه البيان',
-            'complaint_type.in'       => 'نوعية البيان غير صحيحة',
-            // 'ComplaintProjectType.required' => 'يرجى اختيار نوع النشاط',
+                'comsource_ids.required' => 'يرجى اختيار مصدر البيان',
+                'comsource_ids.min' => 'يرجى اختيار مصدر بيان واحد على الأقل',
+                'ComplaintText.required' => 'يرجى إدخال نص البيان',
+                'complaint_type.required' => 'يرجى اختيار نوعية وتوجيه البيان',
+                'complaint_type.in'       => 'نوعية البيان غير صحيحة',
+                // 'ComplaintProjectType.required' => 'يرجى اختيار نوع النشاط',
 
 
-        ]);
+            ]
+        );
 
+   
 
         $complaint = Complaint::create([
             'RequestType' => $data['requesttypeid'],
+            'ComplaintType' => $data['complainttype'] ?? null,
             'ComplainerName' => $data['ComplainerName'],
             'ComplainerEmail' => $data['ComplainerEmail'],
             'ComplainerPhone' => $data['ComplainerPhone'],
@@ -172,7 +182,7 @@ class ComplaintController extends Controller
             'ComplaintText' => $data['ComplaintText'],
             'office' => $data['office'] ?? 0,
             'complaint_type' => $data['complaint_type'],
-            'ComplaintProjectType' => $data['ComplaintProjectType']?? 0,
+            'ComplaintProjectType' => $data['ComplaintProjectType'] ?? 0,
             // 'ComplaintSources' => $data['comsource_id'],
             'ComplaintNationalID' => $data['ComplaintNationalID'] ?? null,
             'ComplainerGender' => $data['ComplainerGender'] ?? null,
@@ -215,6 +225,8 @@ class ComplaintController extends Controller
         // $offices = Office::all();
         // $projectTypes = ProjectType::all();
 
+        $complainttype = ComplaintType::all();
+
         $requestTypes = RequestType::all();
         $govs = Gov::where('validity', 1)->get();
         $sectors = Sector::where('validity', 1)->get();
@@ -233,6 +245,7 @@ class ComplaintController extends Controller
             // 'projectTypes',
             'departments',
             'projectTypes',
+            'complainttype',
         ));
     }
 
@@ -253,6 +266,7 @@ class ComplaintController extends Controller
             'requesttypeid' => 'required|integer',
             'ComplainerName' => 'required|string',
             'ComplainerEmail' => 'nullable|required_if:requesttypeid,4|email',
+            'complainttype' => 'nullable|required_if:requesttypeid,1,2|exists:complainttype,comtypeid',
             'ComplainerPhone' => [
                 'required',
                 'regex:/^01[0-2,5]{1}[0-9]{8}$/'
@@ -275,6 +289,7 @@ class ComplaintController extends Controller
         ], [
 
             'requesttypeid.required' => 'يرجى اختيار نوع الطلب',
+            'complainttype.required_if' => 'يرجى اختيار تصنيف البيان',
             'ComplainerName.required' => 'يرجى إدخال اسم العميل',
 
             'ComplainerEmail.email' => 'البريد الإلكتروني غير صحيح',
@@ -308,6 +323,7 @@ class ComplaintController extends Controller
 
         $complaint->update([
             'RequestType' => $data['requesttypeid'],
+            'ComplaintType' => $data['complainttype'] ?? null,
             'ComplainerName' => $data['ComplainerName'],
             'ComplainerEmail' => $data['ComplainerEmail'],
             'ComplainerPhone' => $data['ComplainerPhone'],
@@ -320,7 +336,7 @@ class ComplaintController extends Controller
             'ComplaintText' => $data['ComplaintText'],
             'ComplainerGovernorate' => $data['ComplainerGovernorate'] ?? 0,
             // 'ComplaintSources' => $data['comsource_id'],
-            'ComplaintProjectType' => $data['ComplaintProjectType']?? 0,
+            'ComplaintProjectType' => $data['ComplaintProjectType'] ?? 0,
             'ComplaintNationalID' => $data['ComplaintNationalID'] ?? null,
             'ComplainerGender' => $data['ComplainerGender'],
 
@@ -448,7 +464,7 @@ class ComplaintController extends Controller
             'ComplaintText' => $data['ComplaintText'],
             'office' => $data['office'] ?? 0,
             'complaint_type' => $data['complaint_type'],
-            'ComplaintProjectType' => $data['ComplaintProjectType']?? 0,
+            'ComplaintProjectType' => $data['ComplaintProjectType'] ?? 0,
 
             // Linkage + initial status for every newly created duplicate.
             'parent_id' => $complaint->ComplaintID,

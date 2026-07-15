@@ -16,7 +16,7 @@ class ComplaintSavedReasonsReport implements ReportInterface
 
     public function label(): string
     {
-        return ' تقرير بتفصيل أسباب حفظ الشكاوى الوارده ';
+        return ' تقرير بتفصيل أسباب حفظ الطلبات الوارده ';
     }
 
     public function key(): string
