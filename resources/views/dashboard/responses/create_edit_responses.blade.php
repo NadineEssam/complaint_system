@@ -7,9 +7,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-
   /* ================= GLOBAL ================= */
-  .classify-form, .classify-form * {
+  .classify-form,
+  .classify-form * {
     font-family: 'Cairo', 'Tahoma', sans-serif;
     font-size: 13px;
   }
@@ -39,7 +39,7 @@
     font-weight: 700;
   }
 
-  .classify-form .breadcrumb-item + .breadcrumb-item::before {
+  .classify-form .breadcrumb-item+.breadcrumb-item::before {
     content: "/";
     color: #d1d5db;
     padding: 0 6px;
@@ -143,6 +143,9 @@
 
   .classify-form .form-control,
   .classify-form .form-select {
+    background-position: left 0.75rem center !important;
+    padding-left: 2.25rem;
+    padding-right: 0.75rem;
     font-family: 'Cairo', 'Tahoma', sans-serif;
     font-size: 13px;
     border-radius: 8px;
@@ -152,6 +155,10 @@
     transition: border-color .15s;
     color: #1f2937;
   }
+  .classify-form .select2-selection__arrow {
+  left: 8px !important;
+  right: auto !important;
+}
 
   .classify-form textarea.form-control {
     min-height: 110px;
@@ -225,11 +232,19 @@
 
   /* ================= RESPONSIVE ================= */
   @media(max-width:768px) {
-    .classify-form { padding: 15px; }
-    .classify-form .btn-custom { width: 100%; justify-content: center; }
-    .classify-form .info-badge { margin-inline-start: 0; }
-  }
+    .classify-form {
+      padding: 15px;
+    }
 
+    .classify-form .btn-custom {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .classify-form .info-badge {
+      margin-inline-start: 0;
+    }
+  }
 </style>
 @endpush
 
@@ -286,7 +301,7 @@
 
         @csrf
         @if(isset($response))
-          @method('PUT')
+        @method('PUT')
         @endif
 
         <input type="hidden" name="complaint_id" value="{{ $complaint->ComplaintID }}">
@@ -366,7 +381,8 @@
             {{-- سبب البيان --}}
             <div class="col-md-6 mb-4">
               <label class="form-label">سبب البيان</label>
-              <select class="form-select" name="fk_close_reason_id" id="reasonSelect">
+              <select class="form-select @error('fk_close_reason_id') is-invalid @enderror"
+                name="fk_close_reason_id" id="reasonSelect">
                 <option value="">اختر السبب</option>
                 @foreach ($closeReasons as $reason)
                 <option value="{{ $reason->close_reason_ID }}"
@@ -375,12 +391,16 @@
                 </option>
                 @endforeach
               </select>
+              @error('fk_close_reason_id')
+              <div class="error-text">{{ $message }}</div>
+              @enderror
             </div>
 
             {{-- التصنيف --}}
             <div class="col-md-6 mb-4">
               <label class="form-label">التصنيف</label>
-              <select class="form-select" name="fk_close_reason_classify_id" id="classifySelect">
+              <select class="form-select @error('fk_close_reason_classify_id') is-invalid @enderror"
+                name="fk_close_reason_classify_id" id="classifySelect">
                 <option value="">اختر التصنيف</option>
                 @foreach ($classifications as $classify)
                 <option
@@ -391,10 +411,17 @@
                 </option>
                 @endforeach
               </select>
+              @error('fk_close_reason_classify_id')
+              <div class="error-text">{{ $message }}</div>
+              @enderror
             </div>
 
           </div>
 
+
+
+        </div>
+        <div>
           {{-- Buttons --}}
           <div class="d-flex justify-content-between mt-3">
             <a href="{{ route('responses.index', ['complaint_id' => $complaint->ComplaintID]) }}" class="btn btn-secondary btn-custom">
@@ -405,9 +432,7 @@
               {{ isset($response) ? 'تحديث الرد' : 'حفظ الرد' }}
             </button>
           </div>
-
         </div>
-
       </form>
     </div>
   </div>
@@ -418,57 +443,73 @@
 
 @push('footerScripts')
 <script>
-    function toggleFields() {
+  function toggleFields() {
 
-        let status = $('#statusSelect').val();
+    let status = $('#statusSelect').val();
 
-        if (status == 2 || status == 4) {
+    if (status == 2 || status == 4) {
 
-            $('#reasonSelect').prop('disabled', false);
-            $('#classifySelect').prop('disabled', false);
+      $('#reasonSelect').prop('disabled', false);
+      $('#classifySelect').prop('disabled', false);
 
-            $('#closeReasonBox').removeClass('disabled-box');
+      $('#closeReasonBox').removeClass('disabled-box');
 
-        } else {
+    } else {
 
-            $('#reasonSelect').prop('disabled', true).val('');
-            $('#classifySelect').prop('disabled', true).val('');
+      $('#reasonSelect').prop('disabled', true).val('');
+      $('#classifySelect').prop('disabled', true).val('');
 
-            $('#closeReasonBox').addClass('disabled-box');
-        }
+      $('#closeReasonBox').addClass('disabled-box');
     }
-    function filterClassifications() {
+  }
+
+  function filterClassifications() {
 
     let reasonId = $('#reasonSelect').val();
 
-    $('#classifySelect option').each(function () {
+    $('#classifySelect option').each(function() {
 
-        let optionReason = $(this).data('reason');
+      let optionReason = $(this).data('reason');
 
-        if ($(this).val() === '') {
-            $(this).show();
-            return;
-        }
+      if ($(this).val() === '') {
+        $(this).show();
+        return;
+      }
 
-        if (reasonId == optionReason) {
-            $(this).show();
-        } else {
-            $(this).hide();
-        }
+      if (reasonId == optionReason) {
+        $(this).show();
+      } else {
+        $(this).hide();
+      }
     });
 
     // إعادة تعيين التصنيف إذا لم يعد متوافقاً
     let selectedOption = $('#classifySelect option:selected');
 
     if (
-        selectedOption.val() &&
-        selectedOption.data('reason') != reasonId
+      selectedOption.val() &&
+      selectedOption.data('reason') != reasonId
     ) {
-        $('#classifySelect').val('');
+      $('#classifySelect').val('');
     }
-}
+  }
 
-    $(document).ready(function() {
+  $(document).ready(function() {
+
+    toggleFields();
+    filterClassifications();
+
+    $('#statusSelect').on('change', function() {
+      toggleFields();
+    });
+
+    $('#reasonSelect').on('change', function() {
+      filterClassifications();
+    });
+
+  });
+
+  $(document).ready(function() {
 
     toggleFields();
     filterClassifications();
@@ -481,6 +522,40 @@
         filterClassifications();
     });
 
+   
+    $('form').on('submit', function (e) {
+        let status = $('#statusSelect').val();
+        let reason = $('#reasonSelect').val();
+        let classify = $('#classifySelect').val();
+
+        if ((status == 2 || status == 4) && (!reason || !classify)) {
+            e.preventDefault();
+
+            $('#reasonSelect').toggleClass('is-invalid', !reason);
+            $('#classifySelect').toggleClass('is-invalid', !classify);
+
+            Swal.fire({
+                icon: 'warning',
+                title: 'تنبيه',
+                text: 'يجب اختيار "سبب البيان" و "التصنيف" عند إغلاق البيان',
+                confirmButtonText: 'حسناً'
+            });
+        }
+    });
+
 });
 </script>
+
+@if ($errors->any())
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    Swal.fire({
+        icon: 'error',
+        title: 'تنبيه',
+        text: 'يجب اختيار "سبب البيان" و "التصنيف" عند اختيار حالة إغلاق البيان',
+        confirmButtonText: 'حسناً'
+    });
+});
+</script>
+@endif
 @endpush

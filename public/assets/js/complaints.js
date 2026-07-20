@@ -1,225 +1,225 @@
 $(document).ready(function () {
 
-  // =========================
-// STEP WIZARD
-// =========================
-var nav = $('.setup-panel a'),
-    allSteps = $('.setup-content');
+    // =========================
+    // STEP WIZARD
+    // =========================
+    var nav = $('.setup-panel a'),
+        allSteps = $('.setup-content');
 
-allSteps.hide();
-$('#step-1').show();
+    allSteps.hide();
+    $('#step-1').show();
 
-function setActiveStep(stepId) {
+    function setActiveStep(stepId) {
 
-    allSteps.removeClass('active').hide();
+        allSteps.removeClass('active').hide();
 
-    $('#' + stepId)
-        .addClass('active')
-        .show();
+        $('#' + stepId)
+            .addClass('active')
+            .show();
 
-    nav.removeClass('active btn-primary')
-        .addClass('btn-default');
+        nav.removeClass('active btn-primary')
+            .addClass('btn-default');
 
-    $('.setup-panel a[href="#' + stepId + '"]')
-        .addClass('active btn-primary');
-}
-
-
-// =========================
-// INITIAL STEP
-// =========================
-
-// لو فيه أخطاء في step 2
-let hasStep2Errors =
-    $('[name="ComplaintDate"]').hasClass('is-invalid') ||
-    $('[name="sec_id"]').hasClass('is-invalid') ||
-    $('[name="ComplaintGovernorate"]').hasClass('is-invalid') ||
-    $('[name="office"]').hasClass('is-invalid') ||
-    $('[name="comsource_id"]').hasClass('is-invalid') ||
-    $('[name="ComplaintText"]').hasClass('is-invalid');
-
-// لو فيه أخطاء في step 1
-let hasStep1Errors =
-    $('[name="requesttypeid"]').hasClass('is-invalid') ||
-    $('[name="ComplainerName"]').hasClass('is-invalid') ||
-    $('[name="ComplainerEmail"]').hasClass('is-invalid') ||
-    $('[name="ComplainerPhone"]').hasClass('is-invalid') ||
-    $('[name="ComplaintNationalID"]').hasClass('is-invalid');
-
-if (hasStep2Errors) {
-
-    setActiveStep('step-2');
-
-} else {
-
-   setActiveStep(window.currentWizardStep || 'step-1');
-}
-
-
-// =========================
-// VALIDATION FUNCTION
-// =========================
-function validateStep1() {
-
-    let isValid = true;
-
-    $('#step-1 .form-control, #step-1 .form-select')
-        .removeClass('is-invalid');
-
-    let requestType = $('#requesttypeid').val();
-    let nationalId = $("input[name='ComplaintNationalID']").val().trim();
-
-    const requiredFields = [
-        'requesttypeid',
-        'ComplainerName',
-        'ComplainerPhone',
-        'ComplainerGovernorate'
-    ];
-
-    if (requestType == 5) {
-        requiredFields.push('ComplainerEmail');
+        $('.setup-panel a[href="#' + stepId + '"]')
+            .addClass('active btn-primary');
     }
 
-    requiredFields.forEach(function (fieldName) {
 
-        let field = $('[name="' + fieldName + '"]');
+    // =========================
+    // INITIAL STEP
+    // =========================
 
-        if ($.trim(field.val()) === '') {
-            field.addClass('is-invalid');
-            isValid = false;
-        }
-    });
+    // لو فيه أخطاء في step 2
+    let hasStep2Errors =
+        $('[name="ComplaintDate"]').hasClass('is-invalid') ||
+        $('[name="sec_id"]').hasClass('is-invalid') ||
+        $('[name="ComplaintGovernorate"]').hasClass('is-invalid') ||
+        $('[name="office"]').hasClass('is-invalid') ||
+        $('[name="comsource_id"]').hasClass('is-invalid') ||
+        $('[name="ComplaintText"]').hasClass('is-invalid');
 
-    // email validation
-    if (requestType == 5) {
+    // لو فيه أخطاء في step 1
+    let hasStep1Errors =
+        $('[name="requesttypeid"]').hasClass('is-invalid') ||
+        $('[name="ComplainerName"]').hasClass('is-invalid') ||
+        $('[name="ComplainerEmail"]').hasClass('is-invalid') ||
+        $('[name="ComplainerPhone"]').hasClass('is-invalid') ||
+        $('[name="ComplaintNationalID"]').hasClass('is-invalid');
 
-        let emailField = $('[name="ComplainerEmail"]');
-        let email = emailField.val().trim();
-        let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        if (!emailRegex.test(email)) {
-            emailField.addClass('is-invalid');
-            isValid = false;
-        }
-    }
-
-    // national ID
-    if ((requestType == 2 || requestType == 3) && nationalId === '') {
-
-        $("input[name='ComplaintNationalID']").addClass('is-invalid');
-        $("#nidError").text("الرقم القومي مطلوب");
-        isValid = false;
-    }
-
-    // gender
-    if (requestType == 1 || requestType == 4 || requestType == 5) {
-
-        let genderVal = $("#ComplainerGenderSelect").val();
-
-        if (!genderVal || genderVal === '') {
-            $("#ComplainerGenderSelect").addClass('is-invalid');
-            $("#genderError").text("يرجى اختيار النوع.");
-            isValid = false;
-        }
-    }
-
-    return isValid;
-}
-
-
-
-// =========================
-// STEP CLICK
-// =========================
-nav.on('click', function (e) {
-
-    e.preventDefault();
-
-    let target = $(this).attr('href').replace('#', '');
-
-    // لو رايح step 2 لازم validation
-    if (target === 'step-2') {
-
-        if (!validateStep1()) {
-
-           Swal.fire({ icon: 'warning', title: 'تنبيه', text: 'من فضلك قم بإكمال جميع البيانات المطلوبة' });
-
-            return false;
-        }
-    }
-
-    setActiveStep(target);
-});
-
-
-// =========================
-// NEXT BUTTON
-// =========================
-$('.nextBtn').on('click', function () {
-
-    if (!validateStep1()) {
-
-       Swal.fire({ icon: 'warning', title: 'تنبيه', text: 'من فضلك قم بإكمال جميع البيانات المطلوبة' });
-
-        return false;
-    }
-
-    setActiveStep('step-2');
-});
-
-
-// =========================
-// PREV BUTTON
-// =========================
-$('.prevBtn').on('click', function () {
-
-    setActiveStep('step-1');
-});
-
-
- $("form").on("submit", function (e) {
-
-    let step1Valid = validateStep1();
-    let step2Valid = validateStep2();
-
-    if (!step1Valid) {
-
-        e.preventDefault();
-
-        setActiveStep('step-1');
-
-        Swal.fire({
-            icon: 'warning',
-            title: 'تنبيه',
-            text: 'من فضلك استكمل البيانات المطلوبة في البيانات الشخصية'
-        });
-
-        return false;
-    }
-
-    if (!step2Valid) {
-
-        e.preventDefault();
+    if (hasStep2Errors) {
 
         setActiveStep('step-2');
 
-        Swal.fire({
-            icon: 'warning',
-            title: 'تنبيه',
-            text: 'من فضلك استكمل البيانات المطلوبة في تفاصيل البيان'
+    } else {
+
+        setActiveStep(window.currentWizardStep || 'step-1');
+    }
+
+
+    // =========================
+    // VALIDATION FUNCTION
+    // =========================
+    function validateStep1() {
+
+        let isValid = true;
+
+        $('#step-1 .form-control, #step-1 .form-select')
+            .removeClass('is-invalid');
+
+        let requestType = $('#requesttypeid').val();
+        let nationalId = $("input[name='ComplaintNationalID']").val().trim();
+
+        const requiredFields = [
+            'requesttypeid',
+            'ComplainerName',
+            'ComplainerPhone',
+            'ComplainerGovernorate'
+        ];
+
+        if (requestType == 5) {
+            requiredFields.push('ComplainerEmail');
+        }
+
+        requiredFields.forEach(function (fieldName) {
+
+            let field = $('[name="' + fieldName + '"]');
+
+            if ($.trim(field.val()) === '') {
+                field.addClass('is-invalid');
+                isValid = false;
+            }
         });
 
-        return false;
+        // email validation
+        if (requestType == 5) {
+
+            let emailField = $('[name="ComplainerEmail"]');
+            let email = emailField.val().trim();
+            let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!emailRegex.test(email)) {
+                emailField.addClass('is-invalid');
+                isValid = false;
+            }
+        }
+
+        // national ID
+        if ((requestType == 2 || requestType == 3) && nationalId === '') {
+
+            $("input[name='ComplaintNationalID']").addClass('is-invalid');
+            $("#nidError").text("الرقم القومي مطلوب");
+            isValid = false;
+        }
+
+        // gender
+        if (requestType == 1 || requestType == 4 || requestType == 5) {
+
+            let genderVal = $("#ComplainerGenderSelect").val();
+
+            if (!genderVal || genderVal === '') {
+                $("#ComplainerGenderSelect").addClass('is-invalid');
+                $("#genderError").text("يرجى اختيار النوع.");
+                isValid = false;
+            }
+        }
+
+        return isValid;
     }
 
- 
-    if ($("#requesttypeid").val() == 1 || $("#requesttypeid").val() == 4 || $("#requesttypeid").val() == 5) {
-        let selectedGender = $("#ComplainerGenderSelect").val();
-        $("#ComplainerGenderReadonly").val(selectedGender).removeAttr('readonly');
-    }
 
-    return true;
-});
+
+    // =========================
+    // STEP CLICK
+    // =========================
+    nav.on('click', function (e) {
+
+        e.preventDefault();
+
+        let target = $(this).attr('href').replace('#', '');
+
+        // لو رايح step 2 لازم validation
+        if (target === 'step-2') {
+
+            if (!validateStep1()) {
+
+                Swal.fire({ icon: 'warning', title: 'تنبيه', text: 'من فضلك قم بإكمال جميع البيانات المطلوبة' });
+
+                return false;
+            }
+        }
+
+        setActiveStep(target);
+    });
+
+
+    // =========================
+    // NEXT BUTTON
+    // =========================
+    $('.nextBtn').on('click', function () {
+
+        if (!validateStep1()) {
+
+            Swal.fire({ icon: 'warning', title: 'تنبيه', text: 'من فضلك قم بإكمال جميع البيانات المطلوبة' });
+
+            return false;
+        }
+
+        setActiveStep('step-2');
+    });
+
+
+    // =========================
+    // PREV BUTTON
+    // =========================
+    $('.prevBtn').on('click', function () {
+
+        setActiveStep('step-1');
+    });
+
+
+    $("form").on("submit", function (e) {
+
+        let step1Valid = validateStep1();
+        let step2Valid = validateStep2();
+
+        if (!step1Valid) {
+
+            e.preventDefault();
+
+            setActiveStep('step-1');
+
+            Swal.fire({
+                icon: 'warning',
+                title: 'تنبيه',
+                text: 'من فضلك استكمل البيانات المطلوبة في البيانات الشخصية'
+            });
+
+            return false;
+        }
+
+        if (!step2Valid) {
+
+            e.preventDefault();
+
+            setActiveStep('step-2');
+
+            Swal.fire({
+                icon: 'warning',
+                title: 'تنبيه',
+                text: 'من فضلك استكمل البيانات المطلوبة في تفاصيل البيان'
+            });
+
+            return false;
+        }
+
+
+        if ($("#requesttypeid").val() == 1 || $("#requesttypeid").val() == 4 || $("#requesttypeid").val() == 5) {
+            let selectedGender = $("#ComplainerGenderSelect").val();
+            $("#ComplainerGenderReadonly").val(selectedGender).removeAttr('readonly');
+        }
+
+        return true;
+    });
 
     // =========================
     // RESULT OBJECT
@@ -362,46 +362,9 @@ $('.prevBtn').on('click', function () {
     // =========================
     // REQUEST TYPE CONTROL
     // =========================
-    $("#requesttypeid").on("change", function () {
 
-        let value = $(this).val();
-
-        if (value == 5) {
-        $("input[name='ComplainerEmail']").attr('required', true);
-        $("#emailStar").show();
-        } else {
-            $("input[name='ComplainerEmail']").removeAttr('required');
-            $("#emailStar").hide();
-            $("input[name='ComplainerEmail']").removeClass('is-invalid');
-        }
-
-        if (value == 2 || value == 3) {
-            $("input[name='ComplaintNationalID']").attr('required', true);
-            $("#nidStar").show();
-            $("#genderReadonlySection").show();
-            $("#genderSelectSection").hide();
-            $("#ComplainerGenderReadonly").val('');
-        } else if (value == 1 || value == 4 || value == 5) {
-            $("input[name='ComplaintNationalID']").removeAttr('required');
-            $("#nidStar").hide();
-            $("#nidError").text("");
-            $("input[name='ComplaintNationalID']").removeClass('is-invalid');
-            $("#genderReadonlySection").hide();
-            $("#genderSelectSection").show();
-            $("#ComplainerGenderReadonly").val('');
-        } else {
-            $("input[name='ComplaintNationalID']").removeAttr('required');
-            $("#nidStar").hide();
-            $("#nidError").text("");
-            $("input[name='ComplaintNationalID']").removeClass('is-invalid');
-            $("#genderReadonlySection").show();
-            $("#genderSelectSection").hide();
-        }
-
-        $("#ComplainerGenderSelect").removeClass('is-invalid');
-        $("#genderError").text('');
-    });
-
+    
+   
     // Run on page load to set correct state
     $("#requesttypeid").trigger("change");
 
@@ -428,189 +391,189 @@ $('.prevBtn').on('click', function () {
         $("#officeSelect").val("");
     });
     $(document).on("change", "[name='ComplainerGovernorate']", function () {
-    if ($(this).val() !== '') {
-        $(this).removeClass('is-invalid');
-        $("#complainerGovError").text('');
-    }
-});
+        if ($(this).val() !== '') {
+            $(this).removeClass('is-invalid');
+            $("#complainerGovError").text('');
+        }
+    });
 
 
 
-// =========================
+    // =========================
     // VALIDATE STEP 2
     // =========================
-//     function validateStep2() {
-//         let isValid = true;
-//         $('#step-2 .form-control, #step-2 .form-select').removeClass('is-invalid');
-//         $("#complaintTextError").text('');
+    //     function validateStep2() {
+    //         let isValid = true;
+    //         $('#step-2 .form-control, #step-2 .form-select').removeClass('is-invalid');
+    //         $("#complaintTextError").text('');
 
-//         // المحافظة required
-//         if (!$('[name="ComplaintGovernorate"]').val()) {
-//             $('[name="ComplaintGovernorate"]').addClass('is-invalid');
-//             $("#governorateError").text("يرجى اختيار المحافظة.");
-//             isValid = false;
-//         } else {
-//             $("#governorateError").text('');
-//         }
+    //         // المحافظة required
+    //         if (!$('[name="ComplaintGovernorate"]').val()) {
+    //             $('[name="ComplaintGovernorate"]').addClass('is-invalid');
+    //             $("#governorateError").text("يرجى اختيار المحافظة.");
+    //             isValid = false;
+    //         } else {
+    //             $("#governorateError").text('');
+    //         }
 
-//         // الفرع required
-//         if (!$('[name="office"]').val()) {
-//             $('[name="office"]').addClass('is-invalid');
-//             $("#officeError").text("يرجى اختيار الفرع.");
-//             isValid = false;
-//         } else {
-//             $("#officeError").text('');
-//         }
+    //         // الفرع required
+    //         if (!$('[name="office"]').val()) {
+    //             $('[name="office"]').addClass('is-invalid');
+    //             $("#officeError").text("يرجى اختيار الفرع.");
+    //             isValid = false;
+    //         } else {
+    //             $("#officeError").text('');
+    //         }
 
-//         // مصدر البيان required
-//         // if (!$('[name="comsource_id"]').val()) {
-//         //     $('[name="comsource_id"]').addClass('is-invalid');
-//         //     $("#comsourceError").text("يرجى اختيار مصدر البيان.");
-//         //     isValid = false;
-//         // } else {
-//         //     $("#comsourceError").text('');
-//         // }
+    //         // مصدر البيان required
+    //         // if (!$('[name="comsource_id"]').val()) {
+    //         //     $('[name="comsource_id"]').addClass('is-invalid');
+    //         //     $("#comsourceError").text("يرجى اختيار مصدر البيان.");
+    //         //     isValid = false;
+    //         // } else {
+    //         //     $("#comsourceError").text('');
+    //         // }
 
-//         // مصدر البيان required (MULTI-SELECT)
-//        if (!$('#comsourceSelect').val() || $('#comsourceSelect').val().length === 0) {
+    //         // مصدر البيان required (MULTI-SELECT)
+    //        if (!$('#comsourceSelect').val() || $('#comsourceSelect').val().length === 0) {
 
-//         $('#comsourceSelect')
-//             .next('.select2-container')
-//             .find('.select2-selection')
-//             .addClass('is-invalid');
+    //         $('#comsourceSelect')
+    //             .next('.select2-container')
+    //             .find('.select2-selection')
+    //             .addClass('is-invalid');
 
-//         $("#comsourceError").text("يرجى اختيار مصدر البيان.");
-//         isValid = false;
+    //         $("#comsourceError").text("يرجى اختيار مصدر البيان.");
+    //         isValid = false;
 
-//     } else {
+    //     } else {
 
-//         $('#comsourceSelect')
-//             .next('.select2-container')
-//             .find('.select2-selection')
-//             .removeClass('is-invalid');
+    //         $('#comsourceSelect')
+    //             .next('.select2-container')
+    //             .find('.select2-selection')
+    //             .removeClass('is-invalid');
 
-//         $("#comsourceError").text('');
-//     }
+    //         $("#comsourceError").text('');
+    //     }
 
-//         // نص البيان required
-//         if ($("textarea[name='ComplaintText']").val().trim() === '') {
-//             $("textarea[name='ComplaintText']").addClass('is-invalid');
-//             $("#complaintTextError").text("يرجى إدخال نص البيان.");
-//             isValid = false;
-//         }
+    //         // نص البيان required
+    //         if ($("textarea[name='ComplaintText']").val().trim() === '') {
+    //             $("textarea[name='ComplaintText']").addClass('is-invalid');
+    //             $("#complaintTextError").text("يرجى إدخال نص البيان.");
+    //             isValid = false;
+    //         }
 
 
 
-//         // Replace the governorate and office validation inside validateStep2():
+    //         // Replace the governorate and office validation inside validateStep2():
 
-//  $("#complaintTextError, #governorateError, #officeError").text('');
+    //  $("#complaintTextError, #governorateError, #officeError").text('');
 
-//     let cType = $('#complaint_type').val();
+    //     let cType = $('#complaint_type').val();
 
-//     // complaint_type itself required
-//     if (!cType) {
-//         $('#complaint_type').addClass('is-invalid');
-//         isValid = false;
-//     }
+    //     // complaint_type itself required
+    //     if (!cType) {
+    //         $('#complaint_type').addClass('is-invalid');
+    //         isValid = false;
+    //     }
 
-//     // المحافظة — only for internal
-//     if (cType === 'internal') {
-//         if (!$('[name="ComplaintGovernorate"]').val()) {
-//             $('[name="ComplaintGovernorate"]').addClass('is-invalid');
-//             $("#governorateError").text("يرجى اختيار المحافظة.");
-//             isValid = false;
-//         }
-//         if (!$('[name="office"]').val()) {
-//             $('[name="office"]').addClass('is-invalid');
-//             $("#officeError").text("يرجى اختيار الفرع.");
-//             isValid = false;
-//         }
-//     }
+    //     // المحافظة — only for internal
+    //     if (cType === 'internal') {
+    //         if (!$('[name="ComplaintGovernorate"]').val()) {
+    //             $('[name="ComplaintGovernorate"]').addClass('is-invalid');
+    //             $("#governorateError").text("يرجى اختيار المحافظة.");
+    //             isValid = false;
+    //         }
+    //         if (!$('[name="office"]').val()) {
+    //             $('[name="office"]').addClass('is-invalid');
+    //             $("#officeError").text("يرجى اختيار الفرع.");
+    //             isValid = false;
+    //         }
+    //     }
 
-//     // الإدارة — only required for external AND sector has departments
-//     if (cType === 'external') {
-//         if (!$('[name="sec_id"]').val()) {
-//             $('[name="sec_id"]').addClass('is-invalid');
-//             isValid = false;
-//         }
+    //     // الإدارة — only required for external AND sector has departments
+    //     if (cType === 'external') {
+    //         if (!$('[name="sec_id"]').val()) {
+    //             $('[name="sec_id"]').addClass('is-invalid');
+    //             isValid = false;
+    //         }
 
-//         // department required only if sector has departments
-//         let hasDeptsVisible = $('#department option[data-sector]:visible').length > 0;
-//         if (hasDeptsVisible && !$('[name="department"]').val()) {
-//             $('[name="department"]').addClass('is-invalid');
-//             isValid = false;
-//         }
-//     }
+    //         // department required only if sector has departments
+    //         let hasDeptsVisible = $('#department option[data-sector]:visible').length > 0;
+    //         if (hasDeptsVisible && !$('[name="department"]').val()) {
+    //             $('[name="department"]').addClass('is-invalid');
+    //             isValid = false;
+    //         }
+    //     }
 
-//         return isValid;
-//     }
+    //         return isValid;
+    //     }
 
-function validateStep2() {
-    let isValid = true;
-    $('#step-2 .form-control, #step-2 .form-select').removeClass('is-invalid');
-    $("#complaintTextError, #governorateError, #officeError").text('');
+    function validateStep2() {
+        let isValid = true;
+        $('#step-2 .form-control, #step-2 .form-select').removeClass('is-invalid');
+        $("#complaintTextError, #governorateError, #officeError").text('');
 
-    let cType = $('#complaint_type').val();
+        let cType = $('#complaint_type').val();
 
-    // نوعية وتوجيه البيان required
-    if (!cType) {
-        $('#complaint_type').addClass('is-invalid');
-        isValid = false;
-    }
+        // نوعية وتوجيه البيان required
+        if (!cType) {
+            $('#complaint_type').addClass('is-invalid');
+            isValid = false;
+        }
 
-    if (cType === 'external') {          // ← was 'internal'
-    if (!$('[name="ComplaintGovernorate"]').val()) {
-        $('[name="ComplaintGovernorate"]').addClass('is-invalid');
-        $("#governorateError").text("يرجى اختيار المحافظة.");
-        isValid = false;
-    }
-}
+        if (cType === 'external') {          // ← was 'internal'
+            if (!$('[name="ComplaintGovernorate"]').val()) {
+                $('[name="ComplaintGovernorate"]').addClass('is-invalid');
+                $("#governorateError").text("يرجى اختيار المحافظة.");
+                isValid = false;
+            }
+        }
 
-if (cType === 'internal') {          // ← was 'external'
-    if (!$('[name="sec_id"]').val()) {
-        $('[name="sec_id"]').addClass('is-invalid');
-        isValid = false;
-    }
-    let hasDeptsVisible = $('#department option[data-sector]:visible').length > 0;
-    if (hasDeptsVisible && !$('[name="department"]').val()) {
-        $('[name="department"]').addClass('is-invalid');
-        isValid = false;
-    }
-}
+        if (cType === 'internal') {          // ← was 'external'
+            if (!$('[name="sec_id"]').val()) {
+                $('[name="sec_id"]').addClass('is-invalid');
+                isValid = false;
+            }
+            let hasDeptsVisible = $('#department option[data-sector]:visible').length > 0;
+            if (hasDeptsVisible && !$('[name="department"]').val()) {
+                $('[name="department"]').addClass('is-invalid');
+                isValid = false;
+            }
+        }
 
- // نوع النشاط required
-        let projectTypeVal = $('#ComplaintProjectType').val();
-        if (!projectTypeVal || projectTypeVal === '') {
-            $('#ComplaintProjectType').addClass('is-invalid');
+        // نوع النشاط required
+        // let projectTypeVal = $('#ComplaintProjectType').val();
+        // if (!projectTypeVal || projectTypeVal === '') {
+        //     $('#ComplaintProjectType').addClass('is-invalid');
+        //     isValid = false;
+        // } else {
+        //     $('#ComplaintProjectType').removeClass('is-invalid');
+        // }
+        // مصدر البيان required always
+        if (!$('#comsourceSelect').val() || $('#comsourceSelect').val().length === 0) {
+            $('#comsourceSelect')
+                .next('.select2-container')
+                .find('.select2-selection')
+                .addClass('is-invalid');
+            $("#comsourceError").text("يرجى اختيار مصدر البيان.");
             isValid = false;
         } else {
-            $('#ComplaintProjectType').removeClass('is-invalid');
+            $('#comsourceSelect')
+                .next('.select2-container')
+                .find('.select2-selection')
+                .removeClass('is-invalid');
+            $("#comsourceError").text('');
         }
-    // مصدر البيان required always
-    if (!$('#comsourceSelect').val() || $('#comsourceSelect').val().length === 0) {
-        $('#comsourceSelect')
-            .next('.select2-container')
-            .find('.select2-selection')
-            .addClass('is-invalid');
-        $("#comsourceError").text("يرجى اختيار مصدر البيان.");
-        isValid = false;
-    } else {
-        $('#comsourceSelect')
-            .next('.select2-container')
-            .find('.select2-selection')
-            .removeClass('is-invalid');
-        $("#comsourceError").text('');
-    }
 
-    // نص البيان required always
-    if ($("textarea[name='ComplaintText']").val().trim() === '') {
-        $("textarea[name='ComplaintText']").addClass('is-invalid');
-        $("#complaintTextError").text("يرجى إدخال نص البيان.");
-        isValid = false;
-    }
+        // نص البيان required always
+        if ($("textarea[name='ComplaintText']").val().trim() === '') {
+            $("textarea[name='ComplaintText']").addClass('is-invalid');
+            $("#complaintTextError").text("يرجى إدخال نص البيان.");
+            isValid = false;
+        }
 
-    return isValid;
-}
+        return isValid;
+    }
 
     // =========================
     // GENDER DROPDOWN CLEAR ERROR
@@ -655,109 +618,109 @@ if (cType === 'internal') {          // ← was 'external'
     });
 
     // =========================
-// EMAIL LIVE VALIDATION
-// =========================
-$(document).on("keyup", "input[name='ComplainerEmail']", function () {
+    // EMAIL LIVE VALIDATION
+    // =========================
+    $(document).on("keyup", "input[name='ComplainerEmail']", function () {
 
-    let email = $(this).val().trim();
-    let regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        let email = $(this).val().trim();
+        let regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (email === '') {
+        if (email === '') {
 
-        $(this).removeClass("is-invalid");
-        $(this).next('.error-text').remove();
-        return;
-    }
-
-    if (!regex.test(email)) {
-
-        $(this).addClass("is-invalid");
-
-        if ($(this).next('.error-text').length === 0) {
-            $(this).after('<div class="error-text">البريد الإلكتروني غير صحيح</div>');
+            $(this).removeClass("is-invalid");
+            $(this).next('.error-text').remove();
+            return;
         }
 
-    } else {
+        if (!regex.test(email)) {
 
-        $(this).removeClass("is-invalid");
-        $(this).next('.error-text').remove();
-    }
-});
+            $(this).addClass("is-invalid");
 
+            if ($(this).next('.error-text').length === 0) {
+                $(this).after('<div class="error-text">البريد الإلكتروني غير صحيح</div>');
+            }
 
-
-// =========================
-// SECTOR → FILTER DEPARTMENTS
-// =========================
-$('[name="sec_id"]').on('change', function () {
-    let selectedSector = $(this).val();
-    let $dept = $('#department');
-    let currentVal = $dept.val();
-
-    // Remove any "no departments" option
-    $dept.find('option.no-dept').remove();
-
-    let visibleCount = 0;
-
-    $dept.find('option').each(function () {
-        let optSector = $(this).data('sector');
-        if (!optSector) return; // skip placeholder
-        if (optSector == selectedSector) {
-            $(this).show();
-            visibleCount++;
         } else {
-            $(this).hide();
+
+            $(this).removeClass("is-invalid");
+            $(this).next('.error-text').remove();
         }
     });
 
-    // If no departments match, add a disabled placeholder
-    if (selectedSector && visibleCount === 0) {
-        $dept.append('<option class="no-dept" value="" disabled selected>لا توجد إدارة</option>');
-        $dept.val('');
-    } else {
-        // Reset if current selection no longer visible
-        let stillVisible = $dept.find('option[value="' + currentVal + '"]:visible').length > 0;
-        if (!stillVisible) $dept.val('');
+
+
+    // =========================
+    // SECTOR → FILTER DEPARTMENTS
+    // =========================
+    $('[name="sec_id"]').on('change', function () {
+        let selectedSector = $(this).val();
+        let $dept = $('#department');
+        let currentVal = $dept.val();
+
+        // Remove any "no departments" option
+        $dept.find('option.no-dept').remove();
+
+        let visibleCount = 0;
+
+        $dept.find('option').each(function () {
+            let optSector = $(this).data('sector');
+            if (!optSector) return; // skip placeholder
+            if (optSector == selectedSector) {
+                $(this).show();
+                visibleCount++;
+            } else {
+                $(this).hide();
+            }
+        });
+
+        // If no departments match, add a disabled placeholder
+        if (selectedSector && visibleCount === 0) {
+            $dept.append('<option class="no-dept" value="" disabled selected>لا توجد إدارة</option>');
+            $dept.val('');
+        } else {
+            // Reset if current selection no longer visible
+            let stillVisible = $dept.find('option[value="' + currentVal + '"]:visible').length > 0;
+            if (!stillVisible) $dept.val('');
+        }
+    });
+
+    // Run on load for edit mode
+    $('[name="sec_id"]').trigger('change');
+
+    // =========================
+    // PROJECT TYPE CLEAR ERROR
+    // =========================
+    $(document).on('change', '#ComplaintProjectType', function () {
+        if ($(this).val() && $(this).val() !== '') {
+            $(this).removeClass('is-invalid');
+        }
+    });
+    // =========================
+    // COMPLAINT TYPE → TOGGLE FIELDS
+    // =========================
+    function applyComplaintTypeToggle(val) {
+        if (val === 'external') {                          // ← was 'internal'
+            $('#govOfficeGroup, #officeGroup').show();
+            $('#sectorGroup, #departmentGroup').hide();
+            $('[name="sec_id"], [name="department"]').val('').removeClass('is-invalid');
+        } else if (val === 'internal') {                   // ← was 'external'
+            $('#sectorGroup, #departmentGroup').show();
+            $('#govOfficeGroup, #officeGroup').hide();
+            $('[name="ComplaintGovernorate"]', '#step-2').val('').removeClass('is-invalid');
+            $('[name="office"]').val('').removeClass('is-invalid');
+            $("#governorateError, #officeError").text('');
+            $('[name="sec_id"]').trigger('change');
+        } else {
+            $('#govOfficeGroup, #officeGroup, #sectorGroup, #departmentGroup').hide();
+        }
     }
-});
 
-// Run on load for edit mode
-$('[name="sec_id"]').trigger('change');
+    $('#complaint_type').on('change', function () {
+        applyComplaintTypeToggle($(this).val());
+    });
 
-// =========================
-// PROJECT TYPE CLEAR ERROR
-// =========================
-$(document).on('change', '#ComplaintProjectType', function () {
-    if ($(this).val() && $(this).val() !== '') {
-        $(this).removeClass('is-invalid');
-    }
-});
-// =========================
-// COMPLAINT TYPE → TOGGLE FIELDS
-// =========================
-function applyComplaintTypeToggle(val) {
-    if (val === 'external') {                          // ← was 'internal'
-        $('#govOfficeGroup, #officeGroup').show();
-        $('#sectorGroup, #departmentGroup').hide();
-        $('[name="sec_id"], [name="department"]').val('').removeClass('is-invalid');
-    } else if (val === 'internal') {                   // ← was 'external'
-        $('#sectorGroup, #departmentGroup').show();
-        $('#govOfficeGroup, #officeGroup').hide();
-        $('[name="ComplaintGovernorate"]', '#step-2').val('').removeClass('is-invalid');
-        $('[name="office"]').val('').removeClass('is-invalid');
-        $("#governorateError, #officeError").text('');
-        $('[name="sec_id"]').trigger('change');
-    } else {
-        $('#govOfficeGroup, #officeGroup, #sectorGroup, #departmentGroup').hide();
-    }
-}
-
-$('#complaint_type').on('change', function () {
-    applyComplaintTypeToggle($(this).val());
-});
-
-// Run on load (handles edit mode too)
-applyComplaintTypeToggle($('#complaint_type').val());
+    // Run on load (handles edit mode too)
+    applyComplaintTypeToggle($('#complaint_type').val());
 
 
 

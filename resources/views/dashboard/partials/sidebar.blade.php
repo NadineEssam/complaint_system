@@ -94,12 +94,12 @@
 
     <ul class="sidebar-nav" id="sidebar-nav">
 
-     <li class="nav-item  @if (request()->segment(1) == '') mm-active @endif  ">
-       <a class="nav-link collapsed" href="{{ route('dashboard') }}">
-         <i class="bi bi-grid"></i>
-         <span>الرئيسية</span>
-       </a>
-     </li>
+        <li class="nav-item @if (request()->segment(1) == 'dashboard') mm-active @endif">
+            <a class="nav-link collapsed" href="{{ route('dashboard') }}">
+                <i class="bx bx-home-alt"></i>
+                <span>الرئيسية</span>
+            </a>
+        </li>
 
         {{-- ===================== إدارة الشكاوى ===================== --}}
         <li class="nav-heading">إدارة الشكاوى</li>

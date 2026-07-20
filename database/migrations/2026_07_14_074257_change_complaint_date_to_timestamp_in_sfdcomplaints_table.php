@@ -6,18 +6,26 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
         Schema::table('sfdcomplaints', function (Blueprint $table) {
-            $table->char('ComplaintProjectType', 2)
+             $table->timestamp('ComplaintDate')
+                  ->nullable()
                   ->change();
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::table('sfdcomplaints', function (Blueprint $table) {
-            $table->integer('ComplaintProjectType')
+            $table->date('ComplaintDate')
+                  ->nullable()
                   ->change();
         });
     }

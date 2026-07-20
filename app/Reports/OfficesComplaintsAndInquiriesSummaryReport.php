@@ -2,6 +2,8 @@
 
 namespace App\Reports;
 
+use App\Models\CompStatus;
+use App\Models\ComSource;
 use App\Reports\Contracts\ReportInterface;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +17,7 @@ class OfficesComplaintsAndInquiriesSummaryReport implements ReportInterface
 
     public function label(): string
     {
-        return ' تقرير مركزى عن عدد الشكاوى والإستفسارات الواردة للمكاتب ';
+        return '  تقرير مركزى عن عدد الطلبات الواردة للمكاتب وانوعها ';
     }
 
     public function key(): string
@@ -27,16 +29,14 @@ class OfficesComplaintsAndInquiriesSummaryReport implements ReportInterface
     {
 
 
-        $request_status = DB::table('compstatus')
-            ->get()
+        $request_status = CompStatus::all()
             ->mapWithKeys(function ($item) {
                 return [$item->statusID  => $item->statusText];
             })
             ->toArray();
         $request_status[0] = 'الكل';
 
-        $request_source = DB::table('comsources')
-            ->get()
+        $request_source = ComSource::all()
             ->mapWithKeys(function ($item) {
                 return [$item->comsourcesid  => $item->comsourcesname];
             })
@@ -73,7 +73,7 @@ class OfficesComplaintsAndInquiriesSummaryReport implements ReportInterface
                 'required'    => false,
                 'default'     => '0',
             ],
-        
+
 
         ];
     }
@@ -82,36 +82,39 @@ class OfficesComplaintsAndInquiriesSummaryReport implements ReportInterface
     {
 
 
-       $data = DB::table('office as o')
-        ->leftJoin('sfdcomplaints as c', function ($join) use ($filters) {
-            $join->on('o.id', '=', 'c.office');
+        $data = DB::table('ben.OFFICE as o')
+            ->leftJoin('sfdcomplaints as c', function ($join) use ($filters) {
+                $join->on('o.id', '=', 'c.office');
+                $join->where('c.valid', 1);
+                // Apply filters INSIDE join to preserve LEFT JOIN behavior
+                if (!empty($filters['date_from'])) {
+                    $join->where('c.ComplaintDate', '>=', $filters['date_from']);
+                }
 
-            // Apply filters INSIDE join to preserve LEFT JOIN behavior
-            if (!empty($filters['date_from'])) {
-                $join->where('c.ComplaintDate', '>=', $filters['date_from'] );
-            }
+                if (!empty($filters['date_to'])) {
+                    $join->where('c.ComplaintDate', '<=', $filters['date_to']);
+                }
 
-            if (!empty($filters['date_to'])) {
-                $join->where('c.ComplaintDate', '<=', $filters['date_to'] );
-            }
+                if (!empty($filters['request_status']) && $filters['request_status'] != '0') {
+                    $join->where('c.ComplaintStatus', $filters['request_status']);
+                }
 
-            if (!empty($filters['request_status']) && $filters['request_status'] != '0') {
-                $join->where('c.ComplaintStatus', $filters['request_status']);
-            }
+                if (!empty($filters['request_source']) && $filters['request_source'] != '0') {
+                    $join->where('c.ComplaintSources', $filters['request_source']);
+                }
+            })
+            ->select(
+                'o.id as office',
+                'o.REG_OFFIC_NAMA as office_name',
 
-            if (!empty($filters['request_source']) && $filters['request_source'] != '0') {
-                $join->where('c.ComplaintSources', $filters['request_source']);
-            }
-        })
-        ->select(
-            'o.id as office',
-            'o.REG_OFFIC_NAMA as office_name',
-
-            DB::raw("SUM(CASE WHEN c.RequestType = 2 THEN 1 ELSE 0 END) as complaints_count"),
-            DB::raw("SUM(CASE WHEN c.RequestType = 1 THEN 1 ELSE 0 END) as inquiries_count")
-        )
-        ->groupBy('o.id', 'o.REG_OFFIC_NAMA')
-        ->get();
+                DB::raw("SUM(CASE WHEN c.RequestType = 2 AND c.valid = 1 THEN 1 ELSE 0 END) as complaints_count"),
+                DB::raw("SUM(CASE WHEN c.RequestType = 1 AND c.valid = 1 THEN 1 ELSE 0 END) as inquiries_count"),
+                DB::raw("SUM(CASE WHEN c.RequestType = 3 AND c.valid = 1 THEN 1 ELSE 0 END) as direct_complaints_count"),
+                DB::raw("SUM(CASE WHEN c.RequestType = 4 AND c.valid = 1 THEN 1 ELSE 0 END) as suggestions_count"),
+                DB::raw("SUM(CASE WHEN c.RequestType = 5 AND c.valid = 1 THEN 1 ELSE 0 END) as requests_count")
+            )
+            ->groupBy('o.id', 'o.REG_OFFIC_NAMA')
+            ->get();
 
         return $data;
     }
@@ -121,20 +124,32 @@ class OfficesComplaintsAndInquiriesSummaryReport implements ReportInterface
     public function headings(): array
     {
         return [
-       
-            'عدد الإستفسارات',
-            'عدد الشكاوى',
+
+
             'الفرع ',
+            'عدد شكوى عامة',
+            'عدد الإستفسارات',
+            'عدد شكاوى موجهة',
+            'عدد مقترحات',
+            'عدد طلبات رواد الأعمال',
+
+
+
+
         ];
     }
 
     public function map(mixed $row): array
     {
         return [
-       
-            $row->inquiries_count ?? 0,
+             $row->office_name ?? '',
             $row->complaints_count ?? 0,
-            $row->office_name ?? '',
+
+            $row->inquiries_count ?? 0,
+            $row->direct_complaints_count ?? 0,
+            $row->suggestions_count ?? 0,
+            $row->requests_count ?? 0,
+           
 
         ];
     }

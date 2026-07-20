@@ -19,7 +19,7 @@ class AnnualSourcesComparisonReport implements ReportInterface
 
     public function label(): string
     {
-        return ' مقارنه سنويه للمصادر فى الشكاوى والاستفسارات';
+        return ' مقارنه سنويه للمصادر بالنسبه لعدد الطلبات وانوعها';
     }
 
     public function key(): string
@@ -53,18 +53,31 @@ class AnnualSourcesComparisonReport implements ReportInterface
         $second_year = $filters['second_year'];
 
         $data = DB::table('sfdcomplaints')
-            ->leftJoin('comsources', 'comsources.comsourcesid', '=', 'sfdcomplaints.ComplaintSources')
+            ->leftJoin('complaint_sources', 'complaint_sources.complaint_id', '=', 'sfdcomplaints.complaintid')
+            ->leftJoin('comsources', 'comsources.comsourcesid', '=', 'complaint_sources.comsource_id')
             ->select(
                 'comsources.comsourcesid',
                 'comsources.comsourcesname',
-                DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '2' AND YEAR(ComplaintDate) = $first_year THEN 1 END) as complaints_first_year"),
-                DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '1' AND YEAR(ComplaintDate) = $first_year THEN 1 END) as inquiries_first_year"),
-                DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '2' AND YEAR(ComplaintDate) = $second_year THEN 1 END) as complaints_second_year"),
-                DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '1' AND YEAR(ComplaintDate) = $second_year THEN 1 END) as inquiries_second_year")
-            )
-            ->groupBy('comsources.comsourcesid', 'comsources.comsourcesname')
-            ->get();
+                DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '2' AND sfdcomplaints.valid = 1 AND YEAR(sfdcomplaints.ComplaintDate) = $first_year THEN 1 END) as complaints_first_year"),
+                DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '1' AND sfdcomplaints.valid = 1 AND YEAR(sfdcomplaints.ComplaintDate) = $first_year THEN 1 END) as inquiries_first_year"),
+                DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '3' AND sfdcomplaints.valid = 1 AND YEAR(sfdcomplaints.ComplaintDate) = $first_year THEN 1 END) as direct_complaints_first_year"),
+                DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '4' AND sfdcomplaints.valid = 1 AND YEAR(sfdcomplaints.ComplaintDate) = $first_year THEN 1 END) as suggestions_first_year"),
+                DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '5' AND sfdcomplaints.valid = 1 AND YEAR(sfdcomplaints.ComplaintDate) = $first_year THEN 1 END) as requests_first_year"),
 
+                DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '2' AND sfdcomplaints.valid = 1 AND YEAR(sfdcomplaints.ComplaintDate) = $second_year THEN 1 END) as complaints_second_year"),
+                DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '1' AND sfdcomplaints.valid = 1 AND YEAR(sfdcomplaints.ComplaintDate) = $second_year THEN 1 END) as inquiries_second_year") ,
+                DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '3' AND sfdcomplaints.valid = 1 AND YEAR(sfdcomplaints.ComplaintDate) = $second_year THEN 1 END) as direct_complaints_second_year"),
+                DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '4' AND sfdcomplaints.valid = 1 AND YEAR(sfdcomplaints.ComplaintDate) = $second_year THEN 1 END) as suggestions_second_year"),
+                DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '5' AND sfdcomplaints.valid = 1 AND YEAR(sfdcomplaints.ComplaintDate) = $second_year THEN 1 END) as requests_second_year"),
+
+            )
+            ->where('sfdcomplaints.valid', 1)
+
+            ->groupBy(
+                'comsources.comsourcesid',
+                'comsources.comsourcesname'
+            )
+            ->get();
 
         return $data;
     }
@@ -74,23 +87,34 @@ class AnnualSourcesComparisonReport implements ReportInterface
     public function headings(): array
     {
         return [
-            'عدد استفسارات لعام ' . $this->filters['second_year'],
-            'عدد شكاوى لعام ' . $this->filters['second_year'],
-            'عدد استفسارات لعام ' . $this->filters['first_year'],
-            'عدد شكاوى لعام ' . $this->filters['first_year'],
             'اسم المصدر',
+            'عدد شكوى عامة لعام ' . $this->filters['first_year'],
+            'عدد استفسارات لعام ' . $this->filters['first_year'],
+            'عدد شكاوى موجهة لعام ' . $this->filters['first_year'],
+            'عدد مقترحات لعام ' . $this->filters['first_year'],
+            'عدد طلبات رواد الأعمال لعام ' . $this->filters['first_year'],
+            'عدد شكوى عامة لعام ' . $this->filters['second_year'],
+            'عدد استفسارات لعام ' . $this->filters['second_year'],
+            'عدد شكاوى موجهة لعام ' . $this->filters['second_year'],
+            'عدد مقترحات لعام ' . $this->filters['second_year'],
+            'عدد طلبات رواد الأعمال لعام ' . $this->filters['second_year'],
         ];
     }
 
     public function map(mixed $row): array
     {
         return [
-
-            $row->inquiries_second_year,
-            $row->complaints_second_year,
-            $row->inquiries_first_year,
-            $row->complaints_first_year,
             $row->comsourcesname ?? 'غير محدد',
+            $row->complaints_first_year,
+            $row->inquiries_first_year,
+            $row->direct_complaints_first_year,
+            $row->suggestions_first_year,
+            $row->requests_first_year,
+            $row->complaints_second_year,
+            $row->inquiries_second_year,
+            $row->direct_complaints_second_year,
+            $row->suggestions_second_year,
+            $row->requests_second_year,
         ];
     }
 }

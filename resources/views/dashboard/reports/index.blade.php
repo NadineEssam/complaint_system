@@ -105,6 +105,9 @@
 
     .reports-page .form-control,
     .reports-page .form-select {
+        background-position: left 0.75rem center !important;
+        padding-left: 2.25rem;
+        padding-right: 0.75rem;
         font-size: 13px;
         font-family: 'Cairo', 'Tahoma', sans-serif;
         border-radius: 8px;
@@ -175,7 +178,7 @@
                     </a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="{{ route('home') }}">
+                    <a href="{{ route('dashboard') }}">
                         <i class="bx bx-home-alt"></i> {{ __('الرئيسية') }}
                     </a>
                 </li>

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-         Schema::dropIfExists('complaint_responses');
+        Schema::dropIfExists('complaint_responses');
 
         Schema::create('complaint_responses', function (Blueprint $table) {
             $table->id(); // primary key for this table
@@ -25,7 +25,7 @@ return new class extends Migration
             $table->integer('ComplaintService')->nullable();
             $table->integer('fk_close_reason_id')->nullable();
             $table->integer('fk_close_reason_classify_id')->nullable();
-            $table->timestamp('created_at')->useCurrent();
+            $table->timestamps();
             // No timestamps as per your model
             // $table->timestamps(); // not needed
 

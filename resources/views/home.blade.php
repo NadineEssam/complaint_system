@@ -54,17 +54,52 @@
     border-radius: 24px;
   }
 
+.row.kpi-row {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1.5rem;
+  align-items: stretch; /* force all cards to match tallest one */
+}
+
+.row.kpi-row > .col {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  display: flex; /* let card fill the column */
+}
+
+.row.kpi-row > .col > .card {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.row.kpi-row > .col > .card > .card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* ================= RESPONSIVE KPI GRID ================= */
+@media (max-width: 1200px) {
   .row.kpi-row {
-    flex-wrap: wrap;
-    /* allow wrapping on small screens */
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+}
 
-  .row.kpi-row>.col {
-    flex: 1 1 200px !important;
-    /* shrink but not below 200px */
-    min-width: 200px;
+@media (max-width: 768px) {
+  .row.kpi-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
 
+@media (max-width: 480px) {
+  .row.kpi-row {
+    grid-template-columns: 1fr;
+  }
+}
   /* ================= PAGE TITLE ================= */
   .pagetitle h1 {
     font-size: 28px;
@@ -243,7 +278,7 @@
             إحصائيات الشكاوى
           </li>
           <li class="breadcrumb-item">
-            <a href="{{ route('home') }}">الرئيسية</a>
+            <a href="{{ route('dashboard') }}">الرئيسية</a>
           </li>
 
         </ol>
@@ -289,7 +324,7 @@
           فلترة
         </button>
 
-        <a href="{{ route('home') }}"
+        <a href="{{ route('dashboard') }}"
            class="btn btn-outline-secondary btn-lg w-100">
           إعادة ضبط
         </a>
@@ -552,6 +587,28 @@
 
     </div>
   </div> 
+  <div class="row mt-4">
+  <div class="col-12">
+    <div class="card border-0 shadow-sm overflow-hidden">
+      <div class="card-body p-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h4 class="mb-1 fw-bold">🏗️ الشكاوى حسب نوع النشاط</h4>
+            <p class="text-muted mb-0 small">توزيع عدد الشكاوى على أنواع الأنشطة</p>
+          </div>
+          <div class="rounded-circle d-flex align-items-center justify-content-center"
+            style="width:55px;height:55px;background:#eef2ff;color:#6366f1;font-size:22px;">
+            <i class="bi bi-building-gear"></i>
+          </div>
+        </div>
+
+        <div id="projectTypeChart"></div>
+
+      </div>
+    </div>
+  </div>
+</div>
 
   <div class="row mt-4">
   <div class="col-12">
@@ -660,11 +717,15 @@
     const sectorLabels = @json(collect($sectorStats)->pluck('name'));
     const sectorData   = @json(collect($sectorStats)->pluck('total'));
 
-    const officeLabels = @json(collect($officeStats) -> pluck('name'));
+    const officeLabels = @json(collect($officeStats)->pluck('name'))
+      .map(name => name.replace(/^مكتب\s+/, ''));
     const officeData = @json(collect($officeStats) -> pluck('total'));
 
     const sourceLabels = @json($sourceStats -> pluck('comsourcesname'));
     const sourceData = @json($sourceStats -> pluck('total'));
+
+    const projectTypeLabels = @json(collect($projectTypeStats)->pluck('name'));
+    const projectTypeData   = @json(collect($projectTypeStats)->pluck('total'));
 
     const closeData = @json($closeReasonStats);
 
@@ -796,6 +857,47 @@
 
     }).render();
 
+
+    new ApexCharts(document.querySelector("#projectTypeChart"), {
+
+  series: [{
+    name: 'عدد الشكاوى',
+    data: projectTypeData
+  }],
+
+  chart: {
+    type: 'area',
+    height: 350,
+    toolbar: {
+      show: false
+    },
+    fontFamily: 'Cairo, sans-serif'
+  },
+
+  colors: ['#6366f1'],
+
+  stroke: {
+    curve: 'smooth',
+    width: 4
+  },
+
+  fill: {
+    type: 'gradient',
+    gradient: {
+      opacityFrom: 0.5,
+      opacityTo: 0.05
+    }
+  },
+
+  dataLabels: {
+    enabled: false
+  },
+
+  xaxis: {
+    categories: projectTypeLabels
+  }
+
+}).render();
     // ================= DEPARTMENT =================
     new ApexCharts(document.querySelector("#sourceChart"), {
 
@@ -949,151 +1051,152 @@ new ApexCharts(document.querySelector("#sectorChart"), {
 
 }).render();
     // ================= GOVERNORATE =================
-    new ApexCharts(document.querySelector("#offChart"), {
-      series: [{
-        name: "عدد الشكاوى",
-        data: officeData,
-      }, ],
+    
+new ApexCharts(document.querySelector("#offChart"), {
+  series: [{
+    name: "عدد الشكاوى",
+    data: officeData,
+  }, ],
 
-      chart: {
-        type: "bar",
-        height: 520,
-        background: "transparent",
-        toolbar: {
-          show: false,
-        },
-        fontFamily: "Cairo, sans-serif",
-      },
+  chart: {
+    type: "bar",
+    height: 750,          // increased from 520 — more room per row
+    background: "transparent",
+    toolbar: {
+      show: false,
+    },
+    fontFamily: "Cairo, sans-serif",
+  },
 
-      colors: ["#14b8a6"],
+  colors: ["#14b8a6"],
 
-      theme: {
-        mode: "light",
-      },
+  theme: {
+    mode: "light",
+  },
 
-      grid: {
-        borderColor: "#e5e7eb",
-        strokeDashArray: 4,
-        xaxis: {
-          lines: {
-            show: true,
-          },
-        },
-        yaxis: {
-          lines: {
-            show: false,
-          },
-        },
-        padding: {
-          left: 20,
-          right: 20,
-          top: 10,
-          bottom: 10,
-        },
-      },
-
-      plotOptions: {
-        bar: {
-          horizontal: true,
-          borderRadius: 14,
-          borderRadiusApplication: "end",
-          barHeight: "58%",
-          distributed: true,
-          dataLabels: {
-            position: "top",
-          },
-        },
-      },
-
-      dataLabels: {
-        enabled: true,
-        offsetX: 25,
-        style: {
-          fontSize: "13px",
-          fontWeight: "700",
-          colors: ["#111827"],
-        },
-        formatter: function(val) {
-          return val;
-        },
-      },
-
-      stroke: {
+  grid: {
+    borderColor: "#e5e7eb",
+    strokeDashArray: 4,
+    xaxis: {
+      lines: {
         show: true,
-        width: 1,
-        colors: ["#ffffff"],
       },
-
-      xaxis: {
-        categories: officeLabels,
-
-        axisBorder: {
-          show: false,
-        },
-
-        axisTicks: {
-          show: false,
-        },
-
-        labels: {
-          style: {
-            colors: "#6b7280",
-            fontSize: "12px",
-            fontWeight: 500,
-          },
-        },
-      },
-
-      yaxis: {
-        labels: {
-          align: "left",
-
-          offsetX: 155,
-          style: {
-            fontSize: "16px",
-            fontWeight: 600,
-            colors: "#0f172a",
-          },
-        },
-      },
-
-      tooltip: {
-        theme: "light",
-        style: {
-          fontSize: "13px",
-          fontFamily: "Cairo, sans-serif",
-        },
-      },
-
-      legend: {
+    },
+    yaxis: {
+      lines: {
         show: false,
       },
+    },
+    padding: {
+      left: 20,
+      right: 20,
+      top: 10,
+      bottom: 10,
+    },
+  },
 
-      states: {
-        hover: {
-          filter: {
-            type: "lighten",
-            value: 0.08,
+  plotOptions: {
+    bar: {
+      horizontal: true,
+      borderRadius: 14,
+      borderRadiusApplication: "end",
+      barHeight: "45%",    // reduced from 58% — thinner bars, more gap between them
+      distributed: true,
+      dataLabels: {
+        position: "top",
+      },
+    },
+  },
+
+  dataLabels: {
+    enabled: true,
+    offsetX: 25,
+    style: {
+      fontSize: "13px",
+      fontWeight: "700",
+      colors: ["#111827"],
+    },
+    formatter: function(val) {
+      return val;
+    },
+  },
+
+  stroke: {
+    show: true,
+    width: 1,
+    colors: ["#ffffff"],
+  },
+
+  xaxis: {
+    categories: officeLabels,
+
+    axisBorder: {
+      show: false,
+    },
+
+    axisTicks: {
+      show: false,
+    },
+
+    labels: {
+      style: {
+        colors: "#6b7280",
+        fontSize: "12px",
+        fontWeight: 500,
+      },
+    },
+  },
+
+  yaxis: {
+    labels: {
+      align: "left",
+
+      offsetX: 135,
+      style: {
+        fontSize: "16px",
+        fontWeight: 600,
+        colors: "#0f172a",
+      },
+    },
+  },
+
+  tooltip: {
+    theme: "light",
+    style: {
+      fontSize: "13px",
+      fontFamily: "Cairo, sans-serif",
+    },
+  },
+
+  legend: {
+    show: false,
+  },
+
+  states: {
+    hover: {
+      filter: {
+        type: "lighten",
+        value: 0.08,
+      },
+    },
+  },
+
+  responsive: [{
+    breakpoint: 768,
+    options: {
+      chart: {
+        height: 600,       // increased from 420 to match the more spacious desktop look
+      },
+      yaxis: {
+        labels: {
+          style: {
+            fontSize: "12px",
           },
         },
       },
-
-      responsive: [{
-        breakpoint: 768,
-        options: {
-          chart: {
-            height: 420,
-          },
-          yaxis: {
-            labels: {
-              style: {
-                fontSize: "12px",
-              },
-            },
-          },
-        },
-      }, ],
-    }).render();
+    },
+  }, ],
+}).render();
 
     // ================= CLOSE REASON =================
     new ApexCharts(document.querySelector("#closeReasonChart"), {
