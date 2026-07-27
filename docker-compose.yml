@@ -6,6 +6,7 @@ services:
     working_dir: /var/www
     volumes:
       - .:/var/www
+      - /var/www/db_connections_test/call_center/laravel_connection.txt:/var/www/.env:ro
     ports:
       - "127.0.0.1:9001:9000"
     extra_hosts:
