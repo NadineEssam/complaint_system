@@ -19,9 +19,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-         $this->app['request']->server->set('SCRIPT_NAME', '/call_center/index.php');
+        $this->app['request']->server->set('SCRIPT_NAME', '/call_center/index.php');
     
-    	\Illuminate\Support\Facades\URL::forceRootUrl('http://192.168.161.89/call_center');
+    	\Illuminate\Support\Facades\URL::forceRootUrl('http://msme-app-i.sfd.egypt.dom/call_center');
     	\Illuminate\Support\Facades\URL::forceScheme('http');
     }
 }
