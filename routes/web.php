@@ -5,6 +5,17 @@ use App\Http\Controllers\Dashboard\ReportController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
+
+
+// Route::any('{any?}', function (\Illuminate\Http\Request $request) {
+//     dd([
+//         'path' => $request->path(),
+//         'url' => $request->url(),
+//         'request_uri' => $_SERVER['REQUEST_URI'] ?? null,
+//     ]);
+// })->where('any', '.*');
+
+
 Route::get('/optimize-clear', function () {
     $exitCode = Artisan::call('optimize:clear');
     return '<h1>Reoptimized class loader</h1>';

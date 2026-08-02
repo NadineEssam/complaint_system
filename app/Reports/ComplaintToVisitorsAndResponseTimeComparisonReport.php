@@ -9,6 +9,7 @@ use App\Reports\Contracts\ReportInterface;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class ComplaintToVisitorsAndResponseTimeComparisonReport implements ReportInterface
 {
@@ -154,6 +155,9 @@ class ComplaintToVisitorsAndResponseTimeComparisonReport implements ReportInterf
             ->select(
 
                 'o.id as office',
+                'o.off_code as off_code',
+                'o.fk_govt_code as govt_code',
+
                 'o.REG_OFFIC_NAMA as office_name',
                 'crc.close_reason_classify_name as classify_name',
                 'tr.classify_count',
@@ -166,7 +170,7 @@ class ComplaintToVisitorsAndResponseTimeComparisonReport implements ReportInterf
                 DB::raw('SUM(CASE WHEN c.ComplaintStatus = 4 THEN 1 ELSE 0 END) as saved_count')
 
             )
-            ->groupBy('o.id', 'o.REG_OFFIC_NAMA' , 'crc.close_reason_classify_name', 'tr.classify_count')
+            ->groupBy('o.id' , 'o.off_code', 'o.fk_govt_code', 'o.REG_OFFIC_NAMA' , 'crc.close_reason_classify_name', 'tr.classify_count')
             ->get()
             ->keyBy('office');
 
@@ -197,6 +201,29 @@ class ComplaintToVisitorsAndResponseTimeComparisonReport implements ReportInterf
                 $q->where('c.RequestType', $filters['request_type']);
             })
             ->get();
+
+
+        $response = Http::timeout(30)
+            ->post('http://192.168.162.50/webservices/number_of_visitors_lice.php', [
+                'ContactObjects' => [
+                    [
+                        'from_date' => Carbon::parse($filters['date_from'])->format('d-m-Y'),
+                        'to_date'   => Carbon::parse($filters['date_to'])->format('d-m-Y'),
+                        'gov_code'  => '%',
+                        'off_code'  => '%',
+                    ]
+                ]
+            ]);
+        
+            $api_data = [];
+            if ($response->successful() ) {
+                $response_data = $response->json();
+                if(isset($response_data['MessageCode']) && $response_data['MessageCode'] == 1){
+                    $api_data = $response_data['ResultData'];
+
+                }
+            }
+           // dd($api_data);
 
 
         foreach ($responseRows as $row) {
@@ -233,9 +260,23 @@ class ComplaintToVisitorsAndResponseTimeComparisonReport implements ReportInterf
             $data[$row->office]->responded_count++;
         }
 
+
+        
+        $api_collection = collect($api_data); ;
+
         foreach ($data as $row) {
 
-            $row->total_response_days = round($row->total_response_days ?? 0, 2);
+            $api_row = $api_collection
+                ->where('gov_code', $row->govt_code)
+                ->where('off_code', $row->off_code)
+                ->first();
+
+            $row->visitors_count = !empty($api_row) ? $api_row['total_count'] : 0;
+            $row->visitors_percent_of_complaints = $row->visitors_count != 0 ? ($row->total_complaints / $row->visitors_count) * 100 : 0;
+            $row->visitors_percent_of_complaints = round($row->visitors_percent_of_complaints, 2);
+
+
+            $row->total_response_days = !empty($row->total_response_days) ? round($row->total_response_days ?? 0, 2) : 0;
 
             $row->responded_count = $row->responded_count ?? 0;
 
@@ -269,7 +310,7 @@ class ComplaintToVisitorsAndResponseTimeComparisonReport implements ReportInterf
             'عدد الطلبات المحفوظة',
             'عدد الطلبات المحلولة',
             'إجمالي عدد الطلبات',
-            'نسبه الشكاوي بالنسبه المترددين على المكتب',
+            'نسبه الشكاوي بالنسبه المترددين على المكتب %',
             'أكثر تصنيف للطلبات',
             'عدد الطلبات لهذا التصنيف',
             'متوسط زمن الاستجابة في اليوم',
@@ -282,13 +323,13 @@ class ComplaintToVisitorsAndResponseTimeComparisonReport implements ReportInterf
         return [
 
             $row->office_name ,
-            "المترددين على المكتب" ,
+            $row->visitors_count ,
             $row->new_count ,
             $row->follow_up_count ,
             $row->saved_count ,
             $row->solved_count ,
             $row->total_complaints ,
-            "نسبه الشكاوي بالنسبه المترددين على المكتب" ,
+            $row->visitors_percent_of_complaints ,
             $row->classify_name ?? "غير محدد",
             $row->classify_count  ,
             $row->average_response_days,
