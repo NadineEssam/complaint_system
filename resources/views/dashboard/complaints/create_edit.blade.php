@@ -617,10 +617,15 @@
                                         التاريخ <span class="required-star">*</span>
                                     </label>
 
-                                    <input type="datetime-local" dir="rtl" lang="ar"
-                                        class="form-control @error('ComplaintDate') is-invalid @enderror"
-                                        name="ComplaintDate" max="{{ now()->format('Y-m-d\TH:i') }}"
-                                        value="{{ old('ComplaintDate', isset($complaint) ? \Carbon\Carbon::parse($complaint->ComplaintDate)->format('Y-m-d\TH:i') : '') }}">
+                                    <input type="text"
+                                        dir="rtl"
+                                        lang="ar"
+                                        class="form-control flatpickr-datetime @error('ComplaintDate') is-invalid @enderror"
+                                        name="ComplaintDate"
+                                        id="ComplaintDate"
+                                        placeholder="اختر التاريخ والوقت"
+                                        autocomplete="off"
+                                        value="{{ old('ComplaintDate', isset($complaint) && $complaint->ComplaintDate ? \Carbon\Carbon::parse($complaint->ComplaintDate)->format('Y-m-d H:i') : '') }}">
 
                                     @error('ComplaintDate')
                                         <div class="error-text">{{ $message }}</div>
@@ -955,10 +960,26 @@
     </script>
     <script src="{{ asset('assets/js/complaints.js') }}"></script>
     <script>
-        // flatpickr("input[name='ComplaintDate']", {
-        //     locale: "ar",
-        //     dateFormat: "Y-m-d H:i",
-        //     maxDate: "today"
-        // });
+        document.addEventListener('DOMContentLoaded', function () {
+            const complaintDateInput = document.querySelector('#ComplaintDate');
+
+            if (!complaintDateInput) {
+                return;
+            }
+
+            flatpickr(complaintDateInput, {
+                locale: 'ar',
+                enableTime: true,
+                time_24hr: true,
+                dateFormat: 'Y-m-d H:i',
+                minuteIncrement: 1,
+                allowInput: true,
+                disableMobile: true,
+                maxDate: new Date(),
+                onReady: function(selectedDates, dateStr, instance) {
+                    instance.calendarContainer.setAttribute('dir', 'rtl');
+                }
+            });
+        });
     </script>
 @endpush
