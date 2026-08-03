@@ -18,6 +18,7 @@ use App\Models\ProjectType;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Models\Role;
 
 
@@ -103,6 +104,8 @@ class ComplaintController extends Controller
 
     public function store(Request $request)
     {
+
+
         $data = $request->validate(
             [
 
@@ -117,7 +120,7 @@ class ComplaintController extends Controller
 
                 'ComplaintGovernorate' => 'nullable|string',
                 'ComplainerGovernorate' => 'required|string',
-                'ComplaintDate' => 'required|date|before_or_equal:today',
+                'ComplaintDate' => 'required|date|before_or_equal:now',
                 'sec_id' => 'nullable|integer',
                 'department' => 'nullable|integer|exists:new_po.departments,dep_id',
                 'office' => 'nullable|integer',
@@ -165,7 +168,7 @@ class ComplaintController extends Controller
             ]
         );
 
-   
+
 
         $complaint = Complaint::create([
             'RequestType' => $data['requesttypeid'],
