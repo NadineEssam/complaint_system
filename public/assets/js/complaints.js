@@ -534,7 +534,7 @@ $(document).ready(function () {
                 $('[name="sec_id"]').addClass('is-invalid');
                 isValid = false;
             }
-            let hasDeptsVisible = $('#department option[data-sector]:visible').length > 0;
+            let hasDeptsVisible = $('#departmentSelect option[data-sector]:visible').length > 0;
             if (hasDeptsVisible && !$('[name="department"]').val()) {
                 $('[name="department"]').addClass('is-invalid');
                 isValid = false;
@@ -654,37 +654,53 @@ $(document).ready(function () {
     // =========================
     $('[name="sec_id"]').on('change', function () {
         let selectedSector = $(this).val();
-        let $dept = $('#department');
-        let currentVal = $dept.val();
+        let $dept = $('#departmentSelect');
+        let currentVal = $dept.data('selected-value') || $dept.val();
 
         // Remove any "no departments" option
         $dept.find('option.no-dept').remove();
 
         let visibleCount = 0;
+        let selectedStillVisible = false;
 
         $dept.find('option').each(function () {
-            let optSector = $(this).data('sector');
-            if (!optSector) return; // skip placeholder
-            if (optSector == selectedSector) {
-                $(this).show();
+            let $option = $(this);
+            let optSector = $option.data('sector');
+
+            // Skip placeholder option
+            if (!$option.val()) {
+                $option.show();
+                return;
+            }
+
+            if (!selectedSector || String(optSector) === String(selectedSector)) {
+                $option.show();
                 visibleCount++;
+
+                if (String($option.val()) === String(currentVal)) {
+                    selectedStillVisible = true;
+                }
             } else {
-                $(this).hide();
+                $option.hide();
             }
         });
 
-        // If no departments match, add a disabled placeholder
         if (selectedSector && visibleCount === 0) {
             $dept.append('<option class="no-dept" value="" disabled selected>لا توجد إدارة</option>');
             $dept.val('');
+        } else if (currentVal && selectedStillVisible) {
+            $dept.val(currentVal);
+        } else if (!selectedSector) {
+            $dept.val(currentVal || '');
         } else {
-            // Reset if current selection no longer visible
-            let stillVisible = $dept.find('option[value="' + currentVal + '"]:visible').length > 0;
-            if (!stillVisible) $dept.val('');
+            $dept.val('');
         }
+
+        $dept.data('selected-value', $dept.val());
     });
 
     // Run on load for edit mode
+    $('#departmentSelect').data('selected-value', $('#departmentSelect').val());
     $('[name="sec_id"]').trigger('change');
 
     // =========================

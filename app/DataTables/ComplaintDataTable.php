@@ -105,6 +105,9 @@ class ComplaintDataTable extends DataTable
             //     return $model->status_name ?? 'غير محدد';
             // })
 
+            ->editColumn('ComplaintDate', function ($row) {
+                return $row->ComplaintDate ? \Carbon\Carbon::parse($row->ComplaintDate)->format('Y-m-d') : '';
+            })
             ->setRowId('ComplaintID')
         ;
     }

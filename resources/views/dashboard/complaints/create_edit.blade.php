@@ -617,15 +617,14 @@
                                         التاريخ <span class="required-star">*</span>
                                     </label>
 
-                                    <input type="text"
-                                        dir="rtl"
-                                        lang="ar"
+                                    <input type="date"
+                                       max="{{ date('Y-m-d') }}"
                                         class="form-control flatpickr-datetime @error('ComplaintDate') is-invalid @enderror"
                                         name="ComplaintDate"
-                                        id="ComplaintDate"
-                                        placeholder="اختر التاريخ والوقت"
+                                        id="ComplaintDatexxxx"
+                                        placeholder="اختر التاريخ "
                                         autocomplete="off"
-                                        value="{{ old('ComplaintDate', isset($complaint) && $complaint->ComplaintDate ? \Carbon\Carbon::parse($complaint->ComplaintDate)->format('Y-m-d H:i') : '') }}">
+                                        value="{{ old('ComplaintDate', isset($complaint) && $complaint->ComplaintDate ? \Carbon\Carbon::parse($complaint->ComplaintDate)->format('Y-m-d') : '') }}">
 
                                     @error('ComplaintDate')
                                         <div class="error-text">{{ $message }}</div>
@@ -699,8 +698,8 @@
                                     <select class="form-select @error('sec_id') is-invalid @enderror" name="sec_id">
                                         <option value="">اختر</option>
                                         @foreach ($sectors as $sector)
-                                            <option value="{{ $sector->sec_id }}"
-                                                {{ old('sec_id', $complaint->sector_id ?? '') == $sector->sec_id ? 'selected' : '' }}>
+                                            <option value="{{ $sector->sector_code }}"
+                                                {{ old('sec_id', $complaint->sector_id ?? '') == $sector->sector_code ? 'selected' : '' }}>
                                                 {{ $sector->sector_ar }}
                                             </option>
                                         @endforeach
@@ -720,8 +719,9 @@
                                         <option value="">اختر الإدارة</option>
                                         @foreach ($departments as $department)
                                             <option value="{{ $department->dep_id }}"
+                                                data-sector="{{ $department->sector_code ?? '' }}"
                                                 {{ old('department', $complaint->department ?? '') == $department->dep_id ? 'selected' : '' }}>
-                                                {{ $department->dep_name }}
+                                                {{ $department->depname_ar }}
                                             </option>
                                         @endforeach
                                     </select>
