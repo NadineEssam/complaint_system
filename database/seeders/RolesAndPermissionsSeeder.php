@@ -146,6 +146,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 // 🔥 تحديث لو موجود قبل كده
                 $permission->update([
                     'ar_name' => $arName,
+                    'group' => $group,
                     'group_ar' => $groupTranslations[$group] ?? $group,
                 ]);
 
