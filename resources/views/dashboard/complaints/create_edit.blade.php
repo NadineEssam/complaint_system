@@ -617,10 +617,14 @@
                                         التاريخ <span class="required-star">*</span>
                                     </label>
 
-                                    <input type="datetime-local" dir="rtl" lang="ar"
-                                        class="form-control @error('ComplaintDate') is-invalid @enderror"
-                                        name="ComplaintDate" max="{{ now()->format('Y-m-d\TH:i') }}"
-                                        value="{{ old('ComplaintDate', isset($complaint) ? \Carbon\Carbon::parse($complaint->ComplaintDate)->format('Y-m-d\TH:i') : '') }}">
+                                    <input type="date"
+                                       max="{{ date('Y-m-d') }}"
+                                        class="form-control flatpickr-datetime @error('ComplaintDate') is-invalid @enderror"
+                                        name="ComplaintDate"
+                                        id="ComplaintDatexxxx"
+                                        placeholder="اختر التاريخ "
+                                        autocomplete="off"
+                                        value="{{ old('ComplaintDate', isset($complaint) && $complaint->ComplaintDate ? \Carbon\Carbon::parse($complaint->ComplaintDate)->format('Y-m-d') : '') }}">
 
                                     @error('ComplaintDate')
                                         <div class="error-text">{{ $message }}</div>
@@ -694,8 +698,8 @@
                                     <select class="form-select @error('sec_id') is-invalid @enderror" name="sec_id">
                                         <option value="">اختر</option>
                                         @foreach ($sectors as $sector)
-                                            <option value="{{ $sector->sec_id }}"
-                                                {{ old('sec_id', $complaint->sector_id ?? '') == $sector->sec_id ? 'selected' : '' }}>
+                                            <option value="{{ $sector->sector_code }}"
+                                                {{ old('sec_id', $complaint->sector_id ?? '') == $sector->sector_code ? 'selected' : '' }}>
                                                 {{ $sector->sector_ar }}
                                             </option>
                                         @endforeach
@@ -715,8 +719,9 @@
                                         <option value="">اختر الإدارة</option>
                                         @foreach ($departments as $department)
                                             <option value="{{ $department->dep_id }}"
+                                                data-sector="{{ $department->sector_code ?? '' }}"
                                                 {{ old('department', $complaint->department ?? '') == $department->dep_id ? 'selected' : '' }}>
-                                                {{ $department->dep_name }}
+                                                {{ $department->depname_ar }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -955,10 +960,26 @@
     </script>
     <script src="{{ asset('assets/js/complaints.js') }}"></script>
     <script>
-        // flatpickr("input[name='ComplaintDate']", {
-        //     locale: "ar",
-        //     dateFormat: "Y-m-d H:i",
-        //     maxDate: "today"
-        // });
+        document.addEventListener('DOMContentLoaded', function () {
+            const complaintDateInput = document.querySelector('#ComplaintDate');
+
+            if (!complaintDateInput) {
+                return;
+            }
+
+            flatpickr(complaintDateInput, {
+                locale: 'ar',
+                enableTime: true,
+                time_24hr: true,
+                dateFormat: 'Y-m-d H:i',
+                minuteIncrement: 1,
+                allowInput: true,
+                disableMobile: true,
+                maxDate: new Date(),
+                onReady: function(selectedDates, dateStr, instance) {
+                    instance.calendarContainer.setAttribute('dir', 'rtl');
+                }
+            });
+        });
     </script>
 @endpush

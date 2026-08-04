@@ -18,6 +18,7 @@ use App\Models\ProjectType;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Models\Role;
 
 
@@ -103,6 +104,8 @@ class ComplaintController extends Controller
 
     public function store(Request $request)
     {
+
+
         $data = $request->validate(
             [
 
@@ -117,8 +120,8 @@ class ComplaintController extends Controller
 
                 'ComplaintGovernorate' => 'nullable|string',
                 'ComplainerGovernorate' => 'required|string',
-                'ComplaintDate' => 'required|date|before_or_equal:today',
-                'sec_id' => 'nullable|integer',
+                'ComplaintDate' => 'required|date|before_or_equal:now',
+                'sec_id' => 'nullable',
                 'department' => 'nullable|integer|exists:new_po.departments,dep_id',
                 'office' => 'nullable|integer',
                 'comsource_ids' => 'required|array|min:1',
@@ -165,7 +168,7 @@ class ComplaintController extends Controller
             ]
         );
 
-   
+
 
         $complaint = Complaint::create([
             'RequestType' => $data['requesttypeid'],
@@ -280,7 +283,7 @@ class ComplaintController extends Controller
             'comsource_ids.*' => 'integer|exists:comsources,comsourcesid',
             'ComplaintNationalID' => 'nullable|required_if:requesttypeid,2,3|digits:14',
             'ComplainerGender' => 'required|string|max:10',
-            'sec_id' => 'nullable|integer',
+            'sec_id' => 'nullable',
             'department' => 'nullable|integer|exists:new_po.departments,dep_id',
             'complaint_type' => 'required|in:internal,external',
             'ComplaintText'    => 'required|string',
@@ -422,7 +425,7 @@ class ComplaintController extends Controller
 
             'ComplaintGovernorate' => 'nullable|string',
             'ComplaintDate' => 'required|date|before_or_equal:today',
-            'sec_id' => 'nullable|integer',
+            'sec_id' => 'nullable',
             'department' => 'nullable|integer|exists:new_po.departments,dep_id',
             'office' => 'nullable|integer',
             'comsource_ids' => 'required|array|min:1',

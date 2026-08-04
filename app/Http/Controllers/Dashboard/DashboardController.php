@@ -122,7 +122,7 @@ class DashboardController extends Controller
                 ->groupBy('sector_id')
                 ->get()
                 ->map(function ($item) {
-                    $sector = \App\Models\Sector::where('sec_id', $item->sector_id)->first();
+                    $sector = \App\Models\Sector::where('sector_code', $item->sector_id)->first();
                     return [
                         'name'  => $sector->sector_ar ?? 'غير معروف',
                         'total' => $item->total,
