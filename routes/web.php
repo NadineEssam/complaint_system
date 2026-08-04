@@ -15,6 +15,10 @@ use Illuminate\Support\Facades\Route;
 //     ]);
 // })->where('any', '.*');
 
+Route::any('call_center', function (\Illuminate\Http\Request $request) {
+     return redirect()->route('dashboard');
+});
+
 
 Route::get('/optimize-clear', function () {
     $exitCode = Artisan::call('optimize:clear');
