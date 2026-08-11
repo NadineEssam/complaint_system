@@ -277,12 +277,12 @@
         <table id="complaint-duplicates-table" class="table">
             <thead>
                 <tr>
-                    <th>رقم الشكوي</th>
+                    <th>رقم البيان</th>
                     <th>النوع</th>
                     <th>الأب</th>
                     <th>نوع الطلب</th>
                     <th>الحالة</th>
-                    <th>تاريخ الشكوي</th>
+                    <th>تاريخ البيان</th>
                     <th>الاجراءات</th>
                 </tr>
             </thead>

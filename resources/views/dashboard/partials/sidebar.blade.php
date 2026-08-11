@@ -102,13 +102,13 @@
         </li>
 
         {{-- ===================== إدارة الشكاوى ===================== --}}
-        <li class="nav-heading">إدارة الشكاوى</li>
+        <li class="nav-heading">إدارة البيانات الاساسية</li>
 
         @if (PerUser('complaints.index'))
         <li class="nav-item {{ request()->segment(1) == 'complaints' ? 'mm-active' : '' }}">
             <a class="nav-link collapsed" href="{{ route('complaints.index') }}">
                 <i class="bx bx-list-ul"></i>
-                <span>الشكاوى</span>
+                <span>البيانات الاساسية</span>
             </a>
         </li>
         @endif
@@ -129,7 +129,7 @@
         <li class="nav-item {{ request()->segment(1) == 'sources' ? 'mm-active' : '' }}">
             <a class="nav-link collapsed" href="{{ route('sources.index') }}">
                 <i class="bx bx-sitemap"></i>
-                <span>مصادر الشكاوى</span>
+                <span>مصادر البيان</span>
             </a>
         </li>
         @endif
