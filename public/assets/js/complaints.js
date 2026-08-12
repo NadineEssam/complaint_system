@@ -598,24 +598,25 @@ $(document).ready(function () {
     // =========================
     // PHONE LIVE VALIDATION
     // =========================
-    $(document).on("keyup", "input[name='ComplainerPhone']", function () {
-        let phone = $(this).val().trim();
-        let regex = /^01[0-2,5]{1}[0-9]{8}$/;
-        if (phone === '') {
-            $(this).removeClass("is-invalid");
-            $(this).next('.error-text').remove();
-            return;
-        }
-        if (!regex.test(phone)) {
-            $(this).addClass("is-invalid");
-            if ($(this).next('.error-text').length === 0) {
-                $(this).after('<div class="error-text">رقم الهاتف غير صحيح</div>');
-            }
-        } else {
-            $(this).removeClass("is-invalid");
-            $(this).next('.error-text').remove();
-        }
-    });
+    
+    // $(document).on("keyup", "input[name='ComplainerPhone']", function () {
+    //     let phone = $(this).val().trim();
+    //     let regex = /^01[0-2,5]{1}[0-9]{8}$/;
+    //     if (phone === '') {
+    //         $(this).removeClass("is-invalid");
+    //         $(this).next('.error-text').remove();
+    //         return;
+    //     }
+    //     if (!regex.test(phone)) {
+    //         $(this).addClass("is-invalid");
+    //         if ($(this).next('.error-text').length === 0) {
+    //             $(this).after('<div class="error-text">رقم الهاتف غير صحيح</div>');
+    //         }
+    //     } else {
+    //         $(this).removeClass("is-invalid");
+    //         $(this).next('.error-text').remove();
+    //     }
+    // });
 
     // =========================
     // EMAIL LIVE VALIDATION

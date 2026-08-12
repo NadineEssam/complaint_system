@@ -114,8 +114,8 @@ class ComplaintController extends Controller
                 'ComplainerEmail' => 'nullable|required_if:requesttypeid,4|email',
                 'complainttype' => 'nullable|required_if:requesttypeid,1,2|exists:complainttype,comtypeid',
                 'ComplainerPhone' => [
-                    'required',
-                    'regex:/^01[0-2,5]{1}[0-9]{8}$/'
+                    'required'
+                   // 'regex:/^01[0-2,5]{1}[0-9]{8}$/'
                 ],
 
                 'ComplaintGovernorate' => 'nullable|string',
@@ -271,8 +271,8 @@ class ComplaintController extends Controller
             'ComplainerEmail' => 'nullable|required_if:requesttypeid,4|email',
             'complainttype' => 'nullable|required_if:requesttypeid,1,2|exists:complainttype,comtypeid',
             'ComplainerPhone' => [
-                'required',
-                'regex:/^01[0-2,5]{1}[0-9]{8}$/'
+                'required'
+               // 'regex:/^01[0-2,5]{1}[0-9]{8}$/'
             ],
 
             'ComplaintGovernorate' => 'nullable|string',
