@@ -140,6 +140,47 @@ class ComplaintPercentageReport implements ReportInterface
             ->orderBy('complainttype.comtypeid')
             ->get();
 
+
+        /*
+     * Add Total row
+     */
+        $totalCount = $data->sum('complaints_count');
+        $savedCount = $data->sum('saved_count');
+        $solvedCount = $data->sum('solved_count');
+        $clientReasonCount = $data->sum('client_reason_count');
+        $companyReasonCount = $data->sum('company_reason_count');
+
+        $data->push((object) [
+            'comtypeid' => null,
+            'comtypename' => 'المجموع',
+
+            'requesttypeid' => null,
+            'requesttypename' => '-',
+
+            'complaints_count' => $totalCount,
+
+            'complaints_percentage' => $totalComplaints > 0
+                ? round(($totalCount / $totalComplaints) * 100, 2)
+                : 0,
+
+            'saved_count' => $savedCount,
+
+            'saved_percentage' => $totalCount > 0
+                ? round(($savedCount / $totalCount) * 100, 2)
+                : 0,
+
+            'solved_count' => $solvedCount,
+
+            'solved_percentage' => $totalCount > 0
+                ? round(($solvedCount / $totalCount) * 100, 2)
+                : 0,
+
+            'client_reason_count' => $clientReasonCount,
+
+            'company_reason_count' => $companyReasonCount,
+        ]);
+
+
         return $data;
     }
 

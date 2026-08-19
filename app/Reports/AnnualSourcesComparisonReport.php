@@ -60,13 +60,11 @@ class AnnualSourcesComparisonReport implements ReportInterface
                 'comsources.comsourcesname',
                 DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '2' AND sfdcomplaints.valid = 1 AND YEAR(sfdcomplaints.ComplaintDate) = $first_year THEN 1 END) as complaints_first_year"),
                 DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '1' AND sfdcomplaints.valid = 1 AND YEAR(sfdcomplaints.ComplaintDate) = $first_year THEN 1 END) as inquiries_first_year"),
-                DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '3' AND sfdcomplaints.valid = 1 AND YEAR(sfdcomplaints.ComplaintDate) = $first_year THEN 1 END) as direct_complaints_first_year"),
                 DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '4' AND sfdcomplaints.valid = 1 AND YEAR(sfdcomplaints.ComplaintDate) = $first_year THEN 1 END) as suggestions_first_year"),
                 DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '5' AND sfdcomplaints.valid = 1 AND YEAR(sfdcomplaints.ComplaintDate) = $first_year THEN 1 END) as requests_first_year"),
 
                 DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '2' AND sfdcomplaints.valid = 1 AND YEAR(sfdcomplaints.ComplaintDate) = $second_year THEN 1 END) as complaints_second_year"),
                 DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '1' AND sfdcomplaints.valid = 1 AND YEAR(sfdcomplaints.ComplaintDate) = $second_year THEN 1 END) as inquiries_second_year") ,
-                DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '3' AND sfdcomplaints.valid = 1 AND YEAR(sfdcomplaints.ComplaintDate) = $second_year THEN 1 END) as direct_complaints_second_year"),
                 DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '4' AND sfdcomplaints.valid = 1 AND YEAR(sfdcomplaints.ComplaintDate) = $second_year THEN 1 END) as suggestions_second_year"),
                 DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '5' AND sfdcomplaints.valid = 1 AND YEAR(sfdcomplaints.ComplaintDate) = $second_year THEN 1 END) as requests_second_year"),
 
@@ -79,6 +77,24 @@ class AnnualSourcesComparisonReport implements ReportInterface
             )
             ->get();
 
+              // Add total row
+            $data->push((object) [
+                'comsourcesid' => null,
+                'comsourcesname' => 'المجموع',
+
+                // First year totals
+                'complaints_first_year' => $data->sum('complaints_first_year'),
+                'inquiries_first_year' => $data->sum('inquiries_first_year'),
+                'suggestions_first_year' => $data->sum('suggestions_first_year'),
+                'requests_first_year' => $data->sum('requests_first_year'),
+
+                // Second year totals
+                'complaints_second_year' => $data->sum('complaints_second_year'),
+                'inquiries_second_year' => $data->sum('inquiries_second_year'),
+                'suggestions_second_year' => $data->sum('suggestions_second_year'),
+                'requests_second_year' => $data->sum('requests_second_year'),
+            ]);
+
         return $data;
     }
 
@@ -90,12 +106,10 @@ class AnnualSourcesComparisonReport implements ReportInterface
             'اسم المصدر',
             'عدد شكوى عامة لعام ' . $this->filters['first_year'],
             'عدد استفسارات لعام ' . $this->filters['first_year'],
-            'عدد شكاوى موجهة لعام ' . $this->filters['first_year'],
             'عدد مقترحات لعام ' . $this->filters['first_year'],
             'عدد طلبات رواد الأعمال لعام ' . $this->filters['first_year'],
             'عدد شكوى عامة لعام ' . $this->filters['second_year'],
             'عدد استفسارات لعام ' . $this->filters['second_year'],
-            'عدد شكاوى موجهة لعام ' . $this->filters['second_year'],
             'عدد مقترحات لعام ' . $this->filters['second_year'],
             'عدد طلبات رواد الأعمال لعام ' . $this->filters['second_year'],
         ];
@@ -107,12 +121,10 @@ class AnnualSourcesComparisonReport implements ReportInterface
             $row->comsourcesname ?? 'غير محدد',
             $row->complaints_first_year,
             $row->inquiries_first_year,
-            $row->direct_complaints_first_year,
             $row->suggestions_first_year,
             $row->requests_first_year,
             $row->complaints_second_year,
             $row->inquiries_second_year,
-            $row->direct_complaints_second_year,
             $row->suggestions_second_year,
             $row->requests_second_year,
         ];

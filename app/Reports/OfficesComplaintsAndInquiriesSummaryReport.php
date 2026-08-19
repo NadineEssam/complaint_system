@@ -109,12 +109,22 @@ class OfficesComplaintsAndInquiriesSummaryReport implements ReportInterface
 
                 DB::raw("SUM(CASE WHEN c.RequestType = 2 AND c.valid = 1 THEN 1 ELSE 0 END) as complaints_count"),
                 DB::raw("SUM(CASE WHEN c.RequestType = 1 AND c.valid = 1 THEN 1 ELSE 0 END) as inquiries_count"),
-                DB::raw("SUM(CASE WHEN c.RequestType = 3 AND c.valid = 1 THEN 1 ELSE 0 END) as direct_complaints_count"),
                 DB::raw("SUM(CASE WHEN c.RequestType = 4 AND c.valid = 1 THEN 1 ELSE 0 END) as suggestions_count"),
                 DB::raw("SUM(CASE WHEN c.RequestType = 5 AND c.valid = 1 THEN 1 ELSE 0 END) as requests_count")
             )
             ->groupBy('o.id', 'o.REG_OFFIC_NAMA')
             ->get();
+
+              // Add total row
+        $data->push((object) [
+            'office' => null,
+            'office_name' => 'المجموع',
+
+            'complaints_count' => $data->sum('complaints_count'),
+            'inquiries_count' => $data->sum('inquiries_count'),
+            'suggestions_count' => $data->sum('suggestions_count'),
+            'requests_count' => $data->sum('requests_count'),
+        ]);
 
         return $data;
     }
@@ -129,7 +139,6 @@ class OfficesComplaintsAndInquiriesSummaryReport implements ReportInterface
             'الفرع ',
             'عدد شكوى عامة',
             'عدد الإستفسارات',
-            'عدد شكاوى موجهة',
             'عدد مقترحات',
             'عدد طلبات رواد الأعمال',
 
@@ -146,7 +155,6 @@ class OfficesComplaintsAndInquiriesSummaryReport implements ReportInterface
             $row->complaints_count ?? 0,
 
             $row->inquiries_count ?? 0,
-            $row->direct_complaints_count ?? 0,
             $row->suggestions_count ?? 0,
             $row->requests_count ?? 0,
            
