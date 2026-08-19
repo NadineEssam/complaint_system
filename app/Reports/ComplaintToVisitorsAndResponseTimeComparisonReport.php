@@ -170,7 +170,7 @@ class ComplaintToVisitorsAndResponseTimeComparisonReport implements ReportInterf
                 DB::raw('SUM(CASE WHEN c.ComplaintStatus = 4 THEN 1 ELSE 0 END) as saved_count')
 
             )
-            ->groupBy('o.id' , 'o.off_code', 'o.fk_govt_code', 'o.REG_OFFIC_NAMA' , 'crc.close_reason_classify_name', 'tr.classify_count')
+            ->groupBy('o.id', 'o.off_code', 'o.fk_govt_code', 'o.REG_OFFIC_NAMA', 'crc.close_reason_classify_name', 'tr.classify_count')
             ->get()
             ->keyBy('office');
 
@@ -214,16 +214,15 @@ class ComplaintToVisitorsAndResponseTimeComparisonReport implements ReportInterf
                     ]
                 ]
             ]);
-        
-            $api_data = [];
-            if ($response->successful() ) {
-                $response_data = $response->json();
-                if(isset($response_data['MessageCode']) && $response_data['MessageCode'] == 1){
-                    $api_data = $response_data['ResultData'];
 
-                }
+        $api_data = [];
+        if ($response->successful()) {
+            $response_data = $response->json();
+            if (isset($response_data['MessageCode']) && $response_data['MessageCode'] == 1) {
+                $api_data = $response_data['ResultData'];
             }
-           // dd($api_data);
+        }
+        // dd($api_data);
 
 
         foreach ($responseRows as $row) {
@@ -261,8 +260,8 @@ class ComplaintToVisitorsAndResponseTimeComparisonReport implements ReportInterf
         }
 
 
-        
-        $api_collection = collect($api_data); ;
+
+        $api_collection = collect($api_data);;
 
         foreach ($data as $row) {
 
@@ -293,7 +292,56 @@ class ComplaintToVisitorsAndResponseTimeComparisonReport implements ReportInterf
             $row->perfect_response = round($row->perfect_response, 2);
         }
 
-       // dd($data);
+
+        // Add total row
+        $totalComplaints = $data->sum('total_complaints');
+        $totalFollowUp = $data->sum('follow_up_count');
+        $totalSolved = $data->sum('solved_count');
+        $totalNew = $data->sum('new_count');
+        $totalSaved = $data->sum('saved_count');
+        $totalVisitors = $data->sum('visitors_count');
+        $totalResponseDays = $data->sum('total_response_days');
+        $totalRespondedCount = $data->sum('responded_count');
+
+        $totalAverageResponseDays = $totalRespondedCount > 0
+            ? round($totalResponseDays / $totalRespondedCount, 2)
+            : 0;
+
+        $totalVisitorsPercentOfComplaints = $totalVisitors > 0
+            ? round(($totalComplaints / $totalVisitors) * 100, 2)
+            : 0;
+
+
+        $totalPerfectResponse = $totalAverageResponseDays > 0
+            ? round((1.5 / $totalAverageResponseDays) * 100, 2)
+            : 0;
+
+        $data->put('total', (object) [
+            'office' => null,
+            'off_code' => null,
+            'govt_code' => null,
+
+            'office_name' => 'المجموع',
+            'classify_name' => '-',
+            'classify_count' => $data->sum('classify_count'),
+
+            'total_complaints' => $totalComplaints,
+
+            'follow_up_count' => $totalFollowUp,
+            'solved_count' => $totalSolved,
+            'new_count' => $totalNew,
+            'saved_count' => $totalSaved,
+
+            'visitors_count' => $totalVisitors,
+            'visitors_percent_of_complaints' => $totalVisitorsPercentOfComplaints,
+
+            'total_response_days' => round($totalResponseDays, 2),
+            'responded_count' => $totalRespondedCount,
+
+            'average_response_days' => $totalAverageResponseDays,
+            'perfect_response' => $totalPerfectResponse,
+        ]);
+
         return $data;
     }
 
@@ -310,7 +358,7 @@ class ComplaintToVisitorsAndResponseTimeComparisonReport implements ReportInterf
             'عدد الطلبات المحفوظة',
             'عدد الطلبات المحلولة',
             'إجمالي عدد الطلبات',
-            'نسبه الشكاوي بالنسبه المترددين على المكتب %',
+            'نسبه الطلبات بالنسبه المترددين على المكتب %',
             'أكثر تصنيف للطلبات',
             'عدد الطلبات لهذا التصنيف',
             'متوسط زمن الاستجابة في اليوم',
@@ -322,19 +370,19 @@ class ComplaintToVisitorsAndResponseTimeComparisonReport implements ReportInterf
     {
         return [
 
-            $row->office_name ,
-            $row->visitors_count ,
-            $row->new_count ,
-            $row->follow_up_count ,
-            $row->saved_count ,
-            $row->solved_count ,
-            $row->total_complaints ,
-            $row->visitors_percent_of_complaints ,
+            $row->office_name,
+            $row->visitors_count,
+            $row->new_count,
+            $row->follow_up_count,
+            $row->saved_count,
+            $row->solved_count,
+            $row->total_complaints,
+            $row->visitors_percent_of_complaints,
             $row->classify_name ?? "غير محدد",
-            $row->classify_count  ,
+            $row->classify_count,
             $row->average_response_days,
-            $row->perfect_response ,
-          
+            $row->perfect_response,
+
 
         ];
     }

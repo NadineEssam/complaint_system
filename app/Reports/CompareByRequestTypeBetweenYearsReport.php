@@ -70,10 +70,7 @@ class CompareByRequestTypeBetweenYearsReport implements ReportInterface
                     AND YEAR(ComplaintDate) = $first_year
                 THEN 1 END) as inquiries_first_year"),
 
-                DB::raw("COUNT(CASE 
-                    WHEN RequestType = 3 AND valid = 1
-                    AND YEAR(ComplaintDate) = $first_year
-                THEN 1 END) as direct_complaints_first_year"),
+
 
                 DB::raw("COUNT(CASE 
                     WHEN RequestType = 4 AND valid = 1
@@ -97,10 +94,22 @@ class CompareByRequestTypeBetweenYearsReport implements ReportInterface
                 // THEN 1 END) as inquiries_second_year")
             )
             ->where('c.valid', 1)
+            ->where('c.office', '!=', 0)
             ->groupBy('c.office', 'o.REG_OFFIC_NAMA')
             ->get();
 
+        // Add total row
+        $data->push((object) [
+            'office' => null,
+            'office_name' => 'المجموع',
+            'complaints_first_year' => $data->sum('complaints_first_year'),
+            'inquiries_first_year' => $data->sum('inquiries_first_year'),
+            'suggestions_first_year' => $data->sum('suggestions_first_year'),
+            'request_first_year' => $data->sum('request_first_year'),
+        ]);
+            
         return $data;
+        
     }
 
 
@@ -112,7 +121,6 @@ class CompareByRequestTypeBetweenYearsReport implements ReportInterface
             'عدد شكوى عامة لعام ' . $this->filters['first_year'],
 
             'عدد استفسارات لعام ' . $this->filters['first_year'],
-            'عدد شكوى موجهة لعام ' . $this->filters['first_year'],
             'عدد مقترحات لعام ' . $this->filters['first_year'],
             'عدد طلب رواد الأعمال لعام ' . $this->filters['first_year'],
 
@@ -126,7 +134,6 @@ class CompareByRequestTypeBetweenYearsReport implements ReportInterface
             $row->office_name,
             $row->complaints_first_year,
             $row->inquiries_first_year,
-            $row->direct_complaints_first_year,
             $row->suggestions_first_year,
             $row->request_first_year,
         ];

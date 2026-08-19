@@ -17,7 +17,7 @@ class OfficesSavedComplaintsCountReport implements ReportInterface
 
     public function label(): string
     {
-        return ' تقرير مركزى عن عدد الطلبات المحفوظ بالنسبة للمكاتب ';
+        return ' تقرير مركزى عن عدد كل الطلبات المحفوظ بالنسبة للمكاتب ';
     }
 
     public function key(): string
@@ -115,6 +115,16 @@ class OfficesSavedComplaintsCountReport implements ReportInterface
             )
             ->groupBy('o.id', 'o.REG_OFFIC_NAMA')
             ->get();
+
+                // Add total row
+            $data->push((object) [
+                'office' => null,
+                'office_name' => 'المجموع',
+
+                'for_company_count' => $data->sum('for_company_count'),
+                'for_client_count' => $data->sum('for_client_count'),
+            ]);
+
 
         return $data;
     }

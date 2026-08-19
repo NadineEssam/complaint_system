@@ -16,7 +16,7 @@ class ComplaintSavedReasonsReport implements ReportInterface
 
     public function label(): string
     {
-        return ' تقرير بتفصيل أسباب حفظ الطلبات الوارده ';
+        return ' تقرير بتفصيل أسباب حفظ كل الطلبات الوارده ';
     }
 
     public function key(): string
@@ -110,6 +110,15 @@ class ComplaintSavedReasonsReport implements ReportInterface
             ->orderBy('r.close_reason_ID')
             ->orderBy('c.close_reason_classify_id')
             ->get();
+
+        // Add total row
+        $data->push((object) [
+            'close_reason_classify_id' => null,
+            'close_reason_classify_Name' => 'المجموع',
+            'close_reason_ID' => '-',
+            'close_reason_Name' => '-',
+            'complaints_count' => $data->sum('complaints_count'),
+        ]);
 
         return $data;
     }
