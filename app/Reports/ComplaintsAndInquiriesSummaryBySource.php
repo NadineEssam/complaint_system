@@ -54,7 +54,6 @@ class ComplaintsAndInquiriesSummaryBySource implements ReportInterface
                 DB::raw('COUNT(CASE WHEN  sfdcomplaints.valid = 1  THEN 1 END) as total_count'),
                 DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '2' AND sfdcomplaints.valid = 1 THEN 1 END) as complaint_count"),
                 DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '1' AND sfdcomplaints.valid = 1 THEN 1 END) as inquiry_count"),
-                DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '3' AND sfdcomplaints.valid = 1 THEN 1 END) as direct_complaint_count"),
                 DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '4' AND sfdcomplaints.valid = 1 THEN 1 END) as suggestion_count"),
                 DB::raw("COUNT(CASE WHEN sfdcomplaints.RequestType = '5' AND sfdcomplaints.valid = 1 THEN 1 END) as request_count"),
             )
@@ -71,6 +70,18 @@ class ComplaintsAndInquiriesSummaryBySource implements ReportInterface
             )
             ->get();
 
+         // Add total row
+        $data->push((object) [
+            'comsourcesid' => null,
+            'comsourcesname' => 'المجموع',
+
+            'total_count' => $data->sum('total_count'),
+            'complaint_count' => $data->sum('complaint_count'),
+            'inquiry_count' => $data->sum('inquiry_count'),
+            'suggestion_count' => $data->sum('suggestion_count'),
+            'request_count' => $data->sum('request_count'),
+        ]);    
+
         return $data;
     }
 
@@ -83,7 +94,6 @@ class ComplaintsAndInquiriesSummaryBySource implements ReportInterface
             'إجمالي العدد',
             'عدد شكوى عامة',
             'عدد الاستفسارات',
-            'عدد الشكاوى الموجهة',
             'عدد المقترحات',
             'عدد طلبات رواد الأعمال',
         ];
@@ -96,7 +106,6 @@ class ComplaintsAndInquiriesSummaryBySource implements ReportInterface
             $row->total_count,
             $row->complaint_count,
             $row->inquiry_count,
-            $row->direct_complaint_count,
             $row->suggestion_count,
             $row->request_count,
         ];

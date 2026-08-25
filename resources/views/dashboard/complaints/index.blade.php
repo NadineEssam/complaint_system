@@ -175,7 +175,7 @@
   <div class="mb-4">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item active">الشكاوى</li>
+        <li class="breadcrumb-item active">البيان</li>
         <li class="breadcrumb-item">
           <a href="{{ route('dashboard') }}">
             <i class="bx bx-home-alt"></i> الرئيسية
@@ -192,7 +192,7 @@
     <div class="card-top-header">
       <h4>
         <i class="bx bx-list-ul"></i>
-        إدارة الشكاوى
+        إدارة البيان
       </h4>
       @if (PerUser('complaints.create'))
       <a href="{{ route('complaints.create') }}" class="btn-add">
@@ -210,7 +210,7 @@
 
         <div class="filter-title">
           <i class="bx bx-filter-alt"></i>
-          تصفية الشكاوى
+          تصفية البيان
         </div>
 
         <div class="row g-2">

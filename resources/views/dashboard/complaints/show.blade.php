@@ -344,7 +344,7 @@
           عرض البيان #{{ $complaint->ComplaintID }}
         </li>
         <li class="breadcrumb-item">
-          <a href="{{ route('complaints.index') }}">الشكاوى</a>
+          <a href="{{ route('complaints.index') }}">البيان</a>
         </li>
         <li class="breadcrumb-item">
           <a href="{{ route('dashboard') }}">
