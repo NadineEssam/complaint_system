@@ -170,7 +170,10 @@ class ComplaintToVisitorsAndResponseTimeComparisonReport implements ReportInterf
                 DB::raw('SUM(CASE WHEN c.ComplaintStatus = 4 THEN 1 ELSE 0 END) as saved_count')
 
             )
+            ->where('o.validity', 1)
             ->groupBy('o.id', 'o.off_code', 'o.fk_govt_code', 'o.REG_OFFIC_NAMA', 'crc.close_reason_classify_name', 'tr.classify_count')
+            ->orderBy('o.fk_govt_code', 'asc')
+            ->orderBy('o.off_code', 'asc')
             ->get()
             ->keyBy('office');
 
