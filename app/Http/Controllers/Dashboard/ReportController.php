@@ -22,7 +22,13 @@ class ReportController extends Controller
 
     public function filters(string $key)
     {
-        return response()->json($this->registry->find($key)->filters());
+        try {
+            return response()->json($this->registry->find($key)->filters());
+
+        } catch (\Throwable $th) {
+            return response()->json(['error' => $th->getMessage()], 404);
+        }
+        //return response()->json($this->registry->find($key)->filters());
     }
 
     public function generate(Request $request, string $key)
