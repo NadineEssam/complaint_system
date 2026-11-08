@@ -22,7 +22,7 @@ class ReportController extends Controller
 
     public function filters(string $key)
     {
-        dd("filtersxxxxxxxxxxx");
+       
         try {
             return response()->json($this->registry->find($key)->filters());
 

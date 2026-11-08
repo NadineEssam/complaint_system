@@ -274,7 +274,7 @@ async function loadFilters(key) {
     `;
 
     try {
-        const res = await fetch(`/reports/${key}/filters`);
+        const res = await fetch(`reports/${key}/filters`);
         const filters = await res.json();
 
         let html = `
